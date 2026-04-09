@@ -4,8 +4,5 @@
   "framework": "vite",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "env": {
-    "VITE_SERVER_URL": "@drawnbuy_server_url"
-  }
+  ]
 }
