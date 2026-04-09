@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: drawnbuy-server
+    runtime: node
+    rootDir: server
+    buildCommand: npm install --ignore-scripts
+    startCommand: node index.js
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_ORIGIN
+        sync: false          # set to https://drawnbuy.com in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true  # Render auto-generates a secure value
+      - key: BCRYPT_ROUNDS
+        value: 12
+      - key: GEMINI_API_KEY
+        sync: false          # paste your key in Render dashboard
+      - key: ADMIN_KEY
+        generateValue: true
+    healthCheckPath: /api/health
+    autoDeploy: true
+    numInstances: 1
+    plan: free               # upgrade to starter ($7/mo) for always-on

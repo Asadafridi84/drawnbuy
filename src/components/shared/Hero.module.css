@@ -1,0 +1,191 @@
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f4f0ff 0%, #e8f4fd 50%, #fef9ec 100%);
+  padding: 60px 24px;
+}
+
+/* Animated orbs */
+.orb1, .orb2, .orb3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.orb1 {
+  width: 500px; height: 500px;
+  background: var(--purple);
+  top: -100px; left: -100px;
+  animation: orb 8s ease-in-out infinite;
+}
+.orb2 {
+  width: 400px; height: 400px;
+  background: var(--cyan);
+  bottom: -80px; right: 30%;
+  animation: orb 10s ease-in-out infinite reverse;
+}
+.orb3 {
+  width: 300px; height: 300px;
+  background: var(--gold);
+  top: 30%; right: -60px;
+  animation: orb 7s ease-in-out infinite 2s;
+}
+
+.inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Content */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(124,58,237,0.1);
+  border: 1px solid rgba(124,58,237,0.25);
+  color: var(--purple);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.heading {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  color: var(--text);
+}
+.accentGold { color: var(--gold-dark); }
+.accentCyan { color: var(--cyan-dark); }
+
+.subheading {
+  font-size: 17px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary {
+  padding: 14px 28px;
+  background: var(--purple);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ctaPrimary:hover {
+  background: var(--purple-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.ctaSecondary {
+  padding: 14px 28px;
+  background: var(--gold);
+  color: var(--text);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ctaSecondary:hover {
+  background: var(--gold-dark);
+  transform: translateY(-2px);
+}
+
+.stats {
+  display: flex;
+  gap: 32px;
+  padding-top: 8px;
+}
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.statValue { font-size: 22px; font-weight: 700; color: var(--purple); }
+.statLabel { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+/* Product Grid */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.productCard {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-family: inherit;
+}
+.productCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--purple-light);
+}
+.productCard.featured {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 2px rgba(124,58,237,0.2);
+  transform: scale(1.04);
+}
+
+.productEmoji { font-size: 24px; }
+.productBadge { font-size: 9px; font-weight: 700; color: var(--purple); background: var(--purple-faint); border-radius: 4px; padding: 2px 5px; white-space: nowrap; }
+.productName { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.productPrice { font-size: 11px; font-weight: 700; color: var(--purple); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .inner { grid-template-columns: 1fr; gap: 40px; }
+  .productGrid { grid-template-columns: repeat(5, 1fr); max-width: 600px; }
+}
+@media (max-width: 768px) {
+  .hero { padding: 40px 16px; min-height: auto; }
+  .heading { font-size: 36px; }
+  .productGrid { grid-template-columns: repeat(4, 1fr); }
+  .stats { gap: 16px; }
+}
+@media (max-width: 480px) {
+  .productGrid { grid-template-columns: repeat(3, 1fr); }
+  .ctaRow { flex-direction: column; }
+}

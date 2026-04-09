@@ -1,0 +1,63 @@
+.strip {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.5s;
+  padding: 0 40px;
+}
+
+.ticker {
+  position: relative;
+  height: 20px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad {
+  position: absolute;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  background: none;
+  border: none;
+}
+
+.ad.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+  position: absolute;
+  right: 16px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.activeDot {
+  width: 16px;
+  border-radius: 3px;
+}

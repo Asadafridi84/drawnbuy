@@ -1,0 +1,17 @@
+node_modules/
+server/node_modules/
+dist/
+.env
+.env.local
+.env.production
+server/.env
+server/.env.local
+*.log
+.DS_Store
+.vite/
+.cache/
+
+# Runtime data (users, canvases, Gemini icon cache)
+server/data/users.json
+server/data/canvases.json
+server/data/gemini-icons.json
