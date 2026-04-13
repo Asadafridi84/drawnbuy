@@ -1,0 +1,347 @@
+import { useState, useEffect, useRef } from 'react';
+import { HERO_ADS } from '../data';
+
+function MiniCanvas() {
+  const canvasRef = useRef(null);
+  const [tool, setTool] = useState('draw');
+  const [color, setColor] = useState('#7c3aed');
+  const [drawing, setDrawing] = useState(false);
+  const [hasDrawing, setHasDrawing] = useState(false);
+  const lastPos = useRef(null);
+
+  const colors = ['#7c3aed', '#fbbf24', '#67e8f9', '#ef4444', '#22c55e', '#000'];
+
+  const getPos = (e, canvas) => {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  };
+
+  const startDraw = (e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    e.preventDefault();
+    setDrawing(true);
+    lastPos.current = getPos(e, canvas);
+  };
+
+  const doDraw = (e) => {
+    if (!drawing) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    if (tool === 'erase') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.lineWidth = 20;
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+    }
+    ctx.lineCap = 'round';
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    lastPos.current = pos;
+    setHasDrawing(true);
+  };
+
+  const endDraw = () => setDrawing(false);
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    setHasDrawing(false);
+  };
+
+  return (
+    <div style={{ background: 'rgba(255,255,255,.07)', border: '2px solid rgba(251,191,36,.3)', borderRadius: '18px', overflow: 'hidden' }}>
+      {/* Canvas top bar */}
+      <div style={{ background: 'rgba(0,0,0,.3)', padding: '8px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ background: '#ef4444', color: '#fff', fontSize: '10px', fontWeight: '800', padding: '3px 9px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#fff', animation: 'blink 1s infinite', display: 'inline-block' }} />
+          LIVE
+        </span>
+        <span style={{ color: 'rgba(255,255,255,.65)', fontSize: '12px', fontWeight: '600' }}>Your Canvas</span>
+        <div style={{ display: 'flex' }}>
+          {['A','M','J'].map((l, i) => (
+            <div key={i} style={{
+              width: '25px', height: '25px', borderRadius: '50%', marginLeft: i > 0 ? '-7px' : 0,
+              border: '2px solid rgba(255,255,255,.3)', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', fontSize: '10px', fontWeight: '800', color: '#fff',
+              background: ['#7c3aed','#fbbf24','#22c55e'][i],
+            }}>{l}</div>
+          ))}
+        </div>
+      </div>
+
+      {/* Canvas */}
+      <div style={{ background: '#fff', height: '190px', position: 'relative', cursor: tool === 'erase' ? 'cell' : 'crosshair' }}>
+        <canvas
+          ref={canvasRef}
+          width={300}
+          height={190}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+          onMouseDown={startDraw}
+          onMouseMove={doDraw}
+          onMouseUp={endDraw}
+          onMouseLeave={endDraw}
+          onTouchStart={startDraw}
+          onTouchMove={doDraw}
+          onTouchEnd={endDraw}
+        />
+        {!hasDrawing && (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+            <span style={{ fontSize: '12px', color: 'rgba(124,58,237,.25)', fontWeight: '600' }}>✏️ Click to draw!</span>
+          </div>
+        )}
+      </div>
+
+      {/* Toolbar */}
+      <div style={{ background: 'rgba(0,0,0,.22)', padding: '7px 10px', display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap' }}>
+        {[['draw','✏️ Draw'],['erase','🧹 Erase']].map(([t, label]) => (
+          <button
+            key={t}
+            onClick={() => setTool(t)}
+            style={{
+              background: tool === t ? 'rgba(251,191,36,.22)' : 'rgba(255,255,255,.1)',
+              border: `1px solid ${tool === t ? '#fbbf24' : 'rgba(255,255,255,.15)'}`,
+              color: tool === t ? '#fbbf24' : 'rgba(255,255,255,.8)',
+              borderRadius: '7px', padding: '4px 9px', fontSize: '11px', fontWeight: '700',
+              cursor: 'pointer', fontFamily: 'inherit',
+            }}
+          >{label}</button>
+        ))}
+        <button
+          onClick={clearCanvas}
+          style={{ background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', color: 'rgba(255,255,255,.8)', borderRadius: '7px', padding: '4px 9px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}
+        >🗑 Clear</button>
+        <div style={{ display: 'flex', gap: '4px', marginLeft: 'auto', alignItems: 'center' }}>
+          {colors.map(c => (
+            <div
+              key={c}
+              onClick={() => { setColor(c); setTool('draw'); }}
+              style={{
+                width: '17px', height: '17px', borderRadius: '50%', background: c, cursor: 'pointer',
+                border: `2.5px solid ${color === c ? '#fff' : 'transparent'}`,
+                transform: color === c ? 'scale(1.2)' : 'none', transition: '.15s',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HeroAdCard({ ad }) {
+  return (
+    <div
+      draggable
+      style={{
+        background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)',
+        borderRadius: '12px', overflow: 'hidden', cursor: 'grab', transition: '.2s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(251,191,36,.5)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; e.currentTarget.style.transform = 'none'; }}
+      onClick={() => window.open(ad.url, '_blank')}
+    >
+      <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }} />
+      <div style={{ padding: '.35rem .5rem' }}>
+        <div style={{ fontSize: '.67rem', fontWeight: '700', color: '#fff', lineHeight: 1.3 }}>{ad.name}</div>
+        <div style={{ fontSize: '.76rem', fontWeight: '800', color: '#fbbf24' }}>{ad.price}</div>
+      </div>
+      <button
+        style={{
+          width: '100%', background: 'rgba(251,191,36,.18)', border: '1px solid rgba(251,191,36,.3)',
+          color: '#fbbf24', padding: '4px', fontSize: '.6rem', fontWeight: '800',
+          cursor: 'pointer', fontFamily: 'inherit',
+        }}
+        onClick={e => { e.stopPropagation(); window.open(ad.url, '_blank'); }}
+      >Shop Now →</button>
+    </div>
+  );
+}
+
+export default function Hero() {
+  const [lIdx, setLIdx] = useState(0);
+  const [rIdx, setRIdx] = useState(4);
+  const [cIdx, setCIdx] = useState(8);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick(t => {
+        const next = t + 1;
+        if (next >= 16) {
+          setLIdx(i => (i + 4) % HERO_ADS.length);
+          setRIdx(i => (i + 4) % HERO_ADS.length);
+          setCIdx(i => (i + 2) % HERO_ADS.length);
+          return 0;
+        }
+        return next;
+      });
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const leftAds  = [0,1,2,3].map(i => HERO_ADS[(lIdx + i) % HERO_ADS.length]);
+  const rightAds = [0,1,2,3].map(i => HERO_ADS[(rIdx + i) % HERO_ADS.length]);
+  const centerAds= [0,1].map(i => HERO_ADS[(cIdx + i) % HERO_ADS.length]);
+
+  return (
+    <div style={{
+      background: 'linear-gradient(140deg,#3b0764 0%,#5b21b6 50%,#7c3aed 100%)',
+      padding: '1rem 2rem .85rem',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <style>{`
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-18px) scale(1.04)} }
+        @keyframes heroTitleIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+        .hero-orb { position:absolute; border-radius:50%; pointer-events:none; }
+        .ho1 { top:-80px; right:-40px; width:380px; height:380px; background:radial-gradient(circle,rgba(103,232,249,.12),transparent 70%); animation:orbFloat 8s ease-in-out infinite; }
+        .ho2 { bottom:-100px; left:15%; width:300px; height:300px; background:radial-gradient(circle,rgba(251,191,36,.08),transparent 70%); animation:orbFloat 10s ease-in-out infinite 2s; }
+        .ho3 { top:30%; left:40%; width:200px; height:200px; background:radial-gradient(circle,rgba(124,58,237,.15),transparent 70%); animation:orbFloat 7s ease-in-out infinite 4s; }
+        .hero-inner {
+          max-width:1500px; margin:0 auto;
+          display:grid;
+          grid-template-columns: 155px 1fr 140px 370px 155px;
+          gap:1.2rem;
+          align-items:start;
+          position:relative; z-index:1;
+        }
+        .hero-tag {
+          display:inline-flex; align-items:center; gap:6px;
+          background:rgba(103,232,249,.12); border:1px solid rgba(103,232,249,.3);
+          color:#67e8f9; padding:5px 14px; border-radius:20px; font-size:11px;
+          font-weight:700; letter-spacing:.06em; margin-bottom:.4rem;
+        }
+        .hero h1 {
+          font-size:clamp(1.9rem,3.2vw,3rem); font-weight:800; color:#fff;
+          line-height:1.1; letter-spacing:-1.5px; margin-bottom:.6rem;
+          animation:heroTitleIn .8s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .hc { color:#67e8f9; } .hg { color:#fbbf24; }
+        .hero-sub {
+          color:rgba(255,255,255,.72); font-size:14px; line-height:1.6;
+          max-width:480px; margin-bottom:.8rem;
+          animation:heroTitleIn .8s .15s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .hero-btns { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:.6rem; animation:heroTitleIn .8s .3s cubic-bezier(.34,1.56,.64,1) both; }
+        .btn-hp {
+          background:#fbbf24; color:#3b0764; border:none; padding:12px 24px; border-radius:10px;
+          font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:800; cursor:pointer;
+          box-shadow:0 4px 20px rgba(251,191,36,.4); transition:.2s;
+        }
+        .btn-hp:hover { background:#d97706; transform:translateY(-2px); }
+        .btn-hs {
+          background:rgba(255,255,255,.08); color:#fff; border:1.5px solid rgba(255,255,255,.35);
+          padding:11px 22px; border-radius:10px; font-family:'Space Grotesk',sans-serif;
+          font-size:14px; font-weight:700; cursor:pointer; transition:.15s;
+        }
+        .btn-hs:hover { border-color:#67e8f9; color:#67e8f9; }
+        .hero-stats { display:flex; gap:1.25rem; }
+        .hstat-num { font-size:1rem; font-weight:800; color:#fbbf24; }
+        .hstat-lbl { font-size:10px; color:rgba(255,255,255,.5); }
+        .hero-ads { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; align-content:start; }
+        .hero-ads-center { display:flex; flex-direction:column; gap:.5rem; align-self:center; }
+        .hero-timer { height:2px; background:rgba(255,255,255,.12); border-radius:2px; overflow:hidden; margin-top:4px; }
+        .hero-timer-bar { height:100%; background:#fbbf24; border-radius:2px; transition:width .5s linear; }
+        @media(max-width:1300px) {
+          .hero-inner { grid-template-columns:1fr 370px !important; }
+          .hero-ads-left, .hero-ads-right { display:none !important; }
+          .hero-ads-center { display:none !important; }
+        }
+        @media(max-width:768px) {
+          .hero-inner { grid-template-columns:1fr !important; }
+          .hero-product-col { display:none !important; }
+        }
+      `}</style>
+
+      {/* Orbs */}
+      <div className="hero-orb ho1" />
+      <div className="hero-orb ho2" />
+      <div className="hero-orb ho3" />
+
+      <div className="hero-inner">
+        {/* Col 1: Left Ads */}
+        <div className="hero-ads-left">
+          <div className="hero-ads">
+            {leftAds.map((ad, i) => <HeroAdCard key={i} ad={ad} />)}
+          </div>
+          <div className="hero-timer">
+            <div className="hero-timer-bar" style={{ width: `${(tick / 16) * 100}%` }} />
+          </div>
+        </div>
+
+        {/* Col 2: Hero Text */}
+        <div className="hero">
+          <div className="hero-tag">🌍 World&apos;s First Social Shopping Canvas</div>
+          <h1>
+            Draw it.<br/>
+            <span className="hc">Find it.</span><br/>
+            <span className="hg">Buy it.</span>
+          </h1>
+          <p className="hero-sub">
+            Sketch your wishlist on a real-time collaborative canvas,
+            drag real products onto it, and shop with friends — all in one place.
+          </p>
+          <div className="hero-btns">
+            <button className="btn-hp">🎨 Start Drawing Free</button>
+            <button className="btn-hs">👥 Invite Friends</button>
+          </div>
+          <div className="hero-stats">
+            <div>
+              <div className="hstat-num">10K+</div>
+              <div className="hstat-lbl">Active Canvases</div>
+            </div>
+            <div>
+              <div className="hstat-num">500K+</div>
+              <div className="hstat-lbl">Products</div>
+            </div>
+            <div>
+              <div className="hstat-num">50K+</div>
+              <div className="hstat-lbl">Happy Shoppers</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Col 3: Center Ads */}
+        <div className="hero-ads-center">
+          {centerAds.map((ad, i) => (
+            <div
+              key={i}
+              style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer' }}
+              onClick={() => window.open(ad.url, '_blank')}
+            >
+              <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
+              <div style={{ padding: '.35rem .5rem' }}>
+                <div style={{ fontSize: '.65rem', fontWeight: '700', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ad.name}</div>
+                <div style={{ fontSize: '.75rem', fontWeight: '800', color: '#fbbf24' }}>{ad.price}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Col 4: Mini Canvas */}
+        <div className="hero-product-col">
+          <MiniCanvas />
+        </div>
+
+        {/* Col 5: Right Ads */}
+        <div className="hero-ads-right hero-product-col">
+          <div className="hero-ads">
+            {rightAds.map((ad, i) => <HeroAdCard key={i} ad={ad} />)}
+          </div>
+          <div className="hero-timer">
+            <div className="hero-timer-bar" style={{ width: `${(tick / 16) * 100}%` }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
