@@ -21,6 +21,11 @@ import argparse
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Fix Windows terminal UTF-8 encoding (emoji support)
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # ── Environment setup ─────────────────────────────────────────────────────────
 # Load .env.local first (Next.js convention), then .env
 project_root = Path(__file__).resolve().parent.parent
