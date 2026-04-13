@@ -15,3 +15,7 @@ server/.env.local
 server/data/users.json
 server/data/canvases.json
 server/data/gemini-icons.json
+
+# Agent team outputs — not for version control
+agents/memory/
+agents/reports/

@@ -1,0 +1,317 @@
+# ============================================================
+# DRAWNBUY AGENT TEAM — TASK TEMPLATES
+# ============================================================
+# These are the base task definitions. Tasks are dynamically
+# created at runtime based on user input to the Team Leader.
+# Each task is assigned to the appropriate specialist agent.
+# ============================================================
+
+# ----------------------------------------------------------
+# TEAM LEADER TASKS
+# ----------------------------------------------------------
+
+analyze_and_delegate:
+  description: >
+    Analyze the project owner's request: "{request}"
+
+    Break this down into specific sub-tasks for the appropriate specialist agents.
+    Determine which agents need to be involved (Frontend, Backend, Security, Affiliate
+    — or multiple agents). Coordinate their work, resolve any dependencies between
+    tasks, and compile a final unified report.
+
+    Steps:
+    1. Understand the full scope of the request
+    2. Identify which specialist agents are needed
+    3. Create specific task instructions for each agent
+    4. Delegate tasks and collect results
+    5. Identify any inter-agent dependencies (e.g., backend API changes that
+       frontend needs to know about)
+    6. Compile a clean executive summary for the project owner
+    7. Save full report to /agents/reports/team_leader/operation_{timestamp}.md
+  expected_output: >
+    A clear executive summary of:
+    - What was done by each agent
+    - Key decisions made
+    - Any issues encountered and how they were resolved
+    - Next recommended actions
+    - Any security clearances from the Security Agent
+    Saved to /agents/reports/team_leader/
+
+weekly_team_review:
+  description: >
+    Conduct a weekly review of all agent activity across the DrawnBuy project.
+
+    Review all report files in:
+    - /agents/reports/frontend/
+    - /agents/reports/backend/
+    - /agents/reports/security/
+    - /agents/reports/affiliate/
+
+    Synthesize the week's progress, identify blockers, highlight wins,
+    flag any unresolved security issues, and produce a strategic weekly
+    summary for the project owner.
+  expected_output: >
+    A structured weekly report containing:
+    - Summary of completed work per agent
+    - Outstanding issues or blockers
+    - Security posture summary
+    - Affiliate opportunities pipeline
+    - Recommended focus areas for next week
+    Saved to /agents/reports/team_leader/weekly_review_{date}.md
+
+add_new_agent_guide:
+  description: >
+    The project owner wants to add a new agent with the following specialization:
+    "{specialization}"
+
+    Create a complete guide for onboarding this new agent into the DrawnBuy team:
+    1. Define the agent's role, goal, and backstory (agents.yaml format)
+    2. List the specific tools/superpowers this agent needs
+    3. Define which files/directories this agent should own
+    4. Specify how this agent should communicate with existing agents
+    5. Provide the code template for adding this agent to crew.py
+    6. List any new Python packages required
+  expected_output: >
+    A complete agent onboarding document including:
+    - YAML config block ready to paste into agents.yaml
+    - Tool list with installation instructions
+    - crew.py code snippet for integrating the new agent
+    - Communication protocol with existing agents
+    Saved to /agents/reports/team_leader/new_agent_{name}.md
+
+# ----------------------------------------------------------
+# FRONTEND AGENT TASKS
+# ----------------------------------------------------------
+
+frontend_improvement:
+  description: >
+    Frontend improvement task: "{task_description}"
+
+    Working with DrawnBuy's React/Next.js codebase:
+    1. Analyze the current implementation in the relevant files
+    2. Plan the improvement with clear technical rationale
+    3. Implement the changes following best practices:
+       - Plain JSX (no TypeScript) — DrawnBuy uses Vite, not Next.js
+       - CSS Modules or inline styles — no Tailwind
+       - Responsive design (mobile-first: 480/768/1024/1440px breakpoints)
+       - Accessibility (WCAG 2.1 AA)
+       - Performance (lazy loading, code splitting)
+       - Clean component architecture
+    4. Test considerations (what should be tested)
+    5. Document the changes
+
+    If you need API data structures from the Backend Agent, request them.
+    If you need security review, flag it for the Security Agent.
+
+    Save your work report to /agents/reports/frontend/
+  expected_output: >
+    A detailed frontend implementation report including:
+    - Files changed (with before/after code snippets)
+    - Design decisions made
+    - Performance impact estimate
+    - Accessibility considerations
+    - Any requests to other agents (Backend/Security)
+    Saved to /agents/reports/frontend/
+
+ui_audit:
+  description: >
+    Conduct a full UI/UX audit of DrawnBuy's affiliate platform frontend.
+
+    Audit areas:
+    1. Product card components — conversion optimization
+    2. Category navigation — discoverability and UX flow
+    3. Search interface — relevance and speed
+    4. Mobile responsiveness — all breakpoints
+    5. Page load performance — Core Web Vitals
+    6. Accessibility — WCAG 2.1 AA compliance
+    7. Affiliate link placement — click optimization
+
+    Provide specific, actionable recommendations with priority levels
+    (Critical / High / Medium / Low).
+  expected_output: >
+    A structured UI/UX audit report with:
+    - Findings by category with severity ratings
+    - Specific file and component references
+    - Recommended fixes with code examples
+    - Estimated impact on conversion rate
+    Saved to /agents/reports/frontend/ui_audit_{date}.md
+
+# ----------------------------------------------------------
+# BACKEND AGENT TASKS
+# ----------------------------------------------------------
+
+backend_improvement:
+  description: >
+    Backend improvement task: "{task_description}"
+
+    Working with DrawnBuy's backend codebase:
+    1. Analyze the current implementation
+    2. Plan changes ensuring:
+       - Zero breaking changes (or provide migration plan)
+       - Error handling with try/catch and meaningful error messages
+       - Input validation and sanitization
+       - Database query optimization
+       - Caching where appropriate (Redis/CDN)
+       - API response time targets (<200ms)
+    3. Implement the changes
+    4. Document API contract changes for the Frontend Agent
+    5. Flag any security implications for the Security Agent
+
+    Save work report to /agents/reports/backend/
+  expected_output: >
+    A detailed backend implementation report including:
+    - Files changed
+    - API contract changes (if any) — formatted for Frontend Agent
+    - Performance benchmarks
+    - Error handling implemented
+    - Security implications flagged
+    Saved to /agents/reports/backend/
+
+backend_health_check:
+  description: >
+    Perform a comprehensive backend health check on DrawnBuy.
+
+    Check areas:
+    1. API endpoint response times and error rates
+    2. Database query performance (slow queries)
+    3. Memory and CPU usage patterns
+    4. Caching effectiveness (hit rates)
+    5. Error logs analysis
+    6. Dependency versions and update needs
+    7. Backup and recovery procedures
+    8. Scalability bottlenecks
+
+    Provide specific recommendations to improve reliability and prevent downtime.
+  expected_output: >
+    A backend health report with:
+    - Current health scores per area
+    - Critical issues requiring immediate attention
+    - Optimization recommendations
+    - Dependency update plan
+    Saved to /agents/reports/backend/health_check_{date}.md
+
+# ----------------------------------------------------------
+# SECURITY AGENT TASKS
+# ----------------------------------------------------------
+
+security_audit:
+  description: >
+    Perform a comprehensive security audit of DrawnBuy.
+
+    Audit areas:
+    1. OWASP Top 10 vulnerabilities
+    2. Authentication and authorization implementation
+    3. Input validation and SQL injection prevention
+    4. XSS (Cross-Site Scripting) vulnerabilities
+    5. CSRF protection
+    6. Dependency vulnerabilities (CVE scan)
+    7. Security headers (CSP, HSTS, X-Frame-Options, etc.)
+    8. Affiliate link integrity and click fraud protection
+    9. Data privacy compliance (GDPR/CCPA)
+    10. Rate limiting and DDoS protection
+
+    Rate each finding: Critical / High / Medium / Low / Informational
+  expected_output: >
+    A security audit report with:
+    - Executive summary (overall security posture score)
+    - Findings sorted by severity
+    - Each finding: description, affected code, risk, remediation steps
+    - Immediate action items vs. planned improvements
+    Saved to /agents/reports/security/audit_{date}.md
+
+review_code_change:
+  description: >
+    Security review of the following code change: "{change_description}"
+
+    Review this change for:
+    1. Introduction of new vulnerabilities
+    2. Proper input validation
+    3. Authentication/authorization bypass risks
+    4. Sensitive data exposure
+    5. Secure coding best practices
+
+    Provide a PASS / PASS WITH NOTES / FAIL verdict with specific findings.
+  expected_output: >
+    Security review verdict:
+    - PASS / PASS WITH NOTES / FAIL
+    - Specific findings with line references
+    - Required fixes before deployment (if any)
+    - Security recommendations
+    Saved to /agents/reports/security/
+
+# ----------------------------------------------------------
+# AFFILIATE AGENT TASKS
+# ----------------------------------------------------------
+
+research_affiliate_programs:
+  description: >
+    Research affiliate programs for the following DrawnBuy category: "{category}"
+
+    Research requirements:
+    1. Find top 10 affiliate programs in this category
+    2. For each program provide:
+       - Company name and description
+       - Commission rate / structure
+       - Cookie duration
+       - Average EPC (earnings per click)
+       - Payment terms
+       - Application process (easy/medium/hard)
+       - Affiliate network (Amazon, ShareASale, CJ, direct, etc.)
+       - Pros and cons for DrawnBuy specifically
+    3. Rank by recommended priority for DrawnBuy
+    4. Identify quick wins (easy to join, good commissions)
+    5. Note any requirements or restrictions
+  expected_output: >
+    A structured affiliate research report for "{category}" with:
+    - Top 10 programs ranked with full details
+    - Quick wins section (3-5 programs to join immediately)
+    - Long-term high-value partnerships to pursue
+    - Estimated monthly revenue potential
+    Saved to /agents/reports/affiliate/research_{category}_{date}.md
+
+discover_new_categories:
+  description: >
+    Research and recommend new product categories DrawnBuy should add.
+
+    Analysis requirements:
+    1. Identify trending product categories in affiliate marketing
+    2. Analyze competitor affiliate platforms for category gaps
+    3. Evaluate which categories would suit DrawnBuy's audience
+    4. For each recommended category provide:
+       - Category name and description
+       - Market size and growth trend
+       - Average affiliate commissions
+       - Competition level
+       - Top 3 affiliate programs available
+    5. Prioritize by revenue potential and audience fit
+
+    Communicate category UI requirements to the Frontend Agent.
+    Communicate data storage needs to the Backend Agent.
+  expected_output: >
+    A new category opportunities report with:
+    - Top 10 recommended new categories (ranked)
+    - Market analysis for each
+    - Implementation roadmap
+    - Revenue projections
+    - Requests to Frontend and Backend agents
+    Saved to /agents/reports/affiliate/new_categories_{date}.md
+
+affiliate_performance_review:
+  description: >
+    Review the performance of current affiliate programs on DrawnBuy
+    and recommend optimizations.
+
+    Analysis:
+    1. Review existing affiliate categories and placements
+    2. Identify underperforming vs high-performing areas
+    3. Research better alternatives for underperforming categories
+    4. Recommend UI/placement improvements (communicate to Frontend Agent)
+    5. Recommend new programs to add or replace existing ones
+    6. Seasonal opportunities (upcoming holidays, events)
+  expected_output: >
+    An affiliate performance review with:
+    - Performance analysis by category
+    - Programs to replace or upgrade
+    - New opportunities to add
+    - UI recommendations (formatted for Frontend Agent)
+    Saved to /agents/reports/affiliate/performance_review_{date}.md
