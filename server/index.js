@@ -149,9 +149,23 @@ io.on('connection', (socket) => {
   });
 });
 
+// ── Keep-Alive Ping (prevents Render free-tier sleep; harmless on paid plans) ──
+function startKeepAlive() {
+  const selfUrl = process.env.RENDER_EXTERNAL_URL;
+  if (!selfUrl) return; // local dev — skip
+  const INTERVAL_MS = 10 * 60 * 1000; // every 10 minutes
+  setInterval(() => {
+    fetch(`${selfUrl}/api/health`)
+      .then(r => r.ok && console.log('[keep-alive] ping ok'))
+      .catch(e => console.warn('[keep-alive] ping failed:', e.message));
+  }, INTERVAL_MS);
+  console.log(`[keep-alive] pinging ${selfUrl}/api/health every 10 min`);
+}
+
 // ── Start ──────────────────────────────────────────────────────────────────────
 httpServer.listen(PORT, () => {
   console.log(`🚀 DrawNBuy :${PORT}  ← ${CLIENT_ORIGIN}`);
+  startKeepAlive();
   // Generate sponsor icons on first boot (cached after that)
   generateSponsorIcons().catch(e => console.warn('[gemini] startup:', e.message));
 });

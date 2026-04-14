@@ -19,3 +19,5 @@ server/data/gemini-icons.json
 # Agent team outputs — not for version control
 agents/memory/
 agents/reports/
+
+.vercel
