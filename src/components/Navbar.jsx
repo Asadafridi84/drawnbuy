@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/auth';
 const LogoMark = () => (
   <div style={{ position: 'relative', width: '46px', height: '46px', flexShrink: 0 }}>
     <img
-      src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=100&q=80"
+      src="https://placehold.co/300x300/7c3aed/white?text=Product"
       alt=""
       style={{ width: '46px', height: '46px', borderRadius: '12px', objectFit: 'cover', opacity: .55, display: 'block' }}
     />
