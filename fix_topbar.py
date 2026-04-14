@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿content = '''import { useState, useEffect } from 'react';
 import { COUNTRIES } from '../data';
 
 const GEO_DATA = {
@@ -118,3 +118,6 @@ export default function Topbar() {
     </div>
   );
 }
+'''
+open('src/components/Topbar.jsx', 'w', encoding='utf-8').write(content)
+print('Topbar fixed!')

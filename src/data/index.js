@@ -112,16 +112,23 @@ export const SPONSORS = [
 ];
 
 export const COUNTRIES = [
-  {code:'SE', flag:'🇸🇪', name:'Sweden',      currency:'SEK'},
-  {code:'NO', flag:'🇳🇴', name:'Norway',      currency:'NOK'},
-  {code:'DK', flag:'🇩🇰', name:'Denmark',     currency:'DKK'},
-  {code:'FI', flag:'🇫🇮', name:'Finland',     currency:'EUR'},
-  {code:'DE', flag:'🇩🇪', name:'Germany',     currency:'EUR'},
-  {code:'GB', flag:'🇬🇧', name:'UK',          currency:'GBP'},
-  {code:'US', flag:'🇺🇸', name:'USA',         currency:'USD'},
-  {code:'FR', flag:'🇫🇷', name:'France',      currency:'EUR'},
-  {code:'NL', flag:'🇳🇱', name:'Netherlands', currency:'EUR'},
-  {code:'PL', flag:'🇵🇱', name:'Poland',      currency:'PLN'},
+  {code:'SE', flag:'🇸🇪', name:'Sweden',        currency:'SEK'},
+  {code:'NO', flag:'🇳🇴', name:'Norway',        currency:'NOK'},
+  {code:'DK', flag:'🇩🇰', name:'Denmark',       currency:'DKK'},
+  {code:'FI', flag:'🇫🇮', name:'Finland',       currency:'EUR'},
+  {code:'DE', flag:'🇩🇪', name:'Germany',       currency:'EUR'},
+  {code:'GB', flag:'🇬🇧', name:'UK',            currency:'GBP'},
+  {code:'US', flag:'🇺🇸', name:'USA',           currency:'USD'},
+  {code:'FR', flag:'🇫🇷', name:'France',        currency:'EUR'},
+  {code:'ES', flag:'🇪🇸', name:'Spain',         currency:'EUR'},
+  {code:'IT', flag:'🇮🇹', name:'Italy',         currency:'EUR'},
+  {code:'NL', flag:'🇳🇱', name:'Netherlands',   currency:'EUR'},
+  {code:'AU', flag:'🇦🇺', name:'Australia',     currency:'AUD'},
+  {code:'CA', flag:'🇨🇦', name:'Canada',        currency:'CAD'},
+  {code:'IN', flag:'🇮🇳', name:'India',         currency:'INR'},
+  {code:'BR', flag:'🇧🇷', name:'Brazil',        currency:'BRL'},
+  {code:'JP', flag:'🇯🇵', name:'Japan',         currency:'JPY'},
+  {code:'PL', flag:'🇵🇱', name:'Poland',        currency:'PLN'},
 ];
 
 export const CHAT_MSGS = [
