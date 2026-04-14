@@ -55,7 +55,7 @@ export default function Topbar() {
       overflow: 'hidden',
     }}>
       <style>{
-        @keyframes tbShimmer { 0%{left:-100%} 100%{left:200%} }
+        @keyframes tbShimmer { from{left:-100%} to{left:200%} }
         @keyframes pulse-live { 0%,100%{opacity:1} 50%{opacity:.3} }
         .topbar::after {
           content:''; position:absolute; bottom:0; left:-100%; width:60%; height:1px;
