@@ -251,14 +251,13 @@ export default function Hero() {
         .hero-ads-center { display:flex; flex-direction:column; gap:.5rem; align-self:center; }
         .hero-timer { height:2px; background:rgba(255,255,255,.12); border-radius:2px; overflow:hidden; margin-top:4px; }
         .hero-timer-bar { height:100%; background:#fbbf24; border-radius:2px; transition:width .5s linear; }
-        @media(max-width:1300px) {
-          .hero-inner { grid-template-columns:1fr 370px !important; }
-          .hero-ads-left, .hero-ads-right { display:none !important; }
-          .hero-ads-center { display:none !important; }
+        @media(max-width:1400px) {
+          .hero-inner { grid-template-columns:1fr 360px !important; }
+          .hero-ads-left, .hero-ads-right, .hero-ads-center { display:none !important; }
         }
         @media(max-width:768px) {
           .hero-inner { grid-template-columns:1fr !important; }
-          .hero-product-col { display:none !important; }
+          .hero-product-col { max-height:320px; overflow:hidden; }
         }
       `}</style>
 

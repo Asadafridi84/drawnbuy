@@ -50,12 +50,12 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
   return (
     <div id="dealsAnchor" style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem 2rem' }}>
       <style>{`
-        @keyframes dealSlideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+        @keyframes dealSlideIn { from{transform:translateY(14px)} to{transform:none} }
         @keyframes heartPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
         .dc {
           background:#fff; border:1.5px solid #e5e7eb; border-radius:14px;
           overflow:hidden; cursor:pointer; transition:all .22s; position:relative;
-          animation: dealSlideIn .4s ease both;
+          animation: dealSlideIn .35s ease-out;
         }
         .dc:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(124,58,237,.18); border-color:#ede9fe; }
         .dc-badge { position:absolute; top:9px; left:9px; font-size:10px; font-weight:800; padding:3px 8px; border-radius:6px; z-index:1; }

@@ -117,7 +117,10 @@ export default function ProductSearchPanel() {
                 key={i}
                 className="psp-card"
                 draggable
-                onDragStart={() => window._dnbDrag = { name: p.name, price: p.price, img: p.img }}
+                onDragStart={e => {
+                  e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({ name: p.name, price: p.price, img: p.img }));
+                  e.dataTransfer.effectAllowed = 'copy';
+                }}
               >
                 <span className="drag-badge">DRAG</span>
                 <img src={p.img} alt={p.name} style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block', pointerEvents: 'none' }} />
