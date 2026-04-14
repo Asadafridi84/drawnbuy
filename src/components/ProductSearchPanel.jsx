@@ -123,7 +123,7 @@ export default function ProductSearchPanel() {
                 }}
               >
                 <span className="drag-badge">DRAG</span>
-                <img src={p.img} alt={p.name} style={{ width: '100%', height: '80px', objectFit: 'cover', display: 'block', pointerEvents: 'none' }} />
+                <img src={p.img} alt={p.name} style={{ width: '100%', width: '52px', height: '52px', objectFit: 'cover', display: 'block', pointerEvents: 'none', flexShrink: 0, borderRadius: '6px' }} />
                 <div style={{ padding: '.45rem' }}>
                   <div style={{ fontSize: '.72rem', fontWeight: '700', color: '#1a0a3e', lineHeight: 1.3, marginBottom: '.2rem' }}>{p.name}</div>
                   <div style={{ fontSize: '.88rem', fontWeight: '800', color: '#7c3aed' }}>{p.price}</div>
