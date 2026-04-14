@@ -72,7 +72,7 @@ export default function ProductSearchPanel() {
         .psp-card:hover { border-color:rgba(124,58,237,.5); transform:translateY(-3px); box-shadow:0 8px 24px rgba(124,58,237,.15); }
         .psp-card:active { cursor:grabbing; }
         .drag-badge { position:absolute; top:4px; right:4px; background:#7c3aed; border-radius:4px; padding:1px 6px; font-size:.55rem; color:#fff; font-weight:800; }
-        .psp-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:.5rem; }
+        .psp-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:.4rem; }
         @media(max-width:960px) { .psp-inner { grid-template-columns:1fr !important; } .psp-side { display:none !important; } }
         @media(max-width:600px) { .psp-products { grid-template-columns:repeat(2,1fr) !important; } }
       `}</style>
@@ -123,7 +123,7 @@ export default function ProductSearchPanel() {
                 }}
               >
                 <span className="drag-badge">DRAG</span>
-                <img src={p.img} alt={p.name} style={{ width: '100%', width: '52px', height: '52px', objectFit: 'cover', display: 'block', pointerEvents: 'none', flexShrink: 0, borderRadius: '6px' }} />
+                <img src={p.img} alt={p.name} style={{ width: '100%', width: '100%', height: '65px', objectFit: 'cover', display: 'block', pointerEvents: 'none', borderRadius: '6px 6px 0 0' }} />
                 <div style={{ padding: '.45rem' }}>
                   <div style={{ fontSize: '.72rem', fontWeight: '700', color: '#1a0a3e', lineHeight: 1.3, marginBottom: '.2rem' }}>{p.name}</div>
                   <div style={{ fontSize: '.88rem', fontWeight: '800', color: '#7c3aed' }}>{p.price}</div>
