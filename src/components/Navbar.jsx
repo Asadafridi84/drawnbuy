@@ -1,23 +1,43 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CATS } from '../data';
+import { useAuthStore } from '../store/auth';
 
-const LogoSVG = () => (
-  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="36" height="36" rx="10" fill="url(#lg1)"/>
-    <rect x="2" y="2" width="32" height="32" rx="8" fill="rgba(255,255,255,0.08)"/>
-    <path d="M10 24 Q10 12 18 12 Q26 12 26 18 Q26 24 18 22" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-    <circle cx="24" cy="24" r="3" fill="#67e8f9"/>
-    <path d="M14 20 L18 24 L22 18" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-    <defs>
-      <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36">
-        <stop offset="0%" stopColor="#7c3aed"/>
-        <stop offset="100%" stopColor="#3b0764"/>
-      </linearGradient>
-    </defs>
-  </svg>
+const LogoMark = () => (
+  <div style={{ position: 'relative', width: '46px', height: '46px', flexShrink: 0 }}>
+    <img
+      src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=100&q=80"
+      alt=""
+      style={{ width: '46px', height: '46px', borderRadius: '12px', objectFit: 'cover', opacity: .55, display: 'block' }}
+    />
+    <div style={{ position: 'absolute', inset: 0, width: '46px', height: '46px', borderRadius: '12px', background: 'rgba(124,58,237,.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 24 Q10 12 18 12 Q26 12 26 18 Q26 24 18 22" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+        <circle cx="24" cy="24" r="3" fill="#67e8f9"/>
+        <path d="M14 20 L18 24 L22 18" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      </svg>
+    </div>
+  </div>
 );
 
+const GROUP_LABELS = {
+  fashion: '👗 Fashion',
+  tech:    '💻 Tech',
+  home:    '🏠 Home',
+  health:  '❤️ Health',
+  food:    '🍕 Food',
+  kids:    '🧒 Kids',
+  books:   '📚 Books',
+  cars:    '🚗 Cars',
+  pets:    '🐾 Pets',
+  other:   '🏪 Other',
+};
+
 export default function Navbar({ onShare, cartCount = 0 }) {
+  const navigate = useNavigate();
+  const user = useAuthStore(s => s.user);
+  const logout = useAuthStore(s => s.logout);
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catDdOpen, setCatDdOpen] = useState(false);
   const [catFilter, setCatFilter] = useState('');
@@ -28,6 +48,14 @@ export default function Navbar({ onShare, cartCount = 0 }) {
   const filteredCats = CATS.filter(c =>
     c.name.toLowerCase().includes(catFilter.toLowerCase())
   );
+
+  // Build grouped category list
+  const groupedCats = filteredCats.reduce((acc, c) => {
+    const g = c.group || 'other';
+    if (!acc[g]) acc[g] = [];
+    acc[g].push(c);
+    return acc;
+  }, {});
 
   useEffect(() => {
     const handler = e => {
@@ -193,15 +221,24 @@ export default function Navbar({ onShare, cartCount = 0 }) {
         <a className="mob-link" onClick={() => scrollTo('catsSection')}>📦 Categories</a>
         <a className="mob-link" onClick={() => scrollTo('hiwSection')}>❓ How It Works</a>
         <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
-          <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }}>Log In</button>
-          <button className="btn-cta" style={{ width: '100%', textAlign: 'center', padding: '12px' }}>Sign Up Free</button>
+          {user ? (
+            <>
+              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { navigate('/profile'); setMobileOpen(false); }}>👤 Profile</button>
+              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { logout(); setMobileOpen(false); }}>Log Out</button>
+            </>
+          ) : (
+            <>
+              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { navigate('/login'); setMobileOpen(false); }}>Log In</button>
+              <button className="btn-cta" style={{ width: '100%', textAlign: 'center', padding: '12px' }} onClick={() => { navigate('/signup'); setMobileOpen(false); }}>Sign Up Free</button>
+            </>
+          )}
         </div>
       </div>
 
       <nav className="nav-root">
         {/* Logo */}
         <a className="logo" href="/">
-          <LogoSVG />
+          <LogoMark />
           <div>
             <div className="logo-text">
               <span className="ld">Draw</span><span className="ln">N</span><span className="lb">Buy</span>
@@ -230,11 +267,18 @@ export default function Navbar({ onShare, cartCount = 0 }) {
                 />
               </div>
               <div className="cat-dd-list">
-                {filteredCats.map(c => (
-                  <div key={c.slug} className="cat-dd-item">
-                    <img className="cat-dd-thumb" src={c.img} alt={c.name} />
-                    <span>{c.emoji} {c.name}</span>
-                    <span className="cat-dd-count">{c.count}</span>
+                {Object.entries(groupedCats).map(([groupKey, cats]) => (
+                  <div key={groupKey}>
+                    <div style={{ padding: '.3rem .75rem .1rem', fontSize: '10px', fontWeight: '800', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '.06em', background: '#fafafa', borderBottom: '1px solid #e5e7eb' }}>
+                      {GROUP_LABELS[groupKey] || groupKey}
+                    </div>
+                    {cats.map(c => (
+                      <div key={c.slug} className="cat-dd-item">
+                        <img className="cat-dd-thumb" src={c.img} alt={c.name} />
+                        <span>{c.emoji} {c.name}</span>
+                        <span className="cat-dd-count">{c.count}</span>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>
@@ -286,8 +330,17 @@ export default function Navbar({ onShare, cartCount = 0 }) {
             </div>
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </div>
-          <button className="btn-ghost">Log In</button>
-          <button className="btn-cta">Sign Up Free</button>
+          {user ? (
+            <>
+              <button className="btn-ghost" onClick={() => navigate('/profile')}>👤 {user.name?.split(' ')[0] || 'Profile'}</button>
+              <button className="btn-ghost" onClick={logout}>Log Out</button>
+            </>
+          ) : (
+            <>
+              <button className="btn-ghost" onClick={() => navigate('/login')}>Log In</button>
+              <button className="btn-cta" onClick={() => navigate('/signup')}>Sign Up Free</button>
+            </>
+          )}
           <button className="hamburger" onClick={() => setMobileOpen(true)}>
             <span/><span/><span/>
           </button>

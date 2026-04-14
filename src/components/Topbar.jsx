@@ -5,7 +5,7 @@ export default function Topbar() {
   const [country, setCountry] = useState(COUNTRIES[0]);
 
   return (
-    <div style={{
+    <div className="topbar" style={{
       background: 'linear-gradient(90deg,#0d0520,#3b0764 40%,#0d0520)',
       padding: '7px 2rem',
       display: 'flex',
@@ -67,8 +67,8 @@ export default function Topbar() {
           ))}
         </select>
         <span className="currency-badge">{country.currency}</span>
-        <a className="tb-link">Help</a>
         <a className="tb-link">Track Order</a>
+        <a className="tb-link">Blog</a>
         <a className="tb-link">Sell on DrawNBuy</a>
       </div>
     </div>
