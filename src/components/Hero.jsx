@@ -148,7 +148,7 @@ function HeroAdCard({ ad }) {
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; e.currentTarget.style.transform = 'none'; }}
       onClick={() => window.open(ad.url, '_blank')}
     >
-      <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }} />
+      <img src={ad.img} alt={ad.name} width="155" height="56" style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }} />
       <div style={{ padding: '.35rem .5rem' }}>
         <div style={{ fontSize: '.67rem', fontWeight: '700', color: '#fff', lineHeight: 1.3 }}>{ad.name}</div>
         <div style={{ fontSize: '.76rem', fontWeight: '800', color: '#fbbf24' }}>{ad.price}</div>
@@ -318,7 +318,7 @@ export default function Hero() {
               style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer' }}
               onClick={() => window.open(ad.url, '_blank')}
             >
-              <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
+              <img src={ad.img} alt={ad.name} width="140" height="68" style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
               <div style={{ padding: '.35rem .5rem' }}>
                 <div style={{ fontSize: '.65rem', fontWeight: '700', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ad.name}</div>
                 <div style={{ fontSize: '.75rem', fontWeight: '800', color: '#fbbf24' }}>{ad.price}</div>

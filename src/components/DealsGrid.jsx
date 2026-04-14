@@ -26,11 +26,19 @@ function Stars({ count }) {
   );
 }
 
-export default function DealsGrid() {
+export default function DealsGrid({ selectedCategory = 'all' }) {
   const [wishlist, setWishlist] = useState({});
-  const [viewing] = useState(() => DEALS.map(() => Math.floor(Math.random() * 18) + 3));
+  const [viewing] = useState(() => {
+    const map = {};
+    DEALS.forEach((_, i) => { map[i] = Math.floor(Math.random() * 18) + 3; });
+    return map;
+  });
 
   const toggleWish = i => setWishlist(w => ({ ...w, [i]: !w[i] }));
+
+  const filtered = selectedCategory === 'all'
+    ? DEALS
+    : DEALS.filter(d => d.cat === selectedCategory);
 
   const badgeStyle = type => {
     if (type === 'red')  return { background: '#fef2f2', color: '#dc2626' };
@@ -90,8 +98,15 @@ export default function DealsGrid() {
       </div>
 
       {/* Grid */}
+      {filtered.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#9ca3af' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '.5rem' }}>🔍</div>
+          <p style={{ fontWeight: '700', color: '#6b7280' }}>No flash deals in this category yet</p>
+          <p style={{ fontSize: '13px', marginTop: '.25rem' }}>Check back soon or browse All deals</p>
+        </div>
+      )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))', gap: '14px', marginBottom: '2rem' }}>
-        {DEALS.map((d, i) => (
+        {filtered.map((d, i) => (
           <div key={i} className="dc" style={{ animationDelay: `${i * 0.05}s` }}>
             <div className="dc-badge" style={badgeStyle(d.badgeType)}>{d.badge}</div>
             <button className="wbtn" onClick={e => { e.stopPropagation(); toggleWish(i); }}>

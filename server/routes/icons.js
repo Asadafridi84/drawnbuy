@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { timingSafeEqual } from 'crypto';
 import { getCachedIcon, generateSponsorIcons } from '../services/geminiIcons.js';
 
 const router = Router();
@@ -15,8 +16,11 @@ router.get('/sponsors', (req, res) => {
 
 // POST /api/icons/sponsors/regenerate — admin-only regeneration
 router.post('/sponsors/regenerate', async (req, res) => {
-  const adminKey = req.headers['x-admin-key'];
-  if (adminKey !== process.env.ADMIN_KEY) {
+  const adminKey = req.headers['x-admin-key'] || '';
+  const expected = process.env.ADMIN_KEY || '';
+  const safe = adminKey.length === expected.length && expected.length > 0 &&
+    timingSafeEqual(Buffer.from(adminKey), Buffer.from(expected));
+  if (!safe) {
     return res.status(403).json({ error: 'Forbidden.' });
   }
   try {

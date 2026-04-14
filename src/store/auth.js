@@ -7,7 +7,6 @@ export const useAuthStore = create(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       loading: false,
       error: null,
 
@@ -18,12 +17,13 @@ export const useAuthStore = create(
           const res = await fetch(`${API}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            credentials: 'include', // token delivered via httpOnly cookie only
             body: JSON.stringify({ email, password, name }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || 'Registration failed');
-          set({ user: data.user, token: data.token, loading: false });
+          // Store only public user data — never store the token in JS-accessible storage
+          set({ user: data.user, loading: false });
           return { success: true };
         } catch (err) {
           set({ error: err.message, loading: false });
@@ -38,12 +38,13 @@ export const useAuthStore = create(
           const res = await fetch(`${API}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            credentials: 'include', // token delivered via httpOnly cookie only
             body: JSON.stringify({ email, password }),
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || 'Login failed');
-          set({ user: data.user, token: data.token, loading: false });
+          // Store only public user data — never store the token in JS-accessible storage
+          set({ user: data.user, loading: false });
           return { success: true };
         } catch (err) {
           set({ error: err.message, loading: false });
@@ -59,23 +60,20 @@ export const useAuthStore = create(
             credentials: 'include',
           });
         } catch {}
-        set({ user: null, token: null, error: null });
+        set({ user: null, error: null });
       },
 
       // ── Restore session ───────────────────────────────────────────────────
       restoreSession: async () => {
-        const { token } = get();
-        if (!token) return;
         try {
           const res = await fetch(`${API}/api/auth/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-            credentials: 'include',
+            credentials: 'include', // relies on httpOnly cookie
           });
-          if (!res.ok) { set({ user: null, token: null }); return; }
+          if (!res.ok) { set({ user: null }); return; }
           const user = await res.json();
           set({ user });
         } catch {
-          set({ user: null, token: null });
+          set({ user: null });
         }
       },
 
@@ -83,7 +81,8 @@ export const useAuthStore = create(
     }),
     {
       name: 'drawnbuy-auth',
-      partialize: (state) => ({ token: state.token, user: state.user }),
+      // Only persist public user profile — never persist tokens in localStorage
+      partialize: (state) => ({ user: state.user }),
     }
   )
 );

@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { CATS } from '../data';
 
-export default function CategoryBar() {
+export default function CategoryBar({ onSelect }) {
   const [active, setActive] = useState('all');
 
   const chips = [
     { slug: 'all', name: '🔥 All', emoji: '' },
     ...CATS,
   ];
+
+  const handleSelect = (slug) => {
+    setActive(slug);
+    onSelect?.(slug);
+  };
 
   return (
     <div style={{
@@ -44,7 +49,7 @@ export default function CategoryBar() {
           <button
             key={c.slug}
             className={`cni ${active === c.slug ? 'on' : ''}`}
-            onClick={() => setActive(c.slug)}
+            onClick={() => handleSelect(c.slug)}
           >
             {c.slug === 'all' ? c.name : `${c.emoji} ${c.name}`}
           </button>

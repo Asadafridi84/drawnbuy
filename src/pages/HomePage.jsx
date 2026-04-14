@@ -1,29 +1,32 @@
-import AdStrip from '../components/shared/AdStrip';
-import Hero from '../components/shared/Hero';
-import CategoryBar from '../components/shared/CategoryBar';
-import CollabCanvas from '../components/canvas/CollabCanvas';
-import DragStrip from '../components/product/DragStrip';
-import ProductSearchPanel from '../components/product/ProductSearchPanel';
-import DealsGrid from '../components/deals/DealsGrid';
-import CategoriesGrid from '../components/categories/CategoriesGrid';
-import { Sponsors, HowItWorks, Footer, ShareModal, ToastContainer } from '../components/shared/Sections';
+import { useState } from 'react';
+import AdStrip from '../components/AdStrip';
+import Hero from '../components/Hero';
+import CategoryBar from '../components/CategoryBar';
+import CollabCanvas from '../components/CollabCanvas';
+import DragStrip from '../components/DragStrip';
+import ProductSearchPanel from '../components/ProductSearchPanel';
+import DealsGrid from '../components/DealsGrid';
+import CategoriesGrid from '../components/CategoriesGrid';
+import Sponsors from '../components/Sponsors';
+import HowItWorks from '../components/HowItWorks';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
+  const [activeCategory, setActiveCategory] = useState('all');
+
   return (
     <>
       <AdStrip />
       <Hero />
-      <CategoryBar />
+      <CategoryBar onSelect={setActiveCategory} />
       <CollabCanvas />
       <DragStrip />
       <ProductSearchPanel />
-      <DealsGrid />
+      <DealsGrid selectedCategory={activeCategory} />
       <Sponsors />
       <CategoriesGrid />
       <HowItWorks />
       <Footer />
-      <ShareModal />
-      <ToastContainer />
     </>
   );
 }

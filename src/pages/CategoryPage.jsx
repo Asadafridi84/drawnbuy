@@ -1,11 +1,12 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
-import { DRAG_PRODUCTS, CATS } from '../data';
+import { DRAG_PRODS, CATS } from '../data/index.js';
 import { validateAffiliateUrl } from '../utils/security';
 import { useCartStore, useUIStore } from '../store';
-import Topbar from '../components/navbar/Topbar';
-import Navbar from '../components/navbar/Navbar';
-import { Footer, ToastContainer } from '../components/shared/Sections';
+import Topbar from '../components/Topbar';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ToastContainer from '../components/ToastContainer';
 import styles from './CategoryPage.module.css';
 
 export default function CategoryPage() {
@@ -27,10 +28,10 @@ export default function CategoryPage() {
   // Get products for this category, pad with similar ones to reach 16
   const products = useMemo(() => {
     if (!categoryName) return [];
-    const exact = DRAG_PRODUCTS.filter(p => p.cat === categoryName);
+    const exact = DRAG_PRODS.filter(p => p.cat === categoryName);
     if (exact.length >= 16) return exact.slice(0, 16);
     // Pad with other products to reach 16
-    const others = DRAG_PRODUCTS.filter(p => p.cat !== categoryName);
+    const others = DRAG_PRODS.filter(p => p.cat !== categoryName);
     return [...exact, ...others].slice(0, 16);
   }, [categoryName]);
 

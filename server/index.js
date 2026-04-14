@@ -18,8 +18,41 @@ const httpServer = createServer(app);
 const PORT          = process.env.PORT || 3001;
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 
-// ── Middleware ─────────────────────────────────────────────────────────────────
-app.use(helmet({ contentSecurityPolicy: false }));
+// ── Security Middleware ────────────────────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc:     ["'self'"],
+      scriptSrc:      ["'self'"],
+      styleSrc:       ["'self'", "'unsafe-inline'"],
+      imgSrc:         ["'self'", "data:", "blob:"],
+      connectSrc:     ["'self'", CLIENT_ORIGIN, 'https://drawnbuy.vercel.app'],
+      fontSrc:        ["'self'"],
+      objectSrc:      ["'none'"],
+      mediaSrc:       ["'none'"],
+      frameSrc:       ["'none'"],
+      frameAncestors: ["'none'"],
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+    },
+  },
+  hsts: {
+    maxAge: 63072000,
+    includeSubDomains: true,
+    preload: true,
+  },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+  xFrameOptions: { action: 'deny' },
+  xContentTypeOptions: true,
+  xDnsPrefetchControl: { allow: false },
+}));
+
+// Additional headers not covered by helmet
+app.use((req, res, next) => {
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  next();
+});
+
 app.use(cors({ origin: [CLIENT_ORIGIN, 'https://drawnbuy.vercel.app'], credentials: true }));
 app.use(express.json({ limit: '200kb' }));
 app.use(cookieParser());
@@ -69,8 +102,10 @@ io.on('connection', (socket) => {
 
   socket.on('draw', (d) => {
     if (!room) return;
+    const clamp = (v, min, max) => Math.min(Math.max(+v || 0, min), max);
     const e = { type:'draw', userId:socket.id,
-      x1:+d.x1||0, y1:+d.y1||0, x2:+d.x2||0, y2:+d.y2||0,
+      x1:clamp(d.x1,-10000,10000), y1:clamp(d.y1,-10000,10000),
+      x2:clamp(d.x2,-10000,10000), y2:clamp(d.y2,-10000,10000),
       color: sanitize(d.color||'#000'), width: Math.min(Math.max(+d.width||2,1),64) };
     const r = getRoom(room);
     r.canvas.push(e);

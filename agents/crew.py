@@ -29,9 +29,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, LLM, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from langchain_anthropic import ChatAnthropic
 
 # Import all tools
 from agents.tools import (
@@ -45,22 +44,21 @@ from agents.tools import (
 
 # ── LLM Configuration ─────────────────────────────────────────────────────────
 
-def create_llm(model: str = "claude-sonnet-4-6", temperature: float = 0.1) -> ChatAnthropic:
+def create_llm(model: str = "claude-sonnet-4-6", temperature: float = 0.1) -> LLM:
     """
-    Create an Anthropic Claude LLM instance.
+    Create a CrewAI LLM instance backed by Anthropic Claude.
     Uses claude-sonnet-4-6 by default for the best balance of quality and speed.
-    Set temperature low (0.1) for consistent, focused agent outputs.
     """
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError(
-            "❌ ANTHROPIC_API_KEY not found!\n"
+            "ANTHROPIC_API_KEY not found!\n"
             "Please add it to your .env.local file:\n"
             "ANTHROPIC_API_KEY=your-key-here"
         )
-    return ChatAnthropic(
-        model=model,
-        anthropic_api_key=api_key,
+    return LLM(
+        model=f"anthropic/{model}",
+        api_key=api_key,
         temperature=temperature,
         max_tokens=8096,
     )
@@ -114,9 +112,9 @@ class DrawnbuyCrew:
                 "and when — and when a new capability is needed, you provide a complete "
                 "onboarding guide for adding a new agent to the team."
             ),
-            tools=TEAM_LEADER_TOOLS,
+            tools=[],           # Manager agent must have no tools in crewai 1.x hierarchical mode
             llm=self.llm,
-            allow_delegation=True,  # Can delegate to any agent
+            allow_delegation=True,
             verbose=True,
             max_iter=15,
             memory=True,
@@ -251,11 +249,11 @@ class DrawnbuyCrew:
         """
         Assemble the full DrawnBuy agent team as a CrewAI Crew.
 
-        Uses HIERARCHICAL process:
-        - Team Leader acts as manager
-        - Team Leader reads the request and delegates to specialists
-        - Specialists can communicate with each other via delegation
-        - All results flow back to Team Leader for synthesis
+        Uses SEQUENTIAL process for reliability with Anthropic models:
+        - Security agent audits the project
+        - Frontend agent reviews UI/UX
+        - Backend agent reviews APIs and infrastructure
+        - Team Leader synthesizes all findings into a final report
         """
         team_leader = self.build_team_leader()
         frontend = self.build_frontend_agent()
@@ -263,45 +261,63 @@ class DrawnbuyCrew:
         security = self.build_security_agent()
         affiliate = self.build_affiliate_agent()
 
-        # Create the main task for the Team Leader
-        main_task = Task(
+        security_task = Task(
             description=(
-                f"The DrawnBuy project owner has requested the following:\n\n"
-                f"'{task_description}'\n\n"
-                f"As Team Leader, analyze this request thoroughly and:\n"
-                f"1. Break it down into specific sub-tasks for the appropriate specialist agents\n"
-                f"2. Delegate each sub-task to the right specialist\n"
-                f"3. Ensure agents share relevant information with each other as needed\n"
-                f"4. After all specialists complete their work, compile a clear summary\n"
-                f"5. Flag any security concerns to the Security Agent\n"
-                f"6. Save the full operation report to /agents/reports/team_leader/\n\n"
-                f"Available specialists you can delegate to:\n"
-                f"- Frontend Agent: React/Next.js, UI/UX, performance, accessibility\n"
-                f"- Backend Agent: APIs, database, infrastructure, uptime\n"
-                f"- Security Agent: vulnerabilities, auditing, compliance, hardening\n"
-                f"- Affiliate Agent: affiliate programs, category research, revenue optimization"
+                f"The DrawnBuy owner has requested: '{task_description}'\n\n"
+                f"As Security Agent, perform your part: scan the codebase for "
+                f"hardcoded secrets, XSS vulnerabilities, missing security headers, "
+                f"authentication issues, and any OWASP Top 10 risks. "
+                f"Use your tools to read project files. Save your report."
+            ),
+            expected_output="A security findings report with severity ratings (Critical/High/Medium/Low) and remediation steps.",
+            agent=security,
+        )
+
+        frontend_task = Task(
+            description=(
+                f"The DrawnBuy owner has requested: '{task_description}'\n\n"
+                f"As Frontend Agent, perform your part: audit the Vite+React components "
+                f"for UI/UX issues, performance problems, accessibility gaps, and "
+                f"mobile responsiveness. Use your tools to read the components. Save your report."
+            ),
+            expected_output="A frontend audit report with prioritised findings and recommended fixes.",
+            agent=frontend,
+        )
+
+        backend_task = Task(
+            description=(
+                f"The DrawnBuy owner has requested: '{task_description}'\n\n"
+                f"As Backend Agent, perform your part: review the Express/Node.js server "
+                f"for API health, error handling, dependencies, and environment variable "
+                f"management. Use your tools to read server files. Save your report."
+            ),
+            expected_output="A backend health report with findings and recommendations.",
+            agent=backend,
+        )
+
+        summary_task = Task(
+            description=(
+                f"The DrawnBuy owner has requested: '{task_description}'\n\n"
+                f"As Team Leader, read the latest reports from the Security, Frontend, "
+                f"and Backend agents. Compile everything into one clear executive summary "
+                f"with: overall project health score, top 5 action items ranked by priority, "
+                f"and next recommended steps. Save the summary report."
             ),
             expected_output=(
-                "A comprehensive executive summary including:\n"
-                "- What each agent did and key decisions made\n"
-                "- Any code changes or files modified\n"
-                "- Security clearance status\n"
-                "- Outstanding items or next recommended actions\n"
-                "- Inter-agent communications that occurred\n"
-                "Formatted as clean Markdown and saved to reports/team_leader/"
+                "A clean Markdown executive summary with overall health score, "
+                "top action items by priority, and next steps."
             ),
             agent=team_leader,
         )
 
         return Crew(
-            agents=[team_leader, frontend, backend, security, affiliate],
-            tasks=[main_task],
-            process=Process.hierarchical,
-            manager_agent=team_leader,
+            agents=[security, frontend, backend, team_leader],
+            tasks=[security_task, frontend_task, backend_task, summary_task],
+            process=Process.sequential,
             verbose=True,
-            memory=False,        # Set True only if VOYAGE_API_KEY is configured
-            max_rpm=10,          # Rate limit: 10 requests per minute
-            share_crew=False,    # Keep DrawnBuy data private
+            memory=False,
+            max_rpm=10,
+            share_crew=False,
         )
 
     # ── Main Run Interface ────────────────────────────────────────────────────

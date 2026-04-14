@@ -263,7 +263,8 @@ Examples:
         return
 
     if args.security_scan:
-        run_one_shot(
+        run_single_agent(
+            "security",
             "Run a complete security audit of DrawnBuy. Scan for hardcoded secrets, "
             "XSS vulnerabilities, SQL injection risks, missing security headers, and "
             "review the authentication setup. Provide a scored security report."

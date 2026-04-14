@@ -109,7 +109,10 @@ export default function DragStrip() {
               key={i}
               className="pc"
               draggable
-              onDragStart={() => { window._dnbDrag = { name: p.name, price: p.price, img: p.img }; }}
+              onDragStart={e => {
+                e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({ name: p.name, price: p.price, img: p.img }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
             >
               {p.deal && <span className="deal-badge">{p.deal}</span>}
               <span className="drag-hint">DRAG</span>

@@ -1,4 +1,10 @@
-import { TRUSTED_DOMAINS } from '../data';
+const TRUSTED_DOMAINS = [
+  'amazon.com', 'amazon.se', 'amazon.co.uk', 'amazon.de',
+  'zara.com', 'hm.com', 'nike.com', 'ikea.com',
+  'apple.com', 'samsung.com', 'boozt.com',
+  'zalando.se', 'elgiganten.se', 'webhallen.com',
+  'ubereats.com', 'booking.com', 'adidas.com',
+];
 
 /** Strips HTML/script injection from user input */
 export function sanitizeInput(str) {
@@ -14,6 +20,29 @@ export function sanitizeInput(str) {
     .slice(0, 500);
 }
 
+/**
+ * Sanitizes SVG content from external sources (e.g. Gemini API) before
+ * rendering via dangerouslySetInnerHTML. Strips script tags, event handlers,
+ * javascript: URIs, and foreign objects.
+ */
+export function sanitizeSvg(svgString) {
+  if (typeof svgString !== 'string') return '';
+  return svgString
+    // Remove <script> blocks entirely
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    // Remove event handler attributes (onclick, onload, onerror, etc.)
+    .replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/\s+on\w+\s*=\s*[^\s>]*/gi, '')
+    // Remove javascript: URIs
+    .replace(/href\s*=\s*["']\s*javascript:[^"']*["']/gi, '')
+    .replace(/xlink:href\s*=\s*["']\s*javascript:[^"']*["']/gi, '')
+    // Remove <foreignObject> (can embed HTML)
+    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
+    // Remove data: URIs in src/href (potential XSS vector)
+    .replace(/(src|href)\s*=\s*["']\s*data:[^"']*["']/gi, '')
+    .trim();
+}
+
 /** Validates that an affiliate URL belongs to a trusted domain */
 export function validateAffiliateUrl(url) {
   try {
@@ -25,7 +54,7 @@ export function validateAffiliateUrl(url) {
   }
 }
 
-/** Simple rate limiter using localStorage counters */
+/** Simple rate limiter using in-memory counters */
 const rateLimits = new Map();
 export function checkRateLimit(key, maxCalls = 10, windowMs = 60000) {
   const now = Date.now();
@@ -40,11 +69,18 @@ export function checkRateLimit(key, maxCalls = 10, windowMs = 60000) {
   return true;
 }
 
-/** Detect clickjacking */
+/**
+ * Detect clickjacking — uses a safe text node instead of innerHTML
+ * to avoid the flagged XSS pattern.
+ */
 export function detectClickjacking() {
   try {
     if (window.self !== window.top) {
-      document.body.innerHTML = '<p style="padding:2rem;font-family:sans-serif">DrawNBuy cannot be embedded in iframes for security reasons.</p>';
+      document.body.textContent = '';
+      const p = document.createElement('p');
+      Object.assign(p.style, { padding: '2rem', fontFamily: 'sans-serif' });
+      p.textContent = 'DrawnBuy cannot be embedded in iframes for security reasons.';
+      document.body.appendChild(p);
       return true;
     }
   } catch {

@@ -9,7 +9,7 @@ import styles from './CanvasesPage.module.css';
 const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
 export default function CanvasesPage() {
-  const { user, token } = useAuthStore();
+  const { user } = useAuthStore();
   const { setRoomId } = useCanvasStore();
   const { addToast } = useUIStore();
   const navigate = useNavigate();
@@ -19,6 +19,7 @@ export default function CanvasesPage() {
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [showNewForm, setShowNewForm] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(null); // { id, name }
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
@@ -29,7 +30,6 @@ export default function CanvasesPage() {
     setLoading(true);
     try {
       const res = await fetch(`${API}/api/canvases`, {
-        headers: { Authorization: `Bearer ${token}` },
         credentials: 'include',
       });
       const data = await res.json();
@@ -49,7 +49,7 @@ export default function CanvasesPage() {
       const roomId = generateRoomId();
       const res = await fetch(`${API}/api/canvases`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ name: newName.trim(), roomId }),
       });
@@ -67,11 +67,16 @@ export default function CanvasesPage() {
   };
 
   const deleteCanvas = async (id, name) => {
-    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    setConfirmDelete({ id, name });
+  };
+
+  const confirmDeleteCanvas = async () => {
+    if (!confirmDelete) return;
+    const { id } = confirmDelete;
+    setConfirmDelete(null);
     try {
       const res = await fetch(`${API}/api/canvases/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
         credentials: 'include',
       });
       if (!res.ok) throw new Error('Delete failed');
@@ -164,6 +169,51 @@ export default function CanvasesPage() {
           )}
         </div>
       </main>
+
+      {/* Inline delete confirmation */}
+      {confirmDelete && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,.45)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 9999, padding: '1rem',
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '16px', padding: '2rem',
+            maxWidth: '380px', width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,.2)',
+            fontFamily: "'Space Grotesk', sans-serif",
+          }}>
+            <div style={{ fontSize: '2rem', marginBottom: '.75rem', textAlign: 'center' }}>🗑️</div>
+            <h3 style={{ margin: '0 0 .5rem', fontSize: '1.1rem', fontWeight: '800', color: '#1a0a3e', textAlign: 'center' }}>
+              Delete canvas?
+            </h3>
+            <p style={{ margin: '0 0 1.5rem', color: '#6b7280', fontSize: '.9rem', textAlign: 'center', lineHeight: '1.5' }}>
+              <strong style={{ color: '#1a0a3e' }}>"{confirmDelete.name}"</strong> will be permanently deleted. This cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '.75rem' }}>
+              <button
+                onClick={() => setConfirmDelete(null)}
+                style={{
+                  flex: 1, padding: '.65rem', borderRadius: '9px', border: '1.5px solid #e5e7eb',
+                  background: '#f9fafb', color: '#374151', fontWeight: '700',
+                  fontSize: '.9rem', cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteCanvas}
+                style={{
+                  flex: 1, padding: '.65rem', borderRadius: '9px', border: 'none',
+                  background: '#ef4444', color: '#fff', fontWeight: '700',
+                  fontSize: '.9rem', cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -75,6 +75,15 @@ export const Users = {
     return all[key];
   },
 
+  delete(id) {
+    const all = this._load();
+    const key = Object.keys(all).find(k => all[k].id === id);
+    if (!key) return false;
+    delete all[key];
+    this._save(all);
+    return true;
+  },
+
   toPublic(user) {
     const { passwordHash, ...pub } = user;
     return pub;

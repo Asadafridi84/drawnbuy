@@ -1,6 +1,11 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change-me-in-production-min-32-chars!!';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error('[SECURITY] FATAL: JWT_SECRET environment variable is not set. Server will not start.');
+  process.exit(1);
+}
 
 export function requireAuth(req, res, next) {
   const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];

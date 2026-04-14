@@ -13,7 +13,7 @@ const __dir   = dirname(fileURLToPath(import.meta.url));
 const CACHE   = join(__dir, '../data/gemini-icons.json');
 const API_KEY = process.env.GEMINI_API_KEY;
 const MODEL   = 'gemini-2.5-flash-preview-04-17';
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 const ICON_PROMPTS = {
   burger: {
@@ -67,7 +67,7 @@ async function generateIcon(key) {
   const { prompt } = ICON_PROMPTS[key];
   const res = await fetch(ENDPOINT, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': API_KEY },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { temperature: 0.3, maxOutputTokens: 2048 },

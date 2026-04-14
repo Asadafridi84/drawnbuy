@@ -6,7 +6,7 @@ import styles from './ProfilePage.module.css';
 const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
 export default function ProfilePage() {
-  const { user, token, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', bio: '' });
   const [saving, setSaving] = useState(false);
@@ -24,7 +24,7 @@ export default function ProfilePage() {
     try {
       const res = await fetch(`${API}/api/auth/profile`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ name: form.name, bio: form.bio }),
       });
