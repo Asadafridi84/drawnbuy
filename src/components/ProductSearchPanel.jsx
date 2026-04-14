@@ -67,12 +67,12 @@ export default function ProductSearchPanel() {
         .cat-chip.on, .cat-chip:hover { background:#7c3aed; border-color:#7c3aed; color:#fff; }
         .psp-card {
           background:#fff; border:1.5px solid #ede9fe; border-radius:12px; overflow:hidden;
-          cursor:grab; transition:.22s; position:relative; user-select:none;
+          cursor:grab; transition:.22s; position:relative; min-width:130px; flex-shrink:0; user-select:none;
         }
         .psp-card:hover { border-color:rgba(124,58,237,.5); transform:translateY(-3px); box-shadow:0 8px 24px rgba(124,58,237,.15); }
         .psp-card:active { cursor:grabbing; }
         .drag-badge { position:absolute; top:4px; right:4px; background:#7c3aed; border-radius:4px; padding:1px 6px; font-size:.55rem; color:#fff; font-weight:800; }
-        .psp-products { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:.4rem; }
+        .psp-products { display:grid; display:flex; gap:.75rem; overflow-x:auto; padding-bottom:.35rem; scrollbar-width:thin; min-height:110px; align-items:flex-start; }
         @media(max-width:960px) { .psp-inner { grid-template-columns:1fr !important; } .psp-side { display:none !important; } }
         @media(max-width:600px) { .psp-products { grid-template-columns:repeat(2,1fr) !important; } }
       `}</style>
