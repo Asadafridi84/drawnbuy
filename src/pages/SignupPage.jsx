@@ -36,7 +36,7 @@ export default function SignupPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <Link <Link to="/" className={styles.logo} style={{display:'flex',alignItems:'center',gap:'8px',textDecoration:'none'}}>
+        <Link to="/" className={styles.logo} style={{display:'flex',alignItems:'center',gap:'8px',textDecoration:'none'}}>
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
             <defs>
               <linearGradient id="ss1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#7c3aed"/><stop offset="100%" stopColor="#3b0764"/></linearGradient>
