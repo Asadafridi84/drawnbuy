@@ -43,7 +43,7 @@ const GROUP_LABELS = {
   other:   '🏪 Other',
 };
 
-export default function Navbar({ onShare, cartCount = 0 }) {
+export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
   const navigate = useNavigate();
   const user = useAuthStore(s => s.user);
   const logout = useAuthStore(s => s.logout);
@@ -283,7 +283,7 @@ export default function Navbar({ onShare, cartCount = 0 }) {
                       {GROUP_LABELS[groupKey] || groupKey}
                     </div>
                     {cats.map(c => (
-                      <div key={c.slug} className="cat-dd-item" onClick={() => { setCatDdOpen(false); scrollTo('catsSection'); }}>
+                      <div key={c.slug} className="cat-dd-item" onClick={() => { setCatDdOpen(false); if(onCatClick) onCatClick(c); else scrollTo('catsSection'); }}>
                         <img className="cat-dd-thumb" src={c.img} alt={c.name} onError={e => { e.target.onerror=null; e.target.style.display='none'; }} />
                         <span>{c.emoji} {c.name}</span>
                         <span className="cat-dd-count">{c.count}</span>

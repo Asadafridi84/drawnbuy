@@ -80,7 +80,7 @@ export default function App() {
         <Route path="/" element={
           <>
             <Topbar />
-            <Navbar onShare={() => setShareOpen(true)} cartCount={cartCount} />
+            <Navbar onShare={() => setShareOpen(true)} cartCount={cartCount} onCatClick={setActiveCat} />
             <AdStrip />
             <Hero />
             <CategoryBar />
