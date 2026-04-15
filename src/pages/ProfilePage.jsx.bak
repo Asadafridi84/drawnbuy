@@ -76,8 +76,8 @@ const CSS =
 .tsl::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .tog input:checked + .tsl::before{transform:translateX(20px)}
 .ok{background:#d1fae5;color:#065f46;border-radius:8px;padding:.5rem .9rem;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:.4rem}
-.pw{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start;max-width:1200px;margin:0 auto}@media(max-width:900px){.pw{grid-template-columns:1fr}}
-`;
+@media(max-width:768px){.pw{grid-template-columns:1fr}}
+;\;;
 export default function ProfilePage() {
   const navigate   = useNavigate();
   const user       = useAuthStore(s => s.user);
@@ -131,7 +131,7 @@ export default function ProfilePage() {
           </div>
           <div className="pc" style={{padding:'.75rem'}}>
             {TABS.map(({id,label,icon:Icon})=>(
-              <button key={id} className={`tb ${tab===id?'on':''}`} onClick={()=>setTab(id)}>
+              <button key={id} className={	b } onClick={()=>setTab(id)}>
                 <span style={{display:'flex',alignItems:'center'}}><Icon/></span>{label}
               </button>
             ))}
@@ -182,13 +182,13 @@ export default function ProfilePage() {
                   <div style={{flex:1,minWidth:0}}>
                     <div style={{display:'flex',alignItems:'center',gap:'.4rem',flexWrap:'wrap'}}>
                       <div className="fn">{f.name}</div>
-                      <span className={`ftag ${f.status==='invited'?'tinv':f.rel==='Family'?'tfam':'tfri'}`}>{f.status==='invited'?'Invited':f.rel}</span>
+                      <span className={tag }>{f.status==='invited'?'Invited':f.rel}</span>
                     </div>
                     <div className="fe">{f.email}</div>
                     {f.cv>0 && <div style={{fontSize:'.72rem',color:'#9ca3af',marginTop:'.15rem'}}>{f.cv} shared canvases</div>}
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:'.6rem'}}>
-                    <div className={`sd ${f.status==='online'?'son':f.status==='invited'?'sin':'sof'}`} title={f.status}/>
+                    <div className={sd } title={f.status}/>
                     {f.status!=='invited' && <button style={{background:'#f4f0ff',border:'1px solid #ede9fe',borderRadius:'8px',padding:'5px 10px',fontSize:'.75rem',fontWeight:700,color:'#7c3aed',cursor:'pointer'}}>Draw Together</button>}
                     <button onClick={()=>setFriends(p=>p.filter(x=>x.id!==f.id))} style={{background:'none',border:'none',cursor:'pointer',color:'#d1d5db',padding:'4px'}}><IT/></button>
                   </div>
