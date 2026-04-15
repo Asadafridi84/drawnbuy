@@ -310,8 +310,8 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           {searchOpen && suggestions.length > 0 && (
             <div className="search-sugg">
               {suggestions.map(c => (
-                <div key={c.slug} className="sugg-item" onClick={() => { setSearchVal(c.name); setSearchOpen(false); scrollTo('catsSection'); }}>
-                  <span>{c.emoji}</span>
+                <div key={c.slug} className="sugg-item" onClick={() => { setSearchOpen(false); if(onCatClick) onCatClick(c); else scrollTo('catsSection'); }}>
+                  <img src={c.img} alt={c.name} onError={e => { e.target.onerror=null; e.target.style.display='none'; }} style={{width:'32px',height:'32px',borderRadius:'7px',objectFit:'cover',flexShrink:0}} />
                   <span className="sugg-name">{c.name}</span>
                   <span className="sugg-badge">{c.count}</span>
                 </div>
