@@ -28,7 +28,8 @@ const FRIENDS = [
   { id:3, name:"Erik Johansson", email:"erik@example.com", av:"EJ", rel:"Family",  status:"online",  cv:4  },
   { id:4, name:"Sofia Berg",     email:"sofia@example.com",av:"SB", rel:"Friend",  status:"offline", cv:19 },
 ];
-const CSS = 
+const CSS = `
+.pw{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:280px 1fr;gap:1.5rem}
 .ps{display:flex;flex-direction:column;gap:1rem}
 .pc{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(124,58,237,.08)}
 .av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:1.5rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:3px solid #ede9fe}
@@ -76,7 +77,7 @@ const CSS =
 .tsl::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .tog input:checked + .tsl::before{transform:translateX(20px)}
 .ok{background:#d1fae5;color:#065f46;border-radius:8px;padding:.5rem .9rem;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:.4rem}
-.pw{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start;max-width:1200px;margin:0 auto}@media(max-width:900px){.pw{grid-template-columns:1fr}}
+@media(max-width:768px){.pw{grid-template-columns:1fr}}
 `;
 export default function ProfilePage() {
   const navigate   = useNavigate();

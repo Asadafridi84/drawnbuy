@@ -1,131 +1,76 @@
+import os
+
+css = """
+.pw{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:280px 1fr;gap:1.5rem}
+.ps{display:flex;flex-direction:column;gap:1rem}
+.pc{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(124,58,237,.08)}
+.av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:1.5rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:3px solid #ede9fe}
+.pn{font-size:1.1rem;font-weight:800;color:#1a0a3e;text-align:center}
+.pe{font-size:.78rem;color:#6b7280;text-align:center;margin-bottom:.25rem}
+.pm{font-size:.72rem;color:#9ca3af;text-align:center;margin-bottom:1rem}
+.sr{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:8px;background:#f4f0ff;margin-bottom:.4rem}
+.si{color:#7c3aed;display:flex;align-items:center}
+.sl{font-size:.78rem;color:#6b7280;flex:1}
+.sv{font-size:.88rem;font-weight:800;color:#1a0a3e}
+.tb{display:flex;align-items:center;gap:.6rem;width:100%;padding:.65rem .9rem;border-radius:10px;border:none;background:transparent;color:#6b7280;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s;text-align:left}
+.tb:hover{background:#f4f0ff;color:#7c3aed}
+.tb.on{background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff}
+.st{font-size:1rem;font-weight:800;color:#1a0a3e;margin-bottom:.25rem}
+.ss{font-size:.8rem;color:#6b7280;margin-bottom:1.25rem}
+.fl{font-size:.8rem;font-weight:700;color:#374151;margin-bottom:.4rem;display:block}
+.fi{width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:.65rem .9rem;font-family:inherit;font-size:.88rem;color:#1a0a3e;outline:none;transition:.15s;box-sizing:border-box}
+.fi:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.fi:disabled{background:#f9fafb;color:#9ca3af}
+.bp{background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:10px;padding:.65rem 1.4rem;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:.15s}
+.bp:hover{opacity:.9}
+.bd{background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5;border-radius:10px;padding:.55rem 1.1rem;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:.15s}
+.bd:hover{background:#fca5a5}
+.bg2{background:#f4f0ff;color:#7c3aed;border:1.5px solid #ede9fe;border-radius:10px;padding:.55rem 1.1rem;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:.4rem}
+.bg2:hover{background:#ede9fe}
+.dv{border:none;border-top:1px solid #f3f4f6;margin:1.25rem 0}
+.fc{display:flex;align-items:center;gap:.9rem;padding:.85rem;border-radius:12px;border:1.5px solid #f3f4f6;background:#fafafa;margin-bottom:.6rem;transition:.15s}
+.fc:hover{border-color:#ede9fe;background:#f4f0ff}
+.fa{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:.88rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fn{font-size:.9rem;font-weight:700;color:#1a0a3e}
+.fe{font-size:.75rem;color:#9ca3af}
+.ftag{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.tfam{background:#dbeafe;color:#1d4ed8}
+.tfri{background:#d1fae5;color:#065f46}
+.tinv{background:#fef3c7;color:#92400e}
+.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.son{background:#22c55e}.sof{background:#d1d5db}.sin{background:#fbbf24}
+.nr{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;border-bottom:1px solid #f3f4f6}
+.nl{font-size:.88rem;font-weight:600;color:#1a0a3e}
+.ns{font-size:.75rem;color:#9ca3af}
+.tog{position:relative;width:44px;height:24px;cursor:pointer;display:inline-block}
+.tog input{opacity:0;width:0;height:0}
+.tsl{position:absolute;inset:0;border-radius:24px;background:#e5e7eb;transition:.2s}
+.tog input:checked + .tsl{background:#7c3aed}
+.tsl::before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.tog input:checked + .tsl::before{transform:translateX(20px)}
+.ok{background:#d1fae5;color:#065f46;border-radius:8px;padding:.5rem .9rem;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:.4rem}
+@media(max-width:768px){.pw{grid-template-columns:1fr}}
 """
-fix_profile_final.py
-====================
-Fixes ProfilePage.jsx broken template literals and missing grid layout.
 
-Problems found:
-  1. Line ~134 - className tab-literal corrupted: className={<TAB>b }
-                  should be: className={`tb ${tab===id?'on':''}`}
-  2. Line ~185 - className tag-literal corrupted: className={tag }
-                  should be: className={`ftag ${...}`}
-  3. Line ~191 - className sd-literal corrupted:  className={sd }
-                  should be: className={`sd ${...}`}
-  4. CSS string - .pw has no base grid styles (only a media-query override)
-  5. CSS string - trailing ;\\;; is a corrupted template literal close
+# Read existing file parts (icons + TABS + FRIENDS + export default)
+existing = open('src/pages/ProfilePage.jsx', encoding='utf-8').read()
 
-Run from the drawnbuy project root:
-  python fix_profile_final.py
-"""
+# Find where TABS starts (after icon definitions)
+tabs_idx = existing.find('const TABS')
+export_idx = existing.find('export default function')
 
-import re, sys, subprocess
-from pathlib import Path
+# Get icons part (before TABS)
+icons_part = existing[:tabs_idx]
 
-# Fix Windows terminal encoding
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+# Get TABS + FRIENDS + export default (from TABS onwards)
+rest_part = existing[tabs_idx:]
 
-TARGET = Path('src/pages/ProfilePage.jsx')
+# Rebuild file with proper CSS
+new_content = icons_part + 'const TABS = [\n  { id: "profile",  label: "Profile",          icon: IH },\n  { id: "friends",  label: "Friends & Family",  icon: IU },\n  { id: "wishlist", label: "Wishlist",           icon: IW },\n  { id: "notifs",   label: "Notifications",      icon: IB },\n  { id: "security", label: "Security",           icon: IL },\n  { id: "data",     label: "Your Data",          icon: ID },\n];\nconst FRIENDS = [\n  { id:1, name:"Anna Lindqvist", email:"anna@example.com", av:"AL", rel:"Family",  status:"online",  cv:12 },\n  { id:2, name:"Maja Eriksson",  email:"maja@example.com", av:"ME", rel:"Friend",  status:"offline", cv:7  },\n  { id:3, name:"Erik Johansson", email:"erik@example.com", av:"EJ", rel:"Family",  status:"online",  cv:4  },\n  { id:4, name:"Sofia Berg",     email:"sofia@example.com",av:"SB", rel:"Friend",  status:"offline", cv:19 },\n];\nconst CSS = `' + css + '`;\n'
 
-if not TARGET.exists():
-    sys.exit('ERROR: src/pages/ProfilePage.jsx not found -- run from the drawnbuy project root.')
+# Add the export default function part
+export_part = existing[export_idx:]
+new_content += export_part
 
-src = TARGET.read_text(encoding='utf-8')
-original = src
-
-# ---- Fix 1: broken tab-button className --------------------------------------
-# Was:  className={\tb }  (tab char between { and b)
-# Fix:  className={`tb ${tab===id?'on':''}`}
-broken_tb = "className={\tb }"
-fixed_tb  = "className={`tb ${tab===id?'on':''}`}"
-if broken_tb in src:
-    src = src.replace(broken_tb, fixed_tb)
-    print('[OK] Fix 1: tab-button className repaired')
-else:
-    patched = re.sub(
-        r'className=\{[\t ]+b[\t ]+\}',
-        "className={`tb ${tab===id?'on':''}`}",
-        src
-    )
-    if patched != src:
-        src = patched
-        print('[OK] Fix 1: tab-button className repaired (regex)')
-    else:
-        print('[WARN] Fix 1: tab-button className -- pattern not found (check manually)')
-
-# ---- Fix 2: broken friend-tag className --------------------------------------
-# Was:  className={\x0ctag }  (\x0c = form feed char — invisible corruption)
-# Fix:  className={`ftag ${f.status==='invited'?'tinv':f.rel==='Family'?'tfam':'tfri'}`}
-broken_tag     = "className={\x0ctag }"
-broken_tag_alt = "className={tag }"
-fixed_tag      = "className={`ftag ${f.status==='invited'?'tinv':f.rel==='Family'?'tfam':'tfri'}`}"
-if broken_tag in src:
-    src = src.replace(broken_tag, fixed_tag)
-    print('[OK] Fix 2: friend-tag className repaired (form-feed variant)')
-elif broken_tag_alt in src:
-    src = src.replace(broken_tag_alt, fixed_tag)
-    print('[OK] Fix 2: friend-tag className repaired')
-else:
-    print('[WARN] Fix 2: friend-tag className -- pattern not found (check manually)')
-
-# ---- Fix 3: broken status-dot className --------------------------------------
-# Was:  className={sd }
-# Fix:  className={`sd ${f.status==='online'?'son':f.status==='invited'?'sin':'sof'}`}
-broken_sd = "className={sd }"
-fixed_sd  = "className={`sd ${f.status==='online'?'son':f.status==='invited'?'sin':'sof'}`}"
-if broken_sd in src:
-    src = src.replace(broken_sd, fixed_sd)
-    print('[OK] Fix 3: status-dot className repaired')
-else:
-    print('[WARN] Fix 3: status-dot className -- pattern not found (check manually)')
-
-# ---- Fix 4: add base grid styles to .pw --------------------------------------
-old_pw_media = '@media(max-width:768px){.pw{grid-template-columns:1fr}}'
-new_pw_full  = (
-    '.pw{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;'
-    'align-items:start;max-width:1200px;margin:0 auto}'
-    '@media(max-width:900px){.pw{grid-template-columns:1fr}}'
-)
-if old_pw_media in src:
-    src = src.replace(old_pw_media, new_pw_full)
-    print('[OK] Fix 4: .pw base grid layout added')
-else:
-    print('[WARN] Fix 4: .pw media rule -- pattern not found (check manually)')
-
-# ---- Fix 5: corrupted CSS template literal close -----------------------------
-# The CSS const ends with ;\\;; -- should be `; (closing backtick + semicolon)
-corrupted_end = ';\x5c;;'   # ;\;; using hex to avoid escape warning
-if corrupted_end in src:
-    src = src.replace(corrupted_end, '`;')
-    print('[OK] Fix 5: CSS template literal close repaired')
-else:
-    # Also try the literal string as it may appear
-    alt_end = ';\;;'
-    if alt_end in src:
-        src = src.replace(alt_end, '`;')
-        print('[OK] Fix 5: CSS template literal close repaired (alt pattern)')
-    else:
-        print('[INFO] Fix 5: corrupted CSS close not found -- may already be correct')
-
-# ---- Write result ------------------------------------------------------------
-if src == original:
-    print('\n[WARN] No changes made. File may already be fixed, or patterns shifted.')
-    print('  Open ProfilePage.jsx and search for: className={  and className={tag')
-    sys.exit(0)
-
-backup = TARGET.with_suffix('.jsx.bak')
-backup.write_text(original, encoding='utf-8')
-print(f'\n[BACKUP] Saved -> {backup}')
-
-TARGET.write_text(src, encoding='utf-8')
-print('[OK] ProfilePage.jsx written successfully.')
-
-# ---- Quick file sanity check -------------------------------------------------
-size = TARGET.stat().st_size
-print(f'[OK] File size: {size} bytes')
-
-print('\nDone. Fixes applied:')
-print('  1. className={<TAB>b } -> className={`tb ${tab===id?"on":""}`}')
-print('  2. className={tag }    -> className={`ftag ${...status/rel...}`}')
-print('  3. className={sd }     -> className={`sd ${...status...}`}')
-print('  4. .pw base grid styles added (260px sidebar + 1fr main)')
-print('  5. ;\\;; -> `; (CSS template literal close)')
+open('src/pages/ProfilePage.jsx', 'w', encoding='utf-8').write(new_content)
+print('Done! Lines:', len(new_content.splitlines()))
