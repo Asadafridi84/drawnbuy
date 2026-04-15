@@ -284,7 +284,7 @@ export default function Navbar({ onShare, cartCount = 0 }) {
                     </div>
                     {cats.map(c => (
                       <div key={c.slug} className="cat-dd-item" onClick={() => { setCatDdOpen(false); scrollTo('catsSection'); }}>
-                        <div style={{width:"34px",height:"34px",borderRadius:"8px",background:"linear-gradient(135deg,#7c3aed,#5b21b6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"16px",flexShrink:0}}>{c.emoji}</div>
+                        <img className="cat-dd-thumb" src={c.img} alt={c.name} onError={e => { e.target.onerror=null; e.target.style.display='none'; }} />
                         <span>{c.emoji} {c.name}</span>
                         <span className="cat-dd-count">{c.count}</span>
                       </div>
