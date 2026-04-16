@@ -1,0 +1,1 @@
+import{useState,useRef,useEffect}from'react';import{useNavigate}from'react-router-dom';import{useAuthStore}from'../store/auth';export default function ProfilePage(){const navigate=useNavigate();const user=useAuthStore(s=>s.user);return<div>Loading profile...</div>;}
