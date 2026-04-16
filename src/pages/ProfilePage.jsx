@@ -159,7 +159,7 @@ export default function ProfilePage(){
   };
 
   const addChatMsg=(av,name,text,prod,col,me)=>{
-    const now=new Date(),time=`:${String(now.getMinutes()).padStart(2,'0')};
+    const now=new Date(),time=`${String(now.getMinutes()).padStart(2,'0')};
     setMsgs(m=>[...m,{id:Date.now(),av,name,text,prod:prod||null,col,me,time}]);
   };
 
@@ -669,3 +669,4 @@ export default function ProfilePage(){
     </div>
   );
 }
+
