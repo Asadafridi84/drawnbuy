@@ -28,7 +28,7 @@ const FRIENDS = [
   { id:3, name:"Erik Johansson", email:"erik@example.com", av:"EJ", rel:"Family",  status:"online",  cv:4  },
   { id:4, name:"Sofia Berg",     email:"sofia@example.com",av:"SB", rel:"Friend",  status:"offline", cv:19 },
 ];
-const CSS = \n.ps{display:flex;flex-direction:column;gap:1rem}
+const CSS = \.ps{display:flex;flex-direction:column;gap:1rem}
 .pc{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(124,58,237,.08)}
 .av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:1.5rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:3px solid #ede9fe}
 .pn{font-size:1.1rem;font-weight:800;color:#1a0a3e;text-align:center}
