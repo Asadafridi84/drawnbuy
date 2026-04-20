@@ -28,8 +28,7 @@ const FRIENDS = [
   { id:3, name:"Erik Johansson", email:"erik@example.com", av:"EJ", rel:"Family",  status:"online",  cv:4  },
   { id:4, name:"Sofia Berg",     email:"sofia@example.com",av:"SB", rel:"Friend",  status:"offline", cv:19 },
 ];
-const CSS = 
-.ps{display:flex;flex-direction:column;gap:1rem}
+const CSS = \n.ps{display:flex;flex-direction:column;gap:1rem}
 .pc{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(124,58,237,.08)}
 .av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:1.5rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border:3px solid #ede9fe}
 .pn{font-size:1.1rem;font-weight:800;color:#1a0a3e;text-align:center}
@@ -77,6 +76,7 @@ const CSS =
 .tog input:checked + .tsl::before{transform:translateX(20px)}
 .ok{background:#d1fae5;color:#065f46;border-radius:8px;padding:.5rem .9rem;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:.4rem}
 @media(max-width:768px){.pw{grid-template-columns:1fr}}.pw{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;max-width:960px;margin:0 auto;align-items:start}
+`;
 
 export default function ProfilePage() {
   const navigate   = useNavigate();
@@ -131,7 +131,7 @@ export default function ProfilePage() {
           </div>
           <div className="pc" style={{padding:'.75rem'}}>
             {TABS.map(({id,label,icon:Icon})=>(
-              <button key={id} className={	b\} onClick={()=>setTab(id)}>
+              <button key={id} className={`tb${tab===id?' on':''}`} onClick={()=>setTab(id)}>
                 <span style={{display:'flex',alignItems:'center'}}><Icon/></span>{label}
               </button>
             ))}
@@ -182,13 +182,13 @@ export default function ProfilePage() {
                   <div style={{flex:1,minWidth:0}}>
                     <div style={{display:'flex',alignItems:'center',gap:'.4rem',flexWrap:'wrap'}}>
                       <div className="fn">{f.name}</div>
-                      <span className={tag \}>{f.status==='invited'?'Invited':f.rel}</span>
+                      <span className={`ftag ${f.status==='invited'?'tinv':f.rel==='Family'?'tfam':'tfri'}`}>{f.status==='invited'?'Invited':f.rel}</span>
                     </div>
                     <div className="fe">{f.email}</div>
                     {f.cv>0 && <div style={{fontSize:'.72rem',color:'#9ca3af',marginTop:'.15rem'}}>{f.cv} shared canvases</div>}
                   </div>
                   <div style={{display:'flex',alignItems:'center',gap:'.6rem'}}>
-                    <div className={sd \} title={f.status}/>
+                    <div className={`sd ${f.status==='online'?'son':f.status==='invited'?'sin':'sof'}`} title={f.status}/>
                     {f.status!=='invited' && <button style={{background:'#f4f0ff',border:'1px solid #ede9fe',borderRadius:'8px',padding:'5px 10px',fontSize:'.75rem',fontWeight:700,color:'#7c3aed',cursor:'pointer'}}>Draw Together</button>}
                     <button onClick={()=>setFriends(p=>p.filter(x=>x.id!==f.id))} style={{background:'none',border:'none',cursor:'pointer',color:'#d1d5db',padding:'4px'}}><IT/></button>
                   </div>
