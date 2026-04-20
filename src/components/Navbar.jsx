@@ -326,6 +326,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           <a onClick={() => scrollTo('collabSection')}>Canvas</a>
           <a onClick={() => scrollTo('catsSection')}>Categories</a>
           <a>Live<span className="live-badge">247</span></a>
+          <a onClick={() => navigate('/')}>🏠 Home</a>
         </div>
 
         {/* Right */}
