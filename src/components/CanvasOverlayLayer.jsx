@@ -3,8 +3,8 @@ import ProductCard from './ProductCard';
 import EmojiSticker from './EmojiSticker';
 
 export default function CanvasOverlayLayer({ canvasId }) {
-  const cards    = useCanvasStore(s => s.cards[canvasId]    || []);
-  const stickers = useCanvasStore(s => s.stickers[canvasId] || []);
+  const cards    = useCanvasStore(s => s.cards[canvasId]) || [];
+  const stickers = useCanvasStore(s => s.stickers[canvasId]) || [];
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
