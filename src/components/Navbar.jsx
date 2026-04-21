@@ -283,7 +283,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
                       {GROUP_LABELS[groupKey] || groupKey}
                     </div>
                     {cats.map(c => (
-                      <div key={c.slug} className="cat-dd-item" onClick={() => { setCatDdOpen(false); if(onCatClick) onCatClick(c); else scrollTo('catsSection'); }}>
+                      <div key={c.slug} className="cat-dd-item" onClick={() => { setCatDdOpen(false); if(onCatClick) onCatClick(c); else navigate('/category/'+c.slug); }}>
                         <img className="cat-dd-thumb" src={c.img} alt={c.name} onError={e => { e.target.onerror=null; e.target.style.display='none'; }} />
                         <span>{c.emoji} {c.name}</span>
                         <span className="cat-dd-count">{c.count}</span>
@@ -310,7 +310,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           {searchOpen && suggestions.length > 0 && (
             <div className="search-sugg">
               {suggestions.map(c => (
-                <div key={c.slug} className="sugg-item" onClick={() => { setSearchOpen(false); if(onCatClick) onCatClick(c); else scrollTo('catsSection'); }}>
+                <div key={c.slug} className="sugg-item" onClick={() => { setSearchOpen(false); if(onCatClick) onCatClick(c); else navigate('/category/'+c.slug); }}>
                   <img src={c.img} alt={c.name} onError={e => { e.target.onerror=null; e.target.style.display='none'; }} style={{width:'32px',height:'32px',borderRadius:'7px',objectFit:'cover',flexShrink:0}} />
                   <span className="sugg-name">{c.name}</span>
                   <span className="sugg-badge">{c.count}</span>
