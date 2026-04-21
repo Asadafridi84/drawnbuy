@@ -151,7 +151,8 @@ export default function ProfilePage() {
   const [drawing,  setDrawing]  = useState(false);
   const [toast,    setToast]    = useState('');
   const [avatarImg,setAvatarImg]= useState(null);
-  const [coverMsg, setCoverMsg] = useState(false);
+  const [coverImg, setCoverImg]  = useState(null);
+
   const [chatText, setChatText] = useState('');
   const [chatMsgs, setChatMsgs] = useState([
     {av:'M',bg:'#22c55e',name:'Maja',text:'Love your canvas! The sofa sketch is so good',time:'14:20',me:false},
@@ -165,7 +166,8 @@ export default function ProfilePage() {
 
   const tabsRef   = useRef(null);
   const canvasRef = useRef(null);
-  const fileRef   = useRef(null);
+  const fileRef    = useRef(null);
+  const coverFileRef = useRef(null);
   const coverRef  = useRef(null);
 
   const initials = (user?.name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
@@ -199,6 +201,13 @@ export default function ProfilePage() {
     const t = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
     setChatMsgs(p=>[...p,{av:'A',bg:'#7c3aed',name:'You',text:chatText,time:t,me:true}]);
     setChatText('');
+  };
+  const doCoverChange = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const url = URL.createObjectURL(f);
+    setCoverImg(url);
+    showToast('Cover photo updated!');
   };
   const doAvatarChange = (e) => {
     const f = e.target.files?.[0];
@@ -259,11 +268,12 @@ export default function ProfilePage() {
       <div className="pw">
 
         {/* COVER */}
-        <div className="cover">
-          <button className="cover-edit" onClick={()=>setCoverMsg(true)}>
+        <div className="cover" style={coverImg ? {backgroundImage:`url(${coverImg})`,backgroundSize:'cover',backgroundPosition:'center'} : {}}>
+          <button className="cover-edit" onClick={()=>coverFileRef.current?.click()}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Edit Cover
           </button>
+          <input ref={coverFileRef} type="file" accept="image/*" style={{display:'none'}} onChange={doCoverChange}/>
         </div>
 
         {/* PROFILE CARD */}
@@ -801,16 +811,7 @@ export default function ProfilePage() {
       {/* TOAST */}
       {toast && <div className="toast">{toast}</div>}
 
-      {/* COVER MESSAGE MODAL */}
-      {coverMsg && (
-        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setCoverMsg(false)}>
-          <div style={{background:'#fff',borderRadius:'16px',padding:'2rem',maxWidth:'360px',width:'90%'}} onClick={e=>e.stopPropagation()}>
-            <div style={{fontSize:'1rem',fontWeight:800,color:'#1a0a3e',marginBottom:'.5rem'}}>Edit Cover Photo</div>
-            <div style={{fontSize:'.85rem',color:'#6b7280',marginBottom:'1.25rem'}}>Cover photo upload coming soon. Your cover will support custom images and brand colors.</div>
-            <button className="bp" onClick={()=>setCoverMsg(false)}>OK, Got it</button>
-          </div>
-        </div>
-      )}
+
 
       {/* DELETE MODAL */}
       {delConf && (
