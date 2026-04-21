@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, useParams, useLocation } from 'react-router-dom';
 
 // Shell components (always available)
