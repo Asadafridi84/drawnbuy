@@ -172,11 +172,11 @@ export default function MiniFloatingCanvas() {
             <div
               ref={containerRef}
               style={{ position: 'relative' }}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
             >
               <canvas
                 ref={canvasRef}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
                 width={560} height={280}
                 style={{ width: '100%', height: 140, display: 'block', cursor: tool === 'erase' ? 'cell' : 'crosshair', background: 'rgba(255,255,255,.04)' }}
                 onMouseDown={startDraw} onMouseMove={doDraw} onMouseUp={endDraw} onMouseLeave={endDraw}

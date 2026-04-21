@@ -86,11 +86,11 @@ function MiniCanvas() {
         <div
           ref={heroContainerRef}
           style={{ position: 'relative', flex: 1 }}
-          onDragOver={heroDragOver}
-          onDrop={heroDrop}
         >
           <canvas
           ref={canvasRef}
+          onDragOver={heroDragOver}
+          onDrop={heroDrop}
           width={300}
           height={190}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}

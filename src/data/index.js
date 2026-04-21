@@ -27,22 +27,22 @@ export const HERO_ADS = [
 ];
 
 export const DRAG_PRODS = [
-  {name:'Luxury Watch',      price:'1 490 kr', old:'2 490 kr', img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop', deal:'-40%'},
-  {name:'Nike Air Force 1',  price:'1 299 kr', old:'1 599 kr', img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop',   deal:'-25%'},
-  {name:'Sony WH-1000XM5',  price:'2 799 kr', old:'3 299 kr', img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop', deal:'-15%'},
-  {name:'MacBook Air M3',    price:'14 995 kr',old:'',          img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop', deal:''},
-  {name:'Polaroid Camera',   price:'550 kr',   old:'790 kr',   img:'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop', deal:'-30%'},
-  {name:'Chanel No.5',       price:'890 kr',   old:'',          img:'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=300&h=300&fit=crop', deal:''},
-  {name:'Adidas Ultraboost', price:'1 599 kr', old:'',          img:'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=300&h=300&fit=crop',   deal:''},
-  {name:'PS5 Controller',    price:'599 kr',   old:'790 kr',   img:'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=300&h=300&fit=crop', deal:'-25%'},
-  {name:'AirPods Pro 2',     price:'2 799 kr', old:'3 299 kr', img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=300&h=300&fit=crop', deal:'-15%'},
-  {name:'IKEA KALLAX Shelf', price:'649 kr',   old:'',          img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=300&fit=crop',   deal:''},
-  {name:'KitchenAid Mixer',  price:'5 299 kr', old:'6 499 kr', img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=300&fit=crop',   deal:'-20%'},
-  {name:"Levi's 501 Jeans",  price:'899 kr',   old:'',          img:'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop', deal:''},
-  {name:'Dyson V15 Vacuum',  price:'6 499 kr', old:'8 990 kr', img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop',   deal:'-28%'},
-  {name:'H&M Linen Blazer',  price:'699 kr',   old:'',          img:'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=300&h=300&fit=crop', deal:''},
-  {name:'iPad Air M2',       price:'8 999 kr', old:'',          img:'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop', deal:''},
-  {name:'Zara Maxi Dress',   price:'399 kr',   old:'599 kr',   img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&h=300&fit=crop', deal:'-33%'},
+  {name:'Luxury Watch',      price:'1 490 kr', old:'2 490 kr', img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop', deal:'-40%', url:'https://www.amazon.co.uk/s?k=luxury+watch&tag=drawnbuy-21'},
+  {name:'Nike Air Force 1',  price:'1 299 kr', old:'1 599 kr', img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop',   deal:'-25%', url:'https://www.amazon.co.uk/s?k=nike+air+force+1&tag=drawnbuy-21'},
+  {name:'Sony WH-1000XM5',  price:'2 799 kr', old:'3 299 kr', img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop', deal:'-15%', url:'https://www.amazon.co.uk/s?k=sony+wh1000xm5&tag=drawnbuy-21'},
+  {name:'MacBook Air M3',    price:'14 995 kr',old:'',          img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=300&fit=crop', deal:'', url:'https://www.amazon.co.uk/s?k=macbook+air+m3&tag=drawnbuy-21'},
+  {name:'Polaroid Camera',   price:'550 kr',   old:'790 kr',   img:'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&h=300&fit=crop', deal:'-30%', url:'https://www.amazon.co.uk/s?k=polaroid+camera&tag=drawnbuy-21'},
+  {name:'Chanel No.5',       price:'890 kr',   old:'',          img:'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=300&h=300&fit=crop', deal:'', url:'https://www.amazon.co.uk/s?k=chanel+no5+perfume&tag=drawnbuy-21'},
+  {name:'Adidas Ultraboost', price:'1 599 kr', old:'',          img:'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=300&h=300&fit=crop',   deal:'', url:'https://www.amazon.co.uk/s?k=adidas+ultraboost&tag=drawnbuy-21'},
+  {name:'PS5 Controller',    price:'599 kr',   old:'790 kr',   img:'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=300&h=300&fit=crop', deal:'-25%', url:'https://www.amazon.co.uk/s?k=ps5+dualsense+controller&tag=drawnbuy-21'},
+  {name:'AirPods Pro 2',     price:'2 799 kr', old:'3 299 kr', img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=300&h=300&fit=crop', deal:'-15%', url:'https://www.amazon.co.uk/s?k=airpods+pro+2&tag=drawnbuy-21'},
+  {name:'IKEA KALLAX Shelf', price:'649 kr',   old:'',          img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=300&fit=crop',   deal:'', url:'https://www.ikea.com/gb/en/'},
+  {name:'KitchenAid Mixer',  price:'5 299 kr', old:'6 499 kr', img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=300&fit=crop',   deal:'-20%', url:'https://www.amazon.co.uk/s?k=kitchenaid+mixer&tag=drawnbuy-21'},
+  {name:"Levi's 501 Jeans",  price:'899 kr',   old:'',          img:'https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop', deal:'', url:'https://www.amazon.co.uk/s?k=levis+501+jeans&tag=drawnbuy-21'},
+  {name:'Dyson V15 Vacuum',  price:'6 499 kr', old:'8 990 kr', img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop',   deal:'-28%', url:'https://www.amazon.co.uk/s?k=dyson+v15+vacuum&tag=drawnbuy-21'},
+  {name:'H&M Linen Blazer',  price:'699 kr',   old:'',          img:'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=300&h=300&fit=crop', deal:'', url:'https://www2.hm.com/en_gb/'},
+  {name:'iPad Air M2',       price:'8 999 kr', old:'',          img:'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop', deal:'', url:'https://www.amazon.co.uk/s?k=ipad+air+m2&tag=drawnbuy-21'},
+  {name:'Zara Maxi Dress',   price:'399 kr',   old:'599 kr',   img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&h=300&fit=crop', deal:'-33%', url:'https://www.zara.com/uk/'},
 ];
 
 export const DEALS = [
@@ -132,8 +132,8 @@ export const COUNTRIES = [
 ];
 
 export const CHAT_MSGS = [
-  {name:'Anna',   me:false, text:'Omg this Nike Air Max is so cute! 😍', time:'14:23'},
-  {name:'Maja',   me:false, text:'Adding it to the canvas now!',          time:'14:23'},
-  {name:'You',    me:true,  text:'We should get matching ones 👟👟',      time:'14:24'},
-  {name:'Anna',   me:false, text:'YES! What size are you?',               time:'14:24'},
+  {name:'Anna',   me:false, text:'Omg this Nike Air Max is so cute! 😍', time:'14:23', url:'https://www.amazon.co.uk/s?k=anna&tag=drawnbuy-21'},
+  {name:'Maja',   me:false, text:'Adding it to the canvas now!',          time:'14:23', url:'https://www.amazon.co.uk/s?k=maja&tag=drawnbuy-21'},
+  {name:'You',    me:true,  text:'We should get matching ones 👟👟',      time:'14:24', url:'https://www.amazon.co.uk/s?k=you&tag=drawnbuy-21'},
+  {name:'Anna',   me:false, text:'YES! What size are you?',               time:'14:24', url:'https://www.amazon.co.uk/s?k=anna&tag=drawnbuy-21'},
 ];

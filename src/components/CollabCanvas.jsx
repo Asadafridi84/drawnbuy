@@ -233,14 +233,14 @@ export default function CollabCanvas() {
               <div
                   ref={canvasContainerRef}
                   style={{ position: 'relative', flex: 1 }}
-                  onDragOver={onDragOver}
-                  onDrop={onDrop}
                 >
                   <canvas
                 ref={canvasRef}
                 width={1000}
                 height={600}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                onDragOver={onDragOver}
+                onDrop={onDrop}
                 onMouseDown={startDraw}
                 onMouseMove={doDraw}
                 onMouseUp={endDraw}

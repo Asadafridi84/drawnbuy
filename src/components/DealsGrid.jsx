@@ -107,7 +107,16 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
       )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(170px,1fr))', gap: '14px', marginBottom: '2rem' }}>
         {filtered.map((d, i) => (
-          <div key={i} className="dc" style={{ animationDelay: `${i * 0.05}s` }}>
+          <div key={i} className="dc" style={{ animationDelay: `${i * 0.05}s` }}
+            draggable
+            onDragStart={e => {
+              e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({
+                name: d.name, price: d.price, img: d.img,
+                url: d.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(d.name)}&tag=drawnbuy-21`
+              }));
+              e.dataTransfer.effectAllowed = 'copy';
+            }}
+          >
             <div className="dc-badge" style={badgeStyle(d.badgeType)}>{d.badge}</div>
             <button className="wbtn" onClick={e => { e.stopPropagation(); toggleWish(i); }}>
               {wishlist[i] ? '❤️' : '♡'}

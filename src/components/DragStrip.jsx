@@ -110,7 +110,7 @@ export default function DragStrip() {
               className="pc"
               draggable
               onDragStart={e => {
-                e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({ name: p.name, price: p.price, img: p.img }));
+                e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({ name: p.name, price: p.price, img: p.img, url: p.url }));
                 e.dataTransfer.effectAllowed = 'copy';
               }}
             >
