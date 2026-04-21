@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useParams } from 'react-router-dom';
 
 // Shell components (always available)
 import Topbar             from './components/Topbar';
@@ -20,6 +20,7 @@ import Sponsors           from './components/Sponsors';
 import HowItWorks         from './components/HowItWorks';
 import Footer             from './components/Footer';
 import CategoryPage       from './components/CategoryPage';
+import { CATS }            from './data';
 import MiniFloatingCanvas from './components/MiniFloatingCanvas';
 
 // Pages (routed)
@@ -54,6 +55,22 @@ const GLOBAL_STYLES = `
   }
 `;
 
+
+function CategoryRouteWrapper({ onShare, cartCount }) {
+  const { slug } = useParams();
+  const cat = CATS.find(c => c.slug === slug) || { name: slug.replace(/-/g,' '), slug, img:'', count:'', emoji:'' };
+  return (
+    <>
+      <Topbar />
+      <Navbar onShare={onShare} cartCount={cartCount} />
+      <div style={{paddingTop:'1rem'}}>
+        <CategoryPage cat={cat} onClose={null} />
+      </div>
+      <ToastContainer />
+    </>
+  );
+}
+
 // Layout wrapper used by pages that need Topbar + Navbar (Profile, Canvases)
 function PageShell({ children, onShare, cartCount }) {
   return (
@@ -65,6 +82,7 @@ function PageShell({ children, onShare, cartCount }) {
     </>
   );
 }
+
 
 export default function App() {
   const [shareOpen, setShareOpen] = useState(false);
@@ -117,6 +135,16 @@ export default function App() {
               <CanvasesPage />
             </PageShell>
           </ProtectedRoute>
+        } />
+
+        {/* ── Category pages ──────────────────────────────── */}
+        <Route path="/category/:slug" element={
+          <CategoryRouteWrapper onShare={() => setShareOpen(true)} cartCount={cartCount} />
+        } />
+
+        {/* ── Category pages ──────────────────────────────── */}
+        <Route path="/category/:slug" element={
+          <CategoryRouteWrapper onShare={() => setShareOpen(true)} cartCount={cartCount} />
         } />
 
         {/* ── 404 ─────────────────────────────────────────── */}
