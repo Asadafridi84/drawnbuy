@@ -1,4 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { useProductDrop } from '../hooks/useProductDrop';
+import { useCanvasStore } from '../store/canvas';
+import { useAuthStore } from '../store/auth';
+import CanvasOverlayLayer from './CanvasOverlayLayer';
+import CanvasChatPanel from './CanvasChatPanel';
 import { CHAT_MSGS } from '../data';
 
 const EMOJIS = ['😀','😂','🥰','😍','🤩','😎','🥳','🎉','🔥','💯','👏','✨','💜','💛','🩵','🛍️','🎨','👟','👗','💄','⌚','📱','💻','🎮','🏠','🍕','🛒','💪','🧸','📚'];
@@ -20,6 +25,24 @@ export default function CollabCanvas() {
   const sizes = { sm: 2, md: 4, lg: 8 };
 
   useEffect(() => {
+
+  // Product drop + overlay
+  const canvasContainerRef = useRef(null);
+  const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef);
+  const addSticker = useCanvasStore(s => s.addSticker);
+  const user = useAuthStore(s => s.user);
+  const [showStickerPicker, setShowStickerPicker] = useState(false);
+  const STICKER_EMOJIS = ['🔥','❤️','👍','😍','💯','⭐','🛒','💰','✅','🎉','🤩','💅'];
+  const dropSticker = (emoji) => {
+    addSticker('main-collab', {
+      id: Date.now().toString(),
+      emoji,
+      x: 80 + Math.random() * 300,
+      y: 60 + Math.random() * 200,
+      ownerId: user?.id || 'guest',
+    });
+    setShowStickerPicker(false);
+  };
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
   }, [msgs]);
 
@@ -187,13 +210,32 @@ export default function CollabCanvas() {
               {[['draw','✏️ Draw'],['erase','🧹 Erase']].map(([t,l]) => (
                 <button key={t} className={`t-chip ${tool===t?'on':''}`} onClick={() => setTool(t)}>{l}</button>
               ))}
-              <button className="t-chip" onClick={clearCanvas}>🗑 Clear</button>
+              <button className="t-chip" onClick={clearCanvas}>Clear</button>
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowStickerPicker(v => !v)}
+                  style={{ background:'rgba(255,255,255,.15)', border:'1.5px solid #fbbf24', borderRadius:8, padding:'4px 10px', fontSize:'.75rem', fontWeight:700, cursor:'pointer', color:'#fff' }}
+                >+ Sticker</button>
+                {showStickerPicker && (
+                  <div style={{ position:'absolute', top:'110%', left:0, background:'#fff', borderRadius:12, padding:8, boxShadow:'0 4px 20px rgba(0,0,0,.2)', display:'flex', gap:4, flexWrap:'wrap', width:220, zIndex:50, border:'1.5px solid #fbbf24' }}>
+                    {STICKER_EMOJIS.map(e => (
+                      <button key={e} onClick={() => dropSticker(e)} style={{ fontSize:22, background:'none', border:'none', cursor:'pointer', padding:4, borderRadius:6 }}>{e}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button className="t-chip" style={{ marginLeft: 'auto' }}>💾 Save</button>
               <button className="t-chip">📤 Share</button>
             </div>
 
             <div className="cv-area" style={{ cursor: tool==='erase'?'cell':'crosshair' }}>
-              <canvas
+              <div
+                  ref={canvasContainerRef}
+                  style={{ position: 'relative', flex: 1 }}
+                  onDragOver={onDragOver}
+                  onDrop={onDrop}
+                >
+                  <canvas
                 ref={canvasRef}
                 width={1000}
                 height={600}
@@ -206,6 +248,8 @@ export default function CollabCanvas() {
                 onTouchMove={doDraw}
                 onTouchEnd={endDraw}
               />
+                  <CanvasOverlayLayer canvasId="main-collab" />
+                </div>
               <div className="cv-hint">
                 <span style={{ fontSize: '13px', color: 'rgba(124,58,237,.2)', fontWeight: '600' }}>✏️ Draw or drag a product here — friends see it live!</span>
               </div>

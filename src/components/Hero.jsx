@@ -3,6 +3,8 @@ import { HERO_ADS } from '../data';
 
 function MiniCanvas() {
   const canvasRef = useRef(null);
+  const heroContainerRef = useRef(null);
+  const { onDragOver: heroDragOver, onDrop: heroDrop } = useProductDrop('hero-canvas', heroContainerRef);
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
   const [drawing, setDrawing] = useState(false);
@@ -79,7 +81,13 @@ function MiniCanvas() {
 
       {/* Canvas */}
       <div style={{ background: '#fff', height: '190px', position: 'relative', cursor: tool === 'erase' ? 'cell' : 'crosshair' }}>
-        <canvas
+        <div
+          ref={heroContainerRef}
+          style={{ position: 'relative', flex: 1 }}
+          onDragOver={heroDragOver}
+          onDrop={heroDrop}
+        >
+          <canvas
           ref={canvasRef}
           width={300}
           height={190}
@@ -92,6 +100,8 @@ function MiniCanvas() {
           onTouchMove={doDraw}
           onTouchEnd={endDraw}
         />
+          <CanvasOverlayLayer canvasId="hero-canvas" />
+        </div>
         {!hasDrawing && (
           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
             <span style={{ fontSize: '12px', color: 'rgba(124,58,237,.25)', fontWeight: '600' }}>✏️ Click to draw!</span>
@@ -165,7 +175,7 @@ function HeroAdCard({ ad }) {
   );
 }
 
-export default function Hero() {
+export default function Hero({ onShare }) {
   const [lIdx, setLIdx] = useState(0);
   const [rIdx, setRIdx] = useState(4);
   const [cIdx, setCIdx] = useState(8);
@@ -291,7 +301,7 @@ export default function Hero() {
           </p>
           <div className="hero-btns">
             <button className="btn-hp">🎨 Start Drawing Free</button>
-            <button className="btn-hs">👥 Invite Friends</button>
+            <button className="btn-hs" onClick={onShare} style={{border:'1.5px solid #fbbf24'}}>Invite Friends</button>
           </div>
           <div className="hero-stats">
             <div>

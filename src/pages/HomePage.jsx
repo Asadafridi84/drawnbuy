@@ -17,7 +17,7 @@ export default function HomePage() {
   return (
     <>
       <AdStrip />
-      <Hero />
+      <Hero onShare={() => setShareOpen(true)} />
       <CategoryBar onSelect={setActiveCategory} />
       <CollabCanvas />
       <DragStrip />
