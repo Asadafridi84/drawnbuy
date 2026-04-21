@@ -152,6 +152,8 @@ export default function ProfilePage() {
   const [toast,    setToast]    = useState('');
   const [avatarImg,setAvatarImg]= useState(null);
   const [coverImg, setCoverImg]  = useState(null);
+  const [coverPicker, setCoverPicker] = useState(false);
+  const [avatarPicker, setAvatarPicker] = useState(false);
 
   const [chatText, setChatText] = useState('');
   const [chatMsgs, setChatMsgs] = useState([
@@ -167,7 +169,9 @@ export default function ProfilePage() {
   const tabsRef   = useRef(null);
   const canvasRef = useRef(null);
   const fileRef    = useRef(null);
-  const coverFileRef = useRef(null);
+  const coverFileRef    = useRef(null);
+  const coverCamRef     = useRef(null);
+  const avatarCamRef    = useRef(null);
   const coverRef  = useRef(null);
 
   const initials = (user?.name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
@@ -202,12 +206,20 @@ export default function ProfilePage() {
     setChatMsgs(p=>[...p,{av:'A',bg:'#7c3aed',name:'You',text:chatText,time:t,me:true}]);
     setChatText('');
   };
+  const doAvatarCamChange = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setAvatarImg(URL.createObjectURL(f));
+    showToast('Profile photo updated!');
+    setAvatarPicker(false);
+  };
   const doCoverChange = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     const url = URL.createObjectURL(f);
     setCoverImg(url);
     showToast('Cover photo updated!');
+    setCoverPicker(false);
   };
   const doAvatarChange = (e) => {
     const f = e.target.files?.[0];
@@ -269,11 +281,12 @@ export default function ProfilePage() {
 
         {/* COVER */}
         <div className="cover" style={coverImg ? {backgroundImage:`url(${coverImg})`,backgroundSize:'cover',backgroundPosition:'center'} : {}}>
-          <button className="cover-edit" onClick={()=>coverFileRef.current?.click()}>
+          <button className="cover-edit" onClick={()=>setCoverPicker(true)}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Edit Cover
           </button>
           <input ref={coverFileRef} type="file" accept="image/*" style={{display:'none'}} onChange={doCoverChange}/>
+          <input ref={coverCamRef} type="file" accept="image/*" capture="environment" style={{display:'none'}} onChange={doCoverChange}/>
         </div>
 
         {/* PROFILE CARD */}
@@ -281,14 +294,15 @@ export default function ProfilePage() {
           <div className="profile-top">
             <div style={{display:'flex',alignItems:'flex-end',gap:'1.25rem',flexWrap:'wrap'}}>
               <div className="avatar-wrap">
-                <div className="av" onClick={()=>fileRef.current?.click()} style={{cursor:'pointer'}}>
+                <div className="av" onClick={()=>setAvatarPicker(true)} style={{cursor:'pointer'}}>
                   {avatarImg ? <img src={avatarImg} alt="avatar"/> : initials}
                 </div>
                 {isLive && <div className="live-ring"/>}
-                <div className="av-cam" onClick={()=>fileRef.current?.click()}>
+                <div className="av-cam" onClick={()=>setAvatarPicker(true)}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 </div>
                 <input ref={fileRef} type="file" accept="image/*" style={{display:'none'}} onChange={doAvatarChange}/>
+                <input ref={avatarCamRef} type="file" accept="image/*" capture="user" style={{display:'none'}} onChange={doAvatarCamChange}/>
               </div>
               <div className="profile-info">
                 <div className="profile-name">
@@ -812,6 +826,56 @@ export default function ProfilePage() {
       {toast && <div className="toast">{toast}</div>}
 
 
+
+      {/* COVER PHOTO PICKER */}
+      {coverPicker && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.6)',zIndex:1000,display:'flex',alignItems:'flex-end',justifyContent:'center'}} onClick={()=>setCoverPicker(false)}>
+          <div style={{background:'#fff',borderRadius:'20px 20px 0 0',padding:'1.5rem',width:'100%',maxWidth:'480px'}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:40,height:4,background:'#e5e7eb',borderRadius:4,margin:'0 auto .75rem'}}/>
+            <div style={{fontSize:'1rem',fontWeight:800,color:'#1a0a3e',marginBottom:'1rem',textAlign:'center'}}>Edit Cover Photo</div>
+            <div style={{display:'flex',flexDirection:'column',gap:'.6rem',marginBottom:'1rem'}}>
+              <button onClick={()=>{setCoverPicker(false);setTimeout(()=>coverCamRef.current?.click(),100);}} style={{display:'flex',alignItems:'center',gap:'.75rem',padding:'1rem',borderRadius:12,border:'1.5px solid #ede9fe',background:'#f4f0ff',cursor:'pointer',fontFamily:'inherit',fontSize:'.9rem',fontWeight:700,color:'#1a0a3e'}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Take a Photo
+                <span style={{marginLeft:'auto',fontSize:'.75rem',color:'#9ca3af'}}>Camera</span>
+              </button>
+              <button onClick={()=>{setCoverPicker(false);setTimeout(()=>coverFileRef.current?.click(),100);}} style={{display:'flex',alignItems:'center',gap:'.75rem',padding:'1rem',borderRadius:12,border:'1.5px solid #ede9fe',background:'#f4f0ff',cursor:'pointer',fontFamily:'inherit',fontSize:'.9rem',fontWeight:700,color:'#1a0a3e'}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Choose from Gallery
+                <span style={{marginLeft:'auto',fontSize:'.75rem',color:'#9ca3af'}}>Photos</span>
+              </button>
+              <button onClick={()=>setCoverPicker(false)} style={{padding:'.85rem',borderRadius:12,border:'1.5px solid #f3f4f6',background:'#fff',cursor:'pointer',fontFamily:'inherit',fontSize:'.88rem',fontWeight:600,color:'#6b7280'}}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AVATAR PHOTO PICKER */}
+      {avatarPicker && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.6)',zIndex:1000,display:'flex',alignItems:'flex-end',justifyContent:'center'}} onClick={()=>setAvatarPicker(false)}>
+          <div style={{background:'#fff',borderRadius:'20px 20px 0 0',padding:'1.5rem',width:'100%',maxWidth:'480px'}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:40,height:4,background:'#e5e7eb',borderRadius:4,margin:'0 auto .75rem'}}/>
+            <div style={{fontSize:'1rem',fontWeight:800,color:'#1a0a3e',marginBottom:'1rem',textAlign:'center'}}>Edit Profile Photo</div>
+            <div style={{display:'flex',flexDirection:'column',gap:'.6rem',marginBottom:'1rem'}}>
+              <button onClick={()=>{setAvatarPicker(false);setTimeout(()=>avatarCamRef.current?.click(),100);}} style={{display:'flex',alignItems:'center',gap:'.75rem',padding:'1rem',borderRadius:12,border:'1.5px solid #ede9fe',background:'#f4f0ff',cursor:'pointer',fontFamily:'inherit',fontSize:'.9rem',fontWeight:700,color:'#1a0a3e'}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Take a Selfie
+                <span style={{marginLeft:'auto',fontSize:'.75rem',color:'#9ca3af'}}>Front camera</span>
+              </button>
+              <button onClick={()=>{setAvatarPicker(false);setTimeout(()=>fileRef.current?.click(),100);}} style={{display:'flex',alignItems:'center',gap:'.75rem',padding:'1rem',borderRadius:12,border:'1.5px solid #ede9fe',background:'#f4f0ff',cursor:'pointer',fontFamily:'inherit',fontSize:'.9rem',fontWeight:700,color:'#1a0a3e'}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Choose from Gallery
+                <span style={{marginLeft:'auto',fontSize:'.75rem',color:'#9ca3af'}}>Photos</span>
+              </button>
+              <button onClick={()=>setAvatarPicker(false)} style={{padding:'.85rem',borderRadius:12,border:'1.5px solid #f3f4f6',background:'#fff',cursor:'pointer',fontFamily:'inherit',fontSize:'.88rem',fontWeight:600,color:'#6b7280'}}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* DELETE MODAL */}
       {delConf && (
