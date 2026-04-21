@@ -1,3 +1,4 @@
+// DrawNBuy v2.1 — canvas system
 import { useState, useEffect } from 'react';
 import { Routes, Route, useParams, useLocation } from 'react-router-dom';
 
