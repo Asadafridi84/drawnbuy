@@ -90,7 +90,7 @@ export default function ProfilePage() {
   const logout     = useAuthStore(s => s.logout);
   const updateUser = useAuthStore(s => s.updateUser);
 
-  const [tab,      setTab]      = useState('feed');
+  const [tab,      setTab]      = useState('whiteboard');
   const [name,     setName]     = useState(user?.name || '');
   const [bio,      setBio]      = useState(user?.bio  || '');
   const [saved,    setSaved]    = useState(false);
