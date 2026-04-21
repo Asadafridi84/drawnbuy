@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { HERO_ADS } from '../data';
+import { useProductDrop } from '../hooks/useProductDrop';
+import CanvasOverlayLayer from './CanvasOverlayLayer';
 
 function MiniCanvas() {
   const canvasRef = useRef(null);
