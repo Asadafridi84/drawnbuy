@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CATS } from '../data';
 import { useAuthStore } from '../store/auth';
 
@@ -33,7 +33,7 @@ const LogoMark = () => (
 const GROUP_LABELS = {
   fashion: '👗 Fashion',
   tech:    '💻 Tech',
-  home:    '🏠 Home',
+  home:    'Home',
   health:  '❤️ Health',
   food:    '🍕 Food',
   kids:    '🧒 Kids',
@@ -45,6 +45,9 @@ const GROUP_LABELS = {
 
 export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  const goHome = (hash) => { if (isHome) scrollTo(hash); else navigate('/#'+hash); };
   const user = useAuthStore(s => s.user);
   const logout = useAuthStore(s => s.logout);
 
@@ -225,15 +228,15 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
       {/* Mobile Nav */}
       <div className={`mobile-nav ${mobileOpen ? 'open' : ''}`}>
         <button className="mob-close" onClick={() => setMobileOpen(false)}>✕</button>
-        <a className="mob-link" onClick={() => scrollTo('collabSection')}>🎨 Canvas</a>
-        <a className="mob-link" onClick={() => scrollTo('pspSection')}>🔍 Products</a>
-        <a className="mob-link" onClick={() => scrollTo('dealsAnchor')}>🔥 Deals</a>
-        <a className="mob-link" onClick={() => scrollTo('catsSection')}>📦 Categories</a>
-        <a className="mob-link" onClick={() => scrollTo('hiwSection')}>❓ How It Works</a>
+        <a className="mob-link" onClick={() => { goHome('collabSection'); setMobileOpen(false); }}>Canvas</a>
+        <a className="mob-link" onClick={() => { goHome('pspSection'); setMobileOpen(false); }}>Products</a>
+        <a className="mob-link" onClick={() => { goHome('dealsAnchor'); setMobileOpen(false); }}>Deals</a>
+        <a className="mob-link" onClick={() => { goHome('catsSection'); setMobileOpen(false); }}>Categories</a>
+        <a className="mob-link" onClick={() => { goHome('hiwSection'); setMobileOpen(false); }}>How It Works</a>
         <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
           {user ? (
             <>
-              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { navigate('/profile'); setMobileOpen(false); }}>👤 Profile</button>
+              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { navigate('/profile'); setMobileOpen(false); }}>Profile</button>
               <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { logout(); setMobileOpen(false); }}>Log Out</button>
             </>
           ) : (
@@ -260,7 +263,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
         {/* Category Dropdown */}
         <div className="cat-dd-wrap" ref={ddRef}>
           <button className="cat-dd-btn" onClick={() => setCatDdOpen(o => !o)}>
-            📦 All Categories
+            All Categories
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style={{ transform: catDdOpen ? 'rotate(180deg)' : 'none', transition: '.2s' }}>
               <path d="M7 10l5 5 5-5z"/>
             </svg>
@@ -322,16 +325,16 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
 
         {/* Nav Links */}
         <div className="nav-links">
-          <a className="hot" onClick={() => scrollTo('dealsAnchor')}>🔥 Deals</a>
-          <a onClick={() => scrollTo('collabSection')}>Canvas</a>
-          <a onClick={() => scrollTo('catsSection')}>Categories</a>
-          <a>Live<span className="live-badge">247</span></a>
-          <a onClick={() => navigate('/')}>🏠 Home</a>
+          <a className="hot" onClick={() => goHome('dealsAnchor')}>Deals</a>
+          <a onClick={() => goHome('collabSection')}>Canvas</a>
+          <a onClick={() => goHome('catsSection')}>Categories</a>
+          <a onClick={() => goHome('liveSection')} style={{cursor:'pointer'}}>Live<span className="live-badge">247</span></a>
+          <a onClick={() => navigate('/')}>Home</a>
         </div>
 
         {/* Right */}
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginLeft: 'auto', flexShrink: 0 }}>
-          <button className="share-btn" onClick={onShare}>
+          <button className="share-btn" onClick={() => onShare ? onShare() : navigate('/')}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             Share Canvas
           </button>
@@ -343,7 +346,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           </div>
           {user ? (
             <>
-              <button className="btn-ghost" onClick={() => navigate('/profile')}>👤 {user.name?.split(' ')[0] || 'Profile'}</button>
+              <button className="btn-ghost" onClick={() => navigate('/profile')}>{user.name?.split(' ')[0] || 'Profile'}</button>
               <button className="btn-ghost" onClick={logout}>Log Out</button>
             </>
           ) : (

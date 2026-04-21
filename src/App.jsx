@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Routes, Route, useParams } from 'react-router-dom';
+import { Routes, Route, useParams, useLocation } from 'react-router-dom';
 
 // Shell components (always available)
 import Topbar             from './components/Topbar';
@@ -56,6 +56,22 @@ const GLOBAL_STYLES = `
 `;
 
 
+
+// Scrolls to hash anchor after navigation (e.g. /#dealsAnchor)
+function HashScroller() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+      }
+    }
+  }, [location]);
+  return null;
+}
+
 function CategoryRouteWrapper({ onShare, cartCount }) {
   const { slug } = useParams();
   const cat = CATS.find(c => c.slug === slug) || { name: slug.replace(/-/g,' '), slug, img:'', count:'', emoji:'' };
@@ -93,6 +109,7 @@ export default function App() {
     <>
       <style>{GLOBAL_STYLES}</style>
 
+      <HashScroller />
       <Routes>
         {/* ── Homepage ─────────────────────────────────────── */}
         <Route path="/" element={
