@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CATS, DRAG_PRODS } from '../data';
 
 // Generate 16 products per category from DRAG_PRODS pool
@@ -17,6 +18,7 @@ function getCatProducts(cat) {
 }
 
 export default function CategoryPage({ cat, onClose }) {
+  const navigate = useNavigate();
   const [wishlist, setWishlist] = useState({});
   const products = getCatProducts(cat);
 
@@ -41,7 +43,7 @@ export default function CategoryPage({ cat, onClose }) {
       {/* Sticky top nav */}
       <div style={{ background: '#7c3aed', padding: '0 2rem', height: '56px', display: 'flex', alignItems: 'center', gap: '12px', position: 'sticky', top: 0, zIndex: 10, boxShadow: '0 2px 12px rgba(0,0,0,.2)' }}>
         <button
-          onClick={onClose}
+          onClick={() => onClose ? onClose() : navigate(-1)}
           style={{ background: 'rgba(255,255,255,.12)', border: '1.5px solid rgba(255,255,255,.2)', color: '#fff', padding: '7px 14px', borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit', fontSize: '13px', fontWeight: '700' }}
         >← Back</button>
         <span style={{ fontSize: '17px', fontWeight: '800', color: '#fff' }}>{cat.emoji} {cat.name}</span>
