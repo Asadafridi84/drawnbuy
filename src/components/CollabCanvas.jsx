@@ -26,6 +26,9 @@ export default function CollabCanvas() {
 
   useEffect(() => {
 
+    if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
+  }, [msgs]);
+
   // Product drop + overlay
   const canvasContainerRef = useRef(null);
   const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef);
@@ -43,8 +46,6 @@ export default function CollabCanvas() {
     });
     setShowStickerPicker(false);
   };
-    if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
-  }, [msgs]);
 
   const getPos = (e, canvas) => {
     const r = canvas.getBoundingClientRect();
