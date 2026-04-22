@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
-import { useCanvasStore } from '../store';
+import { useCollabStore } from '../store';
 import { useUIStore } from '../store';
 import { generateRoomId } from '../utils/security';
 import styles from './CanvasesPage.module.css';
@@ -10,7 +10,7 @@ const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
 export default function CanvasesPage() {
   const { user } = useAuthStore();
-  const { setRoomId } = useCanvasStore();
+  const { setRoomId } = useCollabStore();
   const { addToast } = useUIStore();
   const navigate = useNavigate();
 

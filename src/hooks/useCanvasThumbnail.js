@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { useAuthStore } from '../store/auth';
-import { useCanvasStore } from '../store';
+import { useCollabStore } from '../store';
 
 const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
@@ -11,7 +11,7 @@ const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
  */
 export function useCanvasThumbnail(canvasRef) {
   const { token } = useAuthStore();
-  const { roomId } = useCanvasStore();
+  const { roomId } = useCollabStore();
   const savingRef = useRef(false);
 
   /** Capture the canvas at thumbnail resolution */

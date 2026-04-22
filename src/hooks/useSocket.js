@@ -1,6 +1,6 @@
 import { useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
-import { useCanvasStore, useUIStore } from '../store';
+import { useCollabStore, useUIStore } from '../store';
 import { useCanvasStore as useCanvasProductStore } from '../store/canvas';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
@@ -25,7 +25,7 @@ function getSocket() {
 }
 
 export function useSocket() {
-  const { addMessage, setParticipants } = useCanvasStore();
+  const { addMessage, setParticipants } = useCollabStore();
   const { addToast } = useUIStore();
   const addCard = useCanvasProductStore(s => s.addCard);
 

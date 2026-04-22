@@ -166,7 +166,7 @@ function HeroAdCard({ ad }) {
       }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(251,191,36,.5)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; e.currentTarget.style.transform = 'none'; }}
-      onClick={() => window.open(ad.url, '_blank')}
+      onClick={() => window.open(ad.url, '_blank', 'noopener,noreferrer')}
     >
       <img src={ad.img} alt={ad.name} width="155" height="56" style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }} />
       <div style={{ padding: '.35rem .5rem' }}>
@@ -179,7 +179,7 @@ function HeroAdCard({ ad }) {
           color: '#fbbf24', padding: '4px', fontSize: '.6rem', fontWeight: '800',
           cursor: 'pointer', fontFamily: 'inherit',
         }}
-        onClick={e => { e.stopPropagation(); window.open(ad.url, '_blank'); }}
+        onClick={e => { e.stopPropagation(); window.open(ad.url, '_blank', 'noopener,noreferrer'); }}
       >Shop Now →</button>
     </div>
   );
@@ -335,7 +335,7 @@ export default function Hero({ onShare }) {
             <div
               key={i}
               style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer' }}
-              onClick={() => window.open(ad.url, '_blank')}
+              onClick={() => window.open(ad.url, '_blank', 'noopener,noreferrer')}
             >
               <img src={ad.img} alt={ad.name} width="140" height="68" style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
               <div style={{ padding: '.35rem .5rem' }}>

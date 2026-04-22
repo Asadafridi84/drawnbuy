@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CATS } from '../data';
 import { useAuthStore } from '../store/auth';
+import { useCollabStore } from '../store';
 
 const LogoMark = () => (
   <div style={{ position: 'relative', width: '46px', height: '46px', flexShrink: 0 }}>
@@ -50,6 +51,9 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
   const goHome = (hash) => { if (isHome) scrollTo(hash); else navigate('/#'+hash); };
   const user = useAuthStore(s => s.user);
   const logout = useAuthStore(s => s.logout);
+  const participants = useCollabStore(s => s.participants);
+  // Show real room count when socket is connected, otherwise a platform-wide estimate
+  const liveCount = participants.length > 0 ? participants.length : 247;
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catDdOpen, setCatDdOpen] = useState(false);
@@ -328,7 +332,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           <a className="hot" onClick={() => goHome('dealsAnchor')}>Deals</a>
           <a onClick={() => goHome('collabSection')}>Canvas</a>
           <a onClick={() => goHome('catsSection')}>Categories</a>
-          <a onClick={() => goHome('collabSection')} style={{cursor:'pointer'}}>Live<span className="live-badge">247</span></a>
+          <a onClick={() => goHome('collabSection')} style={{cursor:'pointer'}}>Live<span className="live-badge">{liveCount}</span></a>
           <a onClick={() => navigate('/')}>Home</a>
         </div>
 

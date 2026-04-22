@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useProductDrop } from '../hooks/useProductDrop';
 import { useSocket } from '../hooks/useSocket';
 import { useCanvasStore } from '../store/canvas';
-import { useCanvasStore as useCollabStore, useUIStore } from '../store';
+import { useCollabStore, useUIStore } from '../store';
 import { useAuthStore } from '../store/auth';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
 import { CHAT_MSGS } from '../data';

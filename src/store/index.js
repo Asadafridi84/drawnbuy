@@ -23,13 +23,16 @@ export const useUIStore = create((set) => ({
 }));
 
 // ─── Geo/Country Store ────────────────────────────────────────────────────────
+const findCountry = (code) =>
+  COUNTRIES.find(c => c.code === code) || COUNTRIES.find(c => c.code === 'SE') || COUNTRIES[0];
+
 export const useGeoStore = create((set) => ({
   country: 'SE',
-  countryData: COUNTRIES['SE'],
+  countryData: findCountry('SE'),
 
   setCountry: (code) => set({
     country: code,
-    countryData: COUNTRIES[code] || COUNTRIES['SE'],
+    countryData: findCountry(code),
   }),
 
   detectCountry: async () => {
@@ -37,8 +40,9 @@ export const useGeoStore = create((set) => ({
       const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) });
       const data = await res.json();
       const code = data.country_code;
-      if (COUNTRIES[code]) {
-        set({ country: code, countryData: COUNTRIES[code] });
+      const found = findCountry(code);
+      if (found) {
+        set({ country: found.code, countryData: found });
       }
     } catch {
       // Default SE
@@ -47,7 +51,7 @@ export const useGeoStore = create((set) => ({
 }));
 
 // ─── Canvas/Collab Store ──────────────────────────────────────────────────────
-export const useCanvasStore = create((set, get) => ({
+export const useCollabStore = create((set, get) => ({
   roomId: null,
   participants: [],
   messages: [],
