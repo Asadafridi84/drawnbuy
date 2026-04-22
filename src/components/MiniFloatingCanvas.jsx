@@ -5,20 +5,21 @@ import VoiceRecorder from './VoiceRecorder';
 import AudioMessage from './AudioMessage';
 
 export default function MiniFloatingCanvas() {
-  // ALL hooks must be at the top — no exceptions
-  const canvasRef      = useRef(null);
-  const containerRef   = useRef(null);
-  const lastPos        = useRef(null);
-  const addCard        = useCanvasStore(s => s.addCard);
+  const canvasRef    = useRef(null);
+  const containerRef = useRef(null);
+  const lastPos      = useRef(null);
+  const drawingRef   = useRef(false);
+  const addCard      = useCanvasStore(s => s.addCard);
 
   const [minimized,      setMinimized]      = useState(false);
-  const drawingRef = useRef(false);
   const [tool,           setTool]           = useState('draw');
   const [destination,    setDestination]    = useState('everyone');
   const [pendingProduct, setPendingProduct] = useState(null);
   const [showRoomPicker, setShowRoomPicker] = useState(false);
   const [confirmMsg,     setConfirmMsg]     = useState('');
   const [miniAudios,     setMiniAudios]     = useState([]);
+  const [chatText,       setChatText]       = useState('');
+  const [chatMsgs,       setChatMsgs]       = useState([]);
 
   const MOCK_ROOMS = [
     { id: 'room-1', name: 'Family Shopping', online: ['Anna', 'Maja'], isOnline: true  },
@@ -26,6 +27,7 @@ export default function MiniFloatingCanvas() {
     { id: 'room-3', name: 'Spring Fashion',  online: ['Erik'],        isOnline: true  },
   ];
 
+  // ── Drawing ──────────────────────────────────────────────────────────────
   const getPos = (e, canvas) => {
     const r = canvas.getBoundingClientRect();
     const scaleX = canvas.width / r.width;
@@ -62,19 +64,43 @@ export default function MiniFloatingCanvas() {
       ctx.lineJoin = 'round';
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
+
+      // Sync drawing stroke to main CollabCanvas
+      syncStrokeToMain(lastPos.current, pos);
     }
     lastPos.current = pos;
   };
 
   const endDraw = () => { drawingRef.current = false; };
 
+  // Mirror mini canvas stroke onto main-collab canvas
+  const syncStrokeToMain = (from, to) => {
+    const mainCanvas = document.querySelector('[data-canvas-id="main-collab"]');
+    if (!mainCanvas) return;
+    const ctx = mainCanvas.getContext('2d');
+    if (!ctx) return;
+    // Scale mini coords (560x280) to main canvas coords
+    const scaleX = mainCanvas.width / 560;
+    const scaleY = mainCanvas.height / 280;
+    ctx.strokeStyle = '#7c3aed';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(from.x * scaleX, from.y * scaleY);
+    ctx.lineTo(to.x * scaleX, to.y * scaleY);
+    ctx.stroke();
+  };
+
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  // ── Drop handling ─────────────────────────────────────────────────────────
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const raw = e.dataTransfer.getData('application/drawnbuy-product');
     if (!raw) return;
     let product;
@@ -82,19 +108,23 @@ export default function MiniFloatingCanvas() {
 
     if (destination === 'everyone') {
       const cardId = Date.now().toString();
-      addCard('main-collab', {
-        id: cardId, product,
-        x: 80 + Math.random() * 250,
-        y: 60 + Math.random() * 180,
-        ownerId: 'mini-guest',
-      });
+      // Show in mini canvas
       addCard('mini-preview', {
-        id: cardId + '-preview', product,
+        id: cardId, product,
         x: 10 + Math.random() * 80,
         y: 10 + Math.random() * 60,
         ownerId: 'mini-guest',
+        size: 'mini',
       });
-      setConfirmMsg('Added to main canvas!');
+      // Also send to main collab canvas
+      addCard('main-collab', {
+        id: cardId + '-main', product,
+        x: 80 + Math.random() * 400,
+        y: 60 + Math.random() * 280,
+        ownerId: 'mini-guest',
+        size: 'normal',
+      });
+      setConfirmMsg('✅ Added to canvas!');
       setTimeout(() => setConfirmMsg(''), 2500);
     } else {
       setPendingProduct(product);
@@ -109,6 +139,7 @@ export default function MiniFloatingCanvas() {
       x: 60 + Math.random() * 160,
       y: 40 + Math.random() * 120,
       ownerId: 'mini-guest',
+      size: 'small',
     });
     setShowRoomPicker(false);
     setPendingProduct(null);
@@ -116,13 +147,26 @@ export default function MiniFloatingCanvas() {
     setTimeout(() => setConfirmMsg(''), 2500);
   };
 
+  // ── Chat ──────────────────────────────────────────────────────────────────
+  const sendChat = () => {
+    const txt = chatText.trim();
+    if (!txt) return;
+    const now = new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+    setChatMsgs(m => [...m, { id: Date.now(), text: txt, me: true, time: now }]);
+    setChatText('');
+    // Simulate reply
+    setTimeout(() => {
+      const replies = ['Nice! 🔥', 'Love it! ❤️', 'Should we buy it?', 'Add to cart!'];
+      const now2 = new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+      setChatMsgs(m => [...m, { id: Date.now() + 1, text: replies[Math.floor(Math.random() * replies.length)], me: false, name: 'Anna', time: now2 }]);
+    }, 900 + Math.random() * 600);
+  };
+
   const onMiniAudio = (url, dur) => setMiniAudios(m => [...m, { url, dur, id: Date.now() }]);
 
   return (
-    <div style={{
-      position: 'fixed', bottom: 20, right: 20, zIndex: 300,
-      filter: 'drop-shadow(0 8px 32px rgba(124,58,237,.35))',
-    }}>
+    <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 300, filter: 'drop-shadow(0 8px 32px rgba(124,58,237,.35))' }}>
+
       {/* Room picker popup */}
       {showRoomPicker && (
         <div style={{ position: 'absolute', bottom: '100%', right: 0, marginBottom: 8, background: '#fff', borderRadius: 12, padding: 12, width: 230, boxShadow: '0 8px 32px rgba(0,0,0,.25)', border: '1.5px solid #fbbf24', zIndex: 500 }}>
@@ -140,10 +184,8 @@ export default function MiniFloatingCanvas() {
         </div>
       )}
 
-      <div style={{
-        width: 280, background: 'linear-gradient(135deg,#1e1b4b,#4c1d95)',
-        borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,.15)',
-      }}>
+      <div style={{ width: 280, background: 'linear-gradient(135deg,#1e1b4b,#4c1d95)', borderRadius: 16, overflow: 'hidden', border: '1.5px solid rgba(255,255,255,.15)' }}>
+
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderBottom: '1px solid rgba(255,255,255,.1)' }}>
           <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }}/>
@@ -178,44 +220,67 @@ export default function MiniFloatingCanvas() {
               </div>
             )}
 
-            {/* Canvas drop area */}
-            <div
-              ref={containerRef}
-              style={{ position: 'relative', width: '100%' }}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
-            >
+            {/* Canvas — IMPORTANT: onDragOver+onDrop on canvas element itself so drop is not blocked */}
+            <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
               <canvas
                 ref={canvasRef}
+                data-canvas-id="mini-preview"
                 width={560} height={280}
                 style={{ width: '100%', height: 140, display: 'block', cursor: tool === 'erase' ? 'cell' : 'crosshair', background: 'rgba(255,255,255,.04)' }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
                 onMouseDown={startDraw} onMouseMove={doDraw} onMouseUp={endDraw} onMouseLeave={endDraw}
                 onTouchStart={startDraw} onTouchMove={doDraw} onTouchEnd={endDraw}
               />
               <CanvasOverlayLayer canvasId="mini-preview" />
-              {/* Placeholder text */}
               <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', pointerEvents: 'none', textAlign: 'center' }}>
-                <div style={{ fontSize: '.68rem', color: 'rgba(255,255,255,.2)', fontWeight: 600 }}>✏️ Draw or drag a product here</div>
+                <div style={{ fontSize: '.65rem', color: 'rgba(255,255,255,.2)', fontWeight: 600 }}>✏️ Draw or drop a product</div>
               </div>
             </div>
 
             {/* Tool buttons */}
-            <div style={{ display: 'flex', gap: 4, padding: '6px 8px', borderTop: '1px solid rgba(255,255,255,.08)' }}>
+            <div style={{ display: 'flex', gap: 4, padding: '5px 8px', borderTop: '1px solid rgba(255,255,255,.08)' }}>
               {['draw', 'erase'].map(t => (
                 <button key={t} onClick={() => setTool(t)} style={{
-                  flex: 1, padding: '4px 0', borderRadius: 6, border: '1.5px solid',
+                  flex: 1, padding: '3px 0', borderRadius: 6, border: '1.5px solid',
                   borderColor: tool === t ? '#fbbf24' : 'rgba(255,255,255,.15)',
                   background: tool === t ? 'rgba(251,191,36,.15)' : 'transparent',
                   color: tool === t ? '#fbbf24' : 'rgba(255,255,255,.6)',
-                  fontSize: '.68rem', fontWeight: 700, cursor: 'pointer',
+                  fontSize: '.65rem', fontWeight: 700, cursor: 'pointer',
                 }}>
                   {t === 'draw' ? '✏️ Draw' : '⬜ Erase'}
                 </button>
               ))}
               <button
                 onClick={() => document.getElementById('collabSection')?.scrollIntoView({ behavior: 'smooth' }) || (window.location.href = '/#collabSection')}
-                style={{ flex: 1, padding: '4px 0', borderRadius: 6, border: '1.5px solid #fbbf24', background: 'rgba(251,191,36,.15)', color: '#fbbf24', fontSize: '.68rem', fontWeight: 700, cursor: 'pointer' }}
+                style={{ flex: 1, padding: '3px 0', borderRadius: 6, border: '1.5px solid #fbbf24', background: 'rgba(251,191,36,.15)', color: '#fbbf24', fontSize: '.65rem', fontWeight: 700, cursor: 'pointer' }}
               >↗ Open Full</button>
+            </div>
+
+            {/* Chat messages */}
+            {chatMsgs.length > 0 && (
+              <div style={{ maxHeight: 80, overflowY: 'auto', padding: '4px 8px', borderTop: '1px solid rgba(255,255,255,.08)', display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {chatMsgs.slice(-5).map(m => (
+                  <div key={m.id} style={{ display: 'flex', justifyContent: m.me ? 'flex-end' : 'flex-start' }}>
+                    <div style={{ background: m.me ? 'linear-gradient(90deg,#7c3aed,#5b21b6)' : 'rgba(255,255,255,.12)', borderRadius: 8, padding: '3px 8px', maxWidth: '80%' }}>
+                      {!m.me && <div style={{ fontSize: '.55rem', color: 'rgba(255,255,255,.5)', fontWeight: 700 }}>{m.name}</div>}
+                      <div style={{ fontSize: '.72rem', color: '#fff' }}>{m.text}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Chat input */}
+            <div style={{ display: 'flex', gap: 4, padding: '5px 8px', borderTop: '1px solid rgba(255,255,255,.1)' }}>
+              <input
+                value={chatText}
+                onChange={e => setChatText(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && sendChat()}
+                placeholder="Say something..."
+                style={{ flex: 1, background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 8, padding: '4px 8px', color: '#fff', fontSize: '.72rem', outline: 'none' }}
+              />
+              <button onClick={sendChat} style={{ background: 'linear-gradient(90deg,#7c3aed,#5b21b6)', border: '1.5px solid #fbbf24', borderRadius: 8, width: 28, color: '#fff', cursor: 'pointer', fontSize: '.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>→</button>
             </div>
 
             {/* Audio playback */}

@@ -12,14 +12,20 @@ const safeOpen = (url) => {
   } catch {}
 };
 
+// Size map: different canvases get different card sizes
+const CANVAS_SIZES = {
+  'main-collab': { cardW: 160, imgH: 110, fontSize: '.75rem', priceSize: '.82rem', btnSize: '.65rem', pad: '8px 10px 8px' },
+  'hero-canvas': { cardW: 100, imgH: 65,  fontSize: '.6rem',  priceSize: '.68rem', btnSize: '.55rem', pad: '5px 7px 6px'  },
+  'mini-preview':{ cardW: 90,  imgH: 58,  fontSize: '.58rem', priceSize: '.65rem', btnSize: '.52rem', pad: '4px 6px 5px'  },
+  'room-1':      { cardW: 110, imgH: 72,  fontSize: '.62rem', priceSize: '.7rem',  btnSize: '.56rem', pad: '6px 8px 6px'  },
+  'room-2':      { cardW: 110, imgH: 72,  fontSize: '.62rem', priceSize: '.7rem',  btnSize: '.56rem', pad: '6px 8px 6px'  },
+  'room-3':      { cardW: 110, imgH: 72,  fontSize: '.62rem', priceSize: '.7rem',  btnSize: '.56rem', pad: '6px 8px 6px'  },
+};
+const DEFAULT_SIZE = { cardW: 140, imgH: 90, fontSize: '.68rem', priceSize: '.75rem', btnSize: '.6rem', pad: '6px 8px 6px' };
+
 export default function ProductCard({ card, canvasId }) {
-  // Auto-size: mini canvas (mini-preview, hero-canvas) = 100px, full = 160px
-  const isMini = canvasId === 'mini-preview' || canvasId === 'hero-canvas';
-  const cardW  = isMini ? 100 : 160;
-  const imgH   = isMini ? 70  : 110;
-  const fontSize = isMini ? '.6rem' : '.75rem';
-  const priceSize = isMini ? '.7rem' : '.82rem';
-  const btnSize = isMini ? '.55rem' : '.65rem';
+  const sz = CANVAS_SIZES[canvasId] || DEFAULT_SIZE;
+  const { cardW, imgH, fontSize, priceSize, btnSize, pad } = sz;
   const moveCard   = useCanvasStore(s => s.moveCard);
   const removeCard = useCanvasStore(s => s.removeCard);
   const user       = useAuthStore(s => s.user);
@@ -72,11 +78,11 @@ export default function ProductCard({ card, canvasId }) {
         style={{ width: '100%', height: imgH, objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
         onError={e => { e.target.style.background = '#f4f0ff'; e.target.style.display = 'none'; }}
       />
-      <div style={{ padding: '8px 10px 8px' }}>
-        <div style={{ fontSize: '.75rem', fontWeight: 800, color: '#1a0a3e', marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+      <div style={{ padding: pad }}>
+        <div style={{ fontSize: fontSize, fontWeight: 800, color: '#1a0a3e', marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {card.product.name}
         </div>
-        <div style={{ fontSize: '.82rem', fontWeight: 800, color: '#fbbf24', marginBottom: 6 }}>
+        <div style={{ fontSize: priceSize, fontWeight: 800, color: '#fbbf24', marginBottom: 6 }}>
           {card.product.price}
         </div>
         <div style={{ display: 'flex', gap: 4 }}>
