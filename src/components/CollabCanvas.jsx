@@ -40,6 +40,8 @@ export default function CollabCanvas({ onShare }) {
   }, [localMsgs, socketMsgs]);
 
   // Socket setup
+  const participants = useCollabStore(s => s.participants);
+
   const { connect, sendDraw, sendMessage, sendProductDrop, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
@@ -100,13 +102,121 @@ export default function CollabCanvas({ onShare }) {
   const saveCanvasPng = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    // Composite: white bg + drawing + branding watermark
+    const out = document.createElement('canvas');
+    out.width  = canvas.width;
+    out.height = canvas.height;
+    const ctx = out.getContext('2d');
+
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, out.width, out.height);
+
+    // Drawing layer
+    ctx.drawImage(canvas, 0, 0);
+
+    // Watermark pill — bottom-right
+    const wm = 'DrawNBuy 🛍️  drawnbuy.com';
+    ctx.font = 'bold 15px "Space Grotesk", sans-serif';
+    const tw = ctx.measureText(wm).width;
+    const ph = 28, pw = tw + 24, px = out.width - pw - 14, py = out.height - ph - 12;
+    ctx.fillStyle = 'rgba(124,58,237,0.88)';
+    const r = 14;
+    ctx.beginPath();
+    ctx.moveTo(px + r, py);
+    ctx.lineTo(px + pw - r, py);
+    ctx.arcTo(px + pw, py, px + pw, py + r, r);
+    ctx.lineTo(px + pw, py + ph - r);
+    ctx.arcTo(px + pw, py + ph, px + pw - r, py + ph, r);
+    ctx.lineTo(px + r, py + ph);
+    ctx.arcTo(px, py + ph, px, py + ph - r, r);
+    ctx.lineTo(px, py + r);
+    ctx.arcTo(px, py, px + r, py, r);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(wm, px + 12, py + 19);
+
+    const dataUrl = out.toDataURL('image/png');
     const a = document.createElement('a');
     a.download = 'drawnbuy-canvas.png';
-    a.href = canvas.toDataURL('image/png');
+    a.href = dataUrl;
     a.click();
-    addToast('Canvas saved as PNG 💾', 'success');
+    addToast('Canvas saved with branding 💾', 'success');
+  };
+
+  const shareCanvasScreenshot = async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const out = document.createElement('canvas');
+    out.width  = canvas.width;
+    out.height = canvas.height;
+    const ctx = out.getContext('2d');
+
+    // White background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, out.width, out.height);
+    ctx.drawImage(canvas, 0, 0);
+
+    // Watermark
+    const wm = 'DrawNBuy 🛍️  drawnbuy.com';
+    ctx.font = 'bold 15px "Space Grotesk", sans-serif';
+    const tw = ctx.measureText(wm).width;
+    const ph = 28, pw = tw + 24, px = out.width - pw - 14, py = out.height - ph - 12;
+    ctx.fillStyle = 'rgba(124,58,237,0.88)';
+    const r = 14;
+    ctx.beginPath();
+    ctx.moveTo(px + r, py);
+    ctx.lineTo(px + pw - r, py);
+    ctx.arcTo(px + pw, py, px + pw, py + r, r);
+    ctx.lineTo(px + pw, py + ph - r);
+    ctx.arcTo(px + pw, py + ph, px + pw - r, py + ph, r);
+    ctx.lineTo(px + r, py + ph);
+    ctx.arcTo(px, py + ph, px, py + ph - r, r);
+    ctx.lineTo(px, py + r);
+    ctx.arcTo(px, py, px + r, py, r);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(wm, px + 12, py + 19);
+
+    // Try Web Share API first (mobile), fallback to clipboard copy
+    out.toBlob(async (blob) => {
+      if (!blob) { addToast('Could not capture canvas', 'error'); return; }
+      const file = new File([blob], 'drawnbuy-canvas.png', { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Shopping together on DrawNBuy 🛍️',
+            text: 'Shopping together on DrawNBuy 🛍️  — Draw it. Find it. Buy it.',
+          });
+          addToast('Canvas shared! 📸', 'success');
+          return;
+        } catch (err) {
+          if (err.name !== 'AbortError') {/* fall through to clipboard */}
+        }
+      }
+      // Clipboard fallback
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        addToast('Canvas screenshot copied to clipboard 📋', 'success');
+      } catch {
+        // Last resort: download
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.download = 'drawnbuy-canvas.png';
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+        addToast('Canvas saved as PNG 💾', 'success');
+      }
+    }, 'image/png');
   };
   const [showStickerPicker, setShowStickerPicker] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [touchCursor, setTouchCursor] = useState(null); // {x,y} relative to canvas container
   const STICKER_EMOJIS = ['🔥','❤️','👍','😍','💯','⭐','🛒','💰','✅','🎉','🤩','💅'];
   const dropSticker = (emoji) => {
     addSticker('main-collab', {
@@ -137,6 +247,10 @@ export default function CollabCanvas({ onShare }) {
     const ctx = canvas.getContext('2d');
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
+    if (e.touches) {
+      const r = canvas.getBoundingClientRect();
+      setTouchCursor({ x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top });
+    }
   };
 
   const doDraw = e => {
@@ -169,9 +283,13 @@ export default function CollabCanvas({ onShare }) {
       }
     }
     lastPos.current = pos;
+    if (e.touches) {
+      const r = canvasRef.current.getBoundingClientRect();
+      setTouchCursor({ x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top });
+    }
   };
 
-  const endDraw = () => { drawingRef.current = false; };
+  const endDraw = () => { drawingRef.current = false; setTouchCursor(null); };
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -258,6 +376,59 @@ export default function CollabCanvas({ onShare }) {
         .ep-em { font-size:20px; cursor:pointer; padding:5px; border-radius:8px; text-align:center; transition:.1s; display:flex; align-items:center; justify-content:center; }
         .ep-em:hover { background:#f4f0ff; transform:scale(1.2); }
         @media(max-width:900px) { .collab-grid { grid-template-columns:1fr; } }
+
+        /* ── Mobile canvas UX ── */
+        @media(max-width:768px) {
+          /* Larger touch targets for all tool chips */
+          .t-chip {
+            min-height:44px; padding:10px 14px; font-size:13px;
+          }
+          /* Larger colour swatches */
+          .cv-top .color-swatch {
+            width:26px !important; height:26px !important;
+          }
+          /* Larger size pickers */
+          .cv-top .size-chip {
+            width:36px !important; height:32px !important;
+          }
+          /* Slide-up chat panel */
+          .chat-panel {
+            position:fixed !important;
+            bottom:0; left:0; right:0;
+            border-radius:20px 20px 0 0 !important;
+            z-index:200;
+            max-height:60vh;
+            transform:translateY(calc(100% - 52px));
+            transition:transform .35s cubic-bezier(.32,1,.56,1);
+            box-shadow:0 -8px 40px rgba(0,0,0,.5);
+            border:1px solid rgba(255,255,255,.15) !important;
+          }
+          .chat-panel.open {
+            transform:translateY(0);
+          }
+          .chat-panel-drag {
+            height:20px; display:flex; align-items:center; justify-content:center;
+            cursor:pointer; flex-shrink:0;
+          }
+          .chat-panel-drag::before {
+            content:''; width:36px; height:4px; border-radius:2px;
+            background:rgba(255,255,255,.3); display:block;
+          }
+          /* Touch cursor dot */
+          .touch-cursor {
+            position:absolute; width:20px; height:20px; border-radius:50%;
+            border:2px solid rgba(124,58,237,.7);
+            background:rgba(124,58,237,.2);
+            pointer-events:none; transform:translate(-50%,-50%);
+            transition:opacity .15s, transform .1s;
+            z-index:10;
+          }
+        }
+        .presence-bubbles { display:flex; align-items:center; }
+        .presence-av { width:26px; height:26px; border-radius:50%; border:2px solid rgba(255,255,255,.5); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; margin-left:-6px; transition:.2s; flex-shrink:0; }
+        .presence-av:first-child { margin-left:0; }
+        .presence-av:hover { transform:translateY(-3px) scale(1.1); z-index:5; }
+        .presence-more { background:rgba(255,255,255,.18); border:2px solid rgba(255,255,255,.35); color:#fff; font-size:9px; font-weight:800; }
       `}</style>
 
       <div className="collab-orb" />
@@ -268,7 +439,7 @@ export default function CollabCanvas({ onShare }) {
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
               🎨 Collaborative Canvas
-              <span className="live-count-badge"><span className="live-dot" /> 247 drawing now</span>
+              <span className="live-count-badge"><span className="live-dot" /> {participants.length > 0 ? participants.length : 247} drawing now</span>
             </h2>
             <p style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.5)', margin: '3px 0 0' }}>Draw together, find products, shop as a team</p>
           </div>
@@ -295,7 +466,26 @@ export default function CollabCanvas({ onShare }) {
                   </div>
                 ))}
               </div>
-              <span style={{ marginLeft: 'auto', color: 'rgba(255,255,255,.65)', fontSize: '12px', fontWeight: '600' }}>Room: #spring2026</span>
+              <span style={{ color: 'rgba(255,255,255,.65)', fontSize: '12px', fontWeight: '600', marginLeft: 'auto' }}>Room: #spring2026</span>
+
+              {/* Live avatar bubbles */}
+              {(() => {
+                const visible = participants.slice(0, 4);
+                const extra   = participants.length - 4;
+                const initials = (name) => (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+                return (
+                  <div className="presence-bubbles" title={participants.map(p=>p.name).join(', ')}>
+                    {visible.map(p => (
+                      <div key={p.id} className="presence-av" style={{ background: p.color || '#7c3aed' }} title={p.name}>
+                        {initials(p.name)}
+                      </div>
+                    ))}
+                    {extra > 0 && (
+                      <div className="presence-av presence-more">+{extra}</div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="cv-tools">
@@ -317,7 +507,8 @@ export default function CollabCanvas({ onShare }) {
                 )}
               </div>
               <button className="t-chip" style={{ marginLeft: 'auto' }} onClick={saveCanvasPng}>💾 Save</button>
-              <button className="t-chip" onClick={() => onShare?.()}>📤 Share</button>
+              <button className="t-chip" onClick={shareCanvasScreenshot} style={{ background: 'rgba(251,191,36,.15)', borderColor: '#fbbf24', color: '#fbbf24' }}>📸 Share Canvas</button>
+              <button className="t-chip" onClick={() => onShare?.()}>📤 Invite</button>
             </div>
 
             <div className="cv-area" style={{ cursor: tool==='erase'?'cell':'crosshair' }}>
@@ -342,6 +533,10 @@ export default function CollabCanvas({ onShare }) {
                 onTouchEnd={endDraw}
               />
                   <CanvasOverlayLayer canvasId="main-collab" />
+                  {/* Touch cursor feedback dot */}
+                  {touchCursor && (
+                    <div className="touch-cursor" style={{ left: touchCursor.x, top: touchCursor.y, borderColor: color }} />
+                  )}
                 </div>
               <div className="cv-hint">
                 <span style={{ fontSize: '13px', color: 'rgba(124,58,237,.2)', fontWeight: '600' }}>✏️ Draw or drag a product here — friends see it live!</span>
@@ -350,7 +545,9 @@ export default function CollabCanvas({ onShare }) {
           </div>
 
           {/* Chat Panel */}
-          <div className="chat-panel">
+          <div className={`chat-panel${chatOpen ? ' open' : ''}`}>
+            {/* Mobile drag handle — tap to toggle open/close */}
+            <div className="chat-panel-drag" onClick={() => setChatOpen(v => !v)} aria-label="Toggle chat" />
             <div className="ctabs">
               {[['chat','💬 Chat'],['products','🛍️ Products'],['rooms','🚪 Rooms']].map(([t,l]) => (
                 <button key={t} className={`ctab ${activeTab===t?'on':''}`} onClick={() => setActiveTab(t)}>{l}</button>
@@ -360,8 +557,15 @@ export default function CollabCanvas({ onShare }) {
             {activeTab === 'chat' && <>
             <div className="who-bar">
               <span style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.4)', fontWeight: '700' }}>In room:</span>
-              {['Anna 🟢','Maja 🟢','You 🟢'].map(n => (
-                <span key={n} className="who-pill"><span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />{n}</span>
+              {(participants.length > 0 ? participants : [
+                { id: 'a', name: 'Anna', color: '#7c3aed' },
+                { id: 'b', name: 'Maja', color: '#22c55e' },
+                { id: 'c', name: 'You',  color: '#fbbf24' },
+              ]).slice(0, 5).map(p => (
+                <span key={p.id} className="who-pill">
+                  <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: p.color || '#22c55e', display: 'inline-block' }} />
+                  {p.name}
+                </span>
               ))}
             </div>
 

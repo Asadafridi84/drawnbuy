@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { DRAG_PRODS } from '../data';
+import { useCartStore, useWishlistStore, useUIStore } from '../store';
 
 // Extend drag prods to 33+ by repeating with variation
 const ALL_PRODS = [
@@ -27,6 +28,24 @@ export default function DragStrip() {
   const [sort, setSort] = useState('featured');
   const [autoRotate, setAutoRotate] = useState(true);
   const rowRef = useRef(null);
+
+  const cartAdd      = useCartStore(s => s.addItem);
+  const wishAdd      = useWishlistStore(s => s.addItem);
+  const wishHas      = useWishlistStore(s => s.hasItem);
+  const addToast     = useUIStore(s => s.addToast);
+
+  const handleAddToCart = (e, p) => {
+    e.stopPropagation();
+    cartAdd({ id: p.name, name: p.name, price: p.price, img: p.img, url: p.url });
+    addToast(`🛒 "${p.name}" added to cart!`, 'success');
+  };
+
+  const handleWish = (e, p) => {
+    e.stopPropagation();
+    const id = p.name; // use name as stable id since DRAG_PRODS have no numeric id
+    const added = wishAdd({ id, name: p.name, price: p.price, img: p.img, url: p.url, store: '' });
+    addToast(added ? `♡ "${p.name}" saved to wishlist!` : `Already in your wishlist`, added ? 'success' : 'info');
+  };
 
   const sorted = [...ALL_PRODS].sort((a, b) => {
     if (sort === 'price-asc') return parseInt(a.price.replace(/[^0-9]/g,'')) - parseInt(b.price.replace(/[^0-9]/g,''));
@@ -124,8 +143,13 @@ export default function DragStrip() {
                   {p.old && <span style={{ fontSize: '.65rem', color: 'rgba(255,255,255,.35)', textDecoration: 'line-through', marginLeft: '.25rem' }}>{p.old}</span>}
                 </div>
                 <div style={{ display: 'flex', gap: '.35rem', marginTop: '.4rem' }}>
-                  <button className="pc-cart">🛒 Add</button>
-                  <button className="pc-wish">♡</button>
+                  <button className="pc-cart" onClick={e => handleAddToCart(e, p)}>🛒 Add</button>
+                  <button
+                    className="pc-wish"
+                    onClick={e => handleWish(e, p)}
+                    title={wishHas(p.name) ? 'In wishlist' : 'Add to wishlist'}
+                    style={{ color: wishHas(p.name) ? '#ef4444' : '#fff' }}
+                  >{wishHas(p.name) ? '♥' : '♡'}</button>
                 </div>
               </div>
             </div>

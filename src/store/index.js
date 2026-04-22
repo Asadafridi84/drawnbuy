@@ -75,6 +75,19 @@ export const useCollabStore = create((set, get) => ({
   setMicOn: (v) => set({ isMicOn: v }),
 }));
 
+// ─── Wishlist Store ───────────────────────────────────────────────────────────
+export const useWishlistStore = create((set, get) => ({
+  items: [],
+
+  addItem: (product) => {
+    if (get().items.find(i => i.id === product.id)) return false; // already in list
+    set(s => ({ items: [...s.items, product] }));
+    return true;
+  },
+  removeItem: (id) => set(s => ({ items: s.items.filter(i => i.id !== id) })),
+  hasItem: (id) => !!get().items.find(i => i.id === id),
+}));
+
 // ─── Cart Store ───────────────────────────────────────────────────────────────
 export const useCartStore = create((set, get) => ({
   items: [],
