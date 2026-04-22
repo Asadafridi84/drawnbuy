@@ -134,8 +134,22 @@ io.on('connection', (socket) => {
   socket.on('product-dropped', (d) => {
     if (!room) return;
     socket.to(room).emit('product-dropped', {
-      productId: sanitize(String(d.productId||'')), name: sanitize(String(d.name||'')),
-      emoji: sanitize(String(d.emoji||'')), x:+d.x||0, y:+d.y||0, droppedBy: user?.name,
+      // identity / position
+      id:        sanitize(String(d.id        || '')),
+      productId: sanitize(String(d.productId || '')),
+      canvasId:  sanitize(String(d.canvasId  || 'main-collab')),
+      x: +d.x || 0,
+      y: +d.y || 0,
+      droppedBy: user?.name,
+      // product display fields — forwarded so the remote card renders correctly
+      name:  sanitize(String(d.name  || '')),
+      emoji: sanitize(String(d.emoji || '')),
+      price: sanitize(String(d.price || '')),
+      // img and url are URLs — validate protocol before forwarding
+      img: (typeof d.img === 'string' && /^https?:\/\//i.test(d.img))
+        ? d.img.slice(0, 500) : '',
+      url: (typeof d.url === 'string' && /^https?:\/\//i.test(d.url))
+        ? d.url.slice(0, 500) : '',
     });
   });
 

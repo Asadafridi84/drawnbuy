@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useProductDrop } from '../hooks/useProductDrop';
 import { useSocket } from '../hooks/useSocket';
 import { useCanvasStore } from '../store/canvas';
+import { useCanvasStore as useCollabStore } from '../store';
 import { useAuthStore } from '../store/auth';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
-import CanvasChatPanel from './CanvasChatPanel';
 import { CHAT_MSGS } from '../data';
 
 const EMOJIS = ['😀','😂','🥰','😍','🤩','😎','🥳','🎉','🔥','💯','👏','✨','💜','💛','🩵','🛍️','🎨','👟','👗','💄','⌚','📱','💻','🎮','🏠','🍕','🛒','💪','🧸','📚'];
@@ -14,7 +14,11 @@ export default function CollabCanvas() {
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
   const [size, setSize] = useState('md');
-  const [msgs, setMsgs] = useState(CHAT_MSGS);
+  // localMsgs holds messages sent by the current user (immediate feedback).
+  // socketMsgs holds messages arriving from remote users via the socket store.
+  // Both are merged for display.
+  const [localMsgs, setLocalMsgs] = useState(CHAT_MSGS);
+  const socketMsgs = useCollabStore(s => s.messages);
   const [chatInput, setChatInput] = useState('');
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
@@ -25,17 +29,59 @@ export default function CollabCanvas() {
   const colors = ['#7c3aed','#fbbf24','#67e8f9','#ef4444','#22c55e','#f97316','#000000','#ffffff'];
   const sizes = { sm: 2, md: 4, lg: 8 };
 
-  useEffect(() => {
+  // Combine local + socket messages for display, keeping chronological order
+  const msgs = [
+    ...localMsgs,
+    ...socketMsgs.map(m => ({ name: m.sender, me: false, text: m.text, time: m.time })),
+  ];
 
+  useEffect(() => {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
-  }, [msgs]);
+  }, [localMsgs, socketMsgs]);
 
   // Socket setup
-  const { connect, sendProductDrop } = useSocket();
+  const { connect, sendDraw, sendMessage, sendProductDrop, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
-    // Connect to socket and join the collab room
     const username = user?.name || 'Guest';
     connect('spring2026', username);
+
+    // Replay a single incoming draw stroke onto the canvas
+    const unsubDraw = onRemoteDraw((d) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = d.color || '#000';
+      ctx.lineWidth = d.width || 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(d.x1, d.y1);
+      ctx.lineTo(d.x2, d.y2);
+      ctx.stroke();
+    });
+
+    // Replay full canvas history when joining a room that already has strokes
+    onCanvasState((events) => {
+      const canvas = canvasRef.current;
+      if (!canvas || !Array.isArray(events)) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      events.forEach((d) => {
+        if (d.type !== 'draw') return;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = d.color || '#000';
+        ctx.lineWidth = d.width || 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(d.x1, d.y1);
+        ctx.lineTo(d.x2, d.y2);
+        ctx.stroke();
+      });
+    });
+
+    return () => { unsubDraw?.(); };
   }, []);
 
   // Product drop + overlay — passes sendProductDrop to emit to remote clients
@@ -92,6 +138,18 @@ export default function CollabCanvas() {
       ctx.lineJoin = 'round';
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
+
+      // Emit this segment so remote clients see it in real time
+      if (lastPos.current) {
+        sendDraw({
+          x1: lastPos.current.x,
+          y1: lastPos.current.y,
+          x2: pos.x,
+          y2: pos.y,
+          color,
+          width: sizes[size],
+        });
+      }
     }
     lastPos.current = pos;
   };
@@ -104,8 +162,13 @@ export default function CollabCanvas() {
   };
 
   const sendMsg = () => {
-    if (!chatInput.trim()) return;
-    setMsgs(m => [...m, { name: 'You', me: true, text: chatInput.trim(), time: new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'}) }]);
+    const text = chatInput.trim();
+    if (!text) return;
+    const time = new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+    // Add to local list immediately for instant feedback
+    setLocalMsgs(m => [...m, { name: 'You', me: true, text, time }]);
+    // Emit to all other users in the room via socket
+    sendMessage(text);
     setChatInput('');
   };
 

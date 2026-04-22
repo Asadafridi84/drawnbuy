@@ -7,7 +7,10 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
 // Singleton socket — one connection per browser session
 let socket = null;
+// handlers that accept a single latest callback (overwrite semantics)
 const handlers = {};
+// handlers that accumulate multiple subscribers (array semantics)
+const multiHandlers = { onRemoteDraw: [] };
 
 function getSocket() {
   if (!socket) {
@@ -60,7 +63,7 @@ export function useSocket() {
     });
 
     // ── Incoming events ────────────────────────────────────────────────────
-    s.on('draw', (data) => handlers.onRemoteDraw?.(data));
+    s.on('draw', (data) => multiHandlers.onRemoteDraw.forEach(fn => fn(data)));
     s.on('canvas-cleared', () => handlers.onRemoteClear?.());
     s.on('canvas-state', (events) => handlers.onCanvasState?.(events));
 
@@ -116,7 +119,13 @@ export function useSocket() {
   }, []);
 
   // ── Handler registration ──────────────────────────────────────────────────
-  const onRemoteDraw   = useCallback((fn) => { handlers.onRemoteDraw = fn; }, []);
+  // onRemoteDraw supports multiple subscribers; returns an unsubscribe function
+  const onRemoteDraw  = useCallback((fn) => {
+    multiHandlers.onRemoteDraw.push(fn);
+    return () => {
+      multiHandlers.onRemoteDraw = multiHandlers.onRemoteDraw.filter(f => f !== fn);
+    };
+  }, []);
   const onRemoteClear  = useCallback((fn) => { handlers.onRemoteClear = fn; }, []);
   const onCanvasState  = useCallback((fn) => { handlers.onCanvasState = fn; }, []);
   const onConnect      = useCallback((fn) => { handlers.onConnect = fn; }, []);

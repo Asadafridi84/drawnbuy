@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useCanvasStore } from '../store/canvas';
+import { useSocket } from '../hooks/useSocket';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
 import VoiceRecorder from './VoiceRecorder';
 import AudioMessage from './AudioMessage';
@@ -10,6 +11,29 @@ export default function MiniFloatingCanvas() {
   const lastPos      = useRef(null);
   const drawingRef   = useRef(false);
   const addCard      = useCanvasStore(s => s.addCard);
+  const { sendDraw, onRemoteDraw } = useSocket();
+
+  useEffect(() => {
+    // Subscribe to remote draw events and replay them on the mini canvas
+    const unsub = onRemoteDraw((d) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      // Scale from main canvas logical size (1000×600) to mini (560×280)
+      const scaleX = 560 / 1000;
+      const scaleY = 280 / 600;
+      const ctx = canvas.getContext('2d');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = d.color || '#7c3aed';
+      ctx.lineWidth = Math.max(1, (d.width || 2) * scaleX);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(d.x1 * scaleX, d.y1 * scaleY);
+      ctx.lineTo(d.x2 * scaleX, d.y2 * scaleY);
+      ctx.stroke();
+    });
+    return () => { unsub?.(); };
+  }, []);
 
   const [minimized,      setMinimized]      = useState(false);
   const [tool,           setTool]           = useState('draw');
@@ -65,32 +89,25 @@ export default function MiniFloatingCanvas() {
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
 
-      // Sync drawing stroke to main CollabCanvas
-      syncStrokeToMain(lastPos.current, pos);
+      // Emit stroke scaled to main canvas coords (1000×600) so all clients
+      // (including CollabCanvas and other mini canvases) see it in real time
+      if (lastPos.current) {
+        const scaleX = 1000 / 560;
+        const scaleY = 600 / 280;
+        sendDraw({
+          x1: lastPos.current.x * scaleX,
+          y1: lastPos.current.y * scaleY,
+          x2: pos.x * scaleX,
+          y2: pos.y * scaleY,
+          color: '#7c3aed',
+          width: 3,
+        });
+      }
     }
     lastPos.current = pos;
   };
 
   const endDraw = () => { drawingRef.current = false; };
-
-  // Mirror mini canvas stroke onto main-collab canvas
-  const syncStrokeToMain = (from, to) => {
-    const mainCanvas = document.querySelector('[data-canvas-id="main-collab"]');
-    if (!mainCanvas) return;
-    const ctx = mainCanvas.getContext('2d');
-    if (!ctx) return;
-    // Scale mini coords (560x280) to main canvas coords
-    const scaleX = mainCanvas.width / 560;
-    const scaleY = mainCanvas.height / 280;
-    ctx.strokeStyle = '#7c3aed';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(from.x * scaleX, from.y * scaleY);
-    ctx.lineTo(to.x * scaleX, to.y * scaleY);
-    ctx.stroke();
-  };
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
