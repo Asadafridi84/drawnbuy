@@ -117,7 +117,7 @@ class DrawnbuyCrew:
             allow_delegation=True,
             verbose=True,
             max_iter=15,
-            memory=True,
+            memory=False,
         )
 
     def build_frontend_agent(self) -> Agent:
@@ -150,7 +150,7 @@ class DrawnbuyCrew:
             allow_delegation=True,  # Can ask Backend/Security for info
             verbose=True,
             max_iter=15,
-            memory=True,
+            memory=False,
         )
 
     def build_backend_agent(self) -> Agent:
@@ -180,7 +180,7 @@ class DrawnbuyCrew:
             allow_delegation=True,  # Can ask Frontend/Security for info
             verbose=True,
             max_iter=15,
-            memory=True,
+            memory=False,
         )
 
     def build_security_agent(self) -> Agent:
@@ -210,7 +210,7 @@ class DrawnbuyCrew:
             allow_delegation=True,  # Can ask Frontend/Backend to fix issues
             verbose=True,
             max_iter=15,
-            memory=True,
+            memory=False,
         )
 
     def build_affiliate_agent(self) -> Agent:
@@ -235,12 +235,6 @@ class DrawnbuyCrew:
                 "Backend when new affiliate data needs storage. You document research in "
                 "/agents/reports/affiliate/."
             ),
-            tools=AFFILIATE_TOOLS,
-            llm=self.llm,
-            allow_delegation=True,  # Can request UI/data changes from other agents
-            verbose=True,
-            max_iter=15,
-            memory=True,
         )
 
     # ── Crew Assembly ─────────────────────────────────────────────────────────
@@ -316,6 +310,7 @@ class DrawnbuyCrew:
             process=Process.sequential,
             verbose=True,
             memory=False,
+            memory_config={"provider": "anthropic", "config": {"model": "claude-3-haiku-20240307"}},
             max_rpm=10,
             share_crew=False,
         )
@@ -461,3 +456,5 @@ python agents/main.py
             pass
 
         return report
+
+
