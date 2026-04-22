@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
 
-export function useProductDrop(canvasId, containerRef, syncCanvasIds = []) {
+export function useProductDrop(canvasId, containerRef, syncCanvasIds = [], sendProductDrop = null) {
   const addCard   = useCanvasStore(s => s.addCard);
   const user      = useAuthStore(s => s.user);
   const guestId   = useRef('guest-' + Math.random().toString(36).slice(2, 7));
@@ -25,13 +25,12 @@ export function useProductDrop(canvasId, containerRef, syncCanvasIds = []) {
 
     const x = Math.max(0, e.clientX - rect.left - 80);
     const y = Math.max(0, e.clientY - rect.top  - 60);
-
     const id = Date.now().toString();
 
-    // Add to primary canvas
+    // 1. Add to primary canvas locally
     addCard(canvasId, { id, product, x, y, ownerId: userId });
 
-    // Sync to additional canvases (e.g. hero -> main-collab)
+    // 2. Sync to additional canvases (e.g. hero -> main-collab)
     syncCanvasIds.forEach((syncId, i) => {
       addCard(syncId, {
         id: id + '-sync-' + i,
@@ -41,6 +40,15 @@ export function useProductDrop(canvasId, containerRef, syncCanvasIds = []) {
         ownerId: userId,
       });
     });
+
+    // 3. Emit to socket so remote clients see the drop
+    if (sendProductDrop) {
+      sendProductDrop(
+        { ...product, id, canvasId, droppedBy: userId },
+        x,
+        y,
+      );
+    }
   };
 
   return { onDragOver, onDrop };

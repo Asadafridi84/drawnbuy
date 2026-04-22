@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useProductDrop } from '../hooks/useProductDrop';
+import { useSocket } from '../hooks/useSocket';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
@@ -29,9 +30,17 @@ export default function CollabCanvas() {
     if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
   }, [msgs]);
 
-  // Product drop + overlay
+  // Socket setup
+  const { connect, sendProductDrop } = useSocket();
+  useEffect(() => {
+    // Connect to socket and join the collab room
+    const username = user?.name || 'Guest';
+    connect('spring2026', username);
+  }, []);
+
+  // Product drop + overlay — passes sendProductDrop to emit to remote clients
   const canvasContainerRef = useRef(null);
-  const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef);
+  const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef, [], sendProductDrop);
   const addSticker = useCanvasStore(s => s.addSticker);
   const user = useAuthStore(s => s.user);
   const [showStickerPicker, setShowStickerPicker] = useState(false);

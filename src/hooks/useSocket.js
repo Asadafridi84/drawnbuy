@@ -1,6 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import { useCanvasStore, useUIStore } from '../store';
+import { useCanvasStore as useCanvasProductStore } from '../store/canvas';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 
@@ -23,6 +24,7 @@ function getSocket() {
 export function useSocket() {
   const { addMessage, setParticipants } = useCanvasStore();
   const { addToast } = useUIStore();
+  const addCard = useCanvasProductStore(s => s.addCard);
 
   // ── Connect & join room ───────────────────────────────────────────────────
   const connect = useCallback((roomId, username = 'Anonymous') => {
@@ -83,7 +85,20 @@ export function useSocket() {
     });
 
     s.on('product-dropped', (data) => {
-      addToast(`${data.emoji} ${data.droppedBy} placed ${data.name} on canvas!`, 'info');
+      addToast(`${data.emoji || '📦'} ${data.droppedBy || 'Someone'} placed ${data.name} on canvas!`, 'info');
+      // Also render the product card on the remote client's canvas
+      addCard(data.canvasId || 'main-collab', {
+        id: data.id || Date.now().toString(),
+        product: {
+          name: data.name,
+          price: data.price,
+          img: data.img,
+          url: data.url,
+        },
+        x: data.x || 80,
+        y: data.y || 60,
+        ownerId: data.droppedBy || 'remote',
+      });
     });
   }, []);
 
