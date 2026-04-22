@@ -17,7 +17,7 @@ export default function CollabCanvas() {
   const [chatInput, setChatInput] = useState('');
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
-  const [drawing, setDrawing] = useState(false);
+  const drawingRef = useRef(false); // sync ref — avoids React async state issue
   const lastPos = useRef(null);
   const msgsRef = useRef(null);
 
@@ -59,12 +59,16 @@ export default function CollabCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     e.preventDefault();
-    setDrawing(true);
-    lastPos.current = getPos(e, canvas);
+    drawingRef.current = true;
+    const pos = getPos(e, canvas);
+    lastPos.current = pos;
+    const ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
   };
 
   const doDraw = e => {
-    if (!drawing) return;
+    if (!drawingRef.current) return; // sync check
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e, canvas);
@@ -85,7 +89,7 @@ export default function CollabCanvas() {
     lastPos.current = pos;
   };
 
-  const endDraw = () => setDrawing(false);
+  const endDraw = () => { drawingRef.current = false; };
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -233,14 +237,14 @@ export default function CollabCanvas() {
               <div
                   ref={canvasContainerRef}
                   style={{ position: 'relative', flex: 1, width: '100%', height: '100%' }}
+                  onDragOver={onDragOver}
+                  onDrop={onDrop}
                 >
                   <canvas
                 ref={canvasRef}
                 width={1000}
                 height={600}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
                 onMouseDown={startDraw}
                 onMouseMove={doDraw}
                 onMouseUp={endDraw}

@@ -12,7 +12,7 @@ export default function MiniFloatingCanvas() {
   const addCard        = useCanvasStore(s => s.addCard);
 
   const [minimized,      setMinimized]      = useState(false);
-  const [drawing,        setDrawing]        = useState(false);
+  const drawingRef = useRef(false);
   const [tool,           setTool]           = useState('draw');
   const [destination,    setDestination]    = useState('everyone');
   const [pendingProduct, setPendingProduct] = useState(null);
@@ -38,12 +38,16 @@ export default function MiniFloatingCanvas() {
     e.preventDefault();
     const canvas = canvasRef.current;
     if (!canvas) return;
-    setDrawing(true);
-    lastPos.current = getPos(e, canvas);
+    drawingRef.current = true;
+    const ctx = canvas.getContext('2d');
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    lastPos.current = pos;
   };
 
   const doDraw = e => {
-    if (!drawing) return;
+    if (!drawingRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e, canvas);
@@ -63,7 +67,7 @@ export default function MiniFloatingCanvas() {
     lastPos.current = pos;
   };
 
-  const endDraw = () => setDrawing(false);
+  const endDraw = () => { drawingRef.current = false; };
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -172,11 +176,11 @@ export default function MiniFloatingCanvas() {
             <div
               ref={containerRef}
               style={{ position: 'relative', width: '100%' }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
             >
               <canvas
                 ref={canvasRef}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={handleDrop}
                 width={560} height={280}
                 style={{ width: '100%', height: 140, display: 'block', cursor: tool === 'erase' ? 'cell' : 'crosshair', background: 'rgba(255,255,255,.04)' }}
                 onMouseDown={startDraw} onMouseMove={doDraw} onMouseUp={endDraw} onMouseLeave={endDraw}

@@ -9,7 +9,7 @@ function MiniCanvas() {
   const { onDragOver: heroDragOver, onDrop: heroDrop } = useProductDrop('hero-canvas', heroContainerRef);
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
-  const [drawing, setDrawing] = useState(false);
+  const drawingRef = useRef(false);
   const [hasDrawing, setHasDrawing] = useState(false);
   const lastPos = useRef(null);
 
@@ -25,12 +25,16 @@ function MiniCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     e.preventDefault();
-    setDrawing(true);
-    lastPos.current = getPos(e, canvas);
+    drawingRef.current = true;
+    const ctx = canvas.getContext('2d');
+    const pos = getPos(e, canvas);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    lastPos.current = pos;
   };
 
   const doDraw = (e) => {
-    if (!drawing) return;
+    if (!drawingRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e, canvas);
@@ -51,7 +55,7 @@ function MiniCanvas() {
     setHasDrawing(true);
   };
 
-  const endDraw = () => setDrawing(false);
+  const endDraw = () => { drawingRef.current = false; };
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -82,14 +86,14 @@ function MiniCanvas() {
       </div>
 
       {/* Canvas */}
-      <div ref={heroContainerRef} style={{ background: '#fff', height: '190px', position: 'relative', cursor: tool === 'erase' ? 'cell' : 'crosshair' }}>
+      <div ref={heroContainerRef} style={{ background: '#fff', height: '190px', position: 'relative', cursor: tool === 'erase' ? 'cell' : 'crosshair' }}
+        onDragOver={heroDragOver}
+        onDrop={heroDrop}>
         <div
           style={{ position: 'relative', width: '100%', height: '100%' }}
         >
           <canvas
           ref={canvasRef}
-          onDragOver={heroDragOver}
-          onDrop={heroDrop}
           width={300}
           height={190}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
