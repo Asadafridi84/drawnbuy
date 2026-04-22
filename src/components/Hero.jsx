@@ -152,6 +152,10 @@ function HeroAdCard({ ad }) {
   return (
     <div
       draggable
+      onDragStart={e => {
+        e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({ name: ad.name, price: ad.price, img: ad.img, url: ad.url }));
+        e.dataTransfer.effectAllowed = 'copy';
+      }}
       style={{
         background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)',
         borderRadius: '12px', overflow: 'hidden', cursor: 'grab', transition: '.2s',
