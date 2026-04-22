@@ -249,6 +249,7 @@ export default function CollabCanvas() {
                 >
                   <canvas
                 ref={canvasRef}
+                data-canvas-id="main-collab"
                 width={1000}
                 height={600}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
