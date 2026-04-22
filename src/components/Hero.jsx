@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { HERO_ADS } from '../data';
 import { useProductDrop } from '../hooks/useProductDrop';
+import { useSocket } from '../hooks/useSocket';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
 
 function MiniCanvas() {
   const canvasRef = useRef(null);
   const heroContainerRef = useRef(null);
-  const { onDragOver: heroDragOver, onDrop: heroDrop } = useProductDrop('hero-canvas', heroContainerRef, ['main-collab']);
+  const { sendProductDrop } = useSocket();
+  const { onDragOver: heroDragOver, onDrop: heroDrop } = useProductDrop('hero-canvas', heroContainerRef, ['main-collab'], sendProductDrop);
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
   const drawingRef = useRef(false);

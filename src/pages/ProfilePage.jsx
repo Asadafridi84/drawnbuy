@@ -161,7 +161,7 @@ export default function ProfilePage() {
     {av:'L',bg:'#0ea5e9',name:'Lars',text:'Added this from your wishlist!',time:'14:21',me:false},
     {av:'A',bg:'#7c3aed',name:'You', text:'Yes! Amazing quality from IKEA',time:'14:22',me:true},
   ]);
-  const [wishlist, setWishlist] = useState([]);
+  const [wishlist, setWishlist] = useState(WISHLIST_PRODUCTS);
   const [pwForm,   setPwForm]   = useState(false);
   const [pwOld,    setPwOld]    = useState('');
   const [pwNew,    setPwNew]    = useState('');
@@ -412,7 +412,7 @@ export default function ProfilePage() {
                   <input type="range" min={1} max={20} value={wbSize} onChange={e=>setWbSize(+e.target.value)} style={{width:'70px',accentColor:'#7c3aed'}}/>
                   <button className="wb-btn" onClick={wbClear}>Clear</button>
                   <button className="wb-btn" onClick={wbSave}>Save PNG</button>
-                  <button className="wb-btn" onClick={()=>navigate('/canvas')}>Full Canvas</button>
+                  <button className="wb-btn" onClick={()=>navigate('/canvases')}>Full Canvas</button>
                 </div>
                 <canvas ref={canvasRef} className="wb-canvas" width={900} height={380}
                   onMouseDown={wbStart} onMouseMove={wbMove} onMouseUp={wbEnd} onMouseLeave={wbEnd}

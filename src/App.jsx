@@ -120,7 +120,7 @@ export default function App() {
             <AdStrip />
             <Hero onShare={() => setShareOpen(true)} />
             <CategoryBar />
-            <CollabCanvas />
+            <CollabCanvas onShare={() => setShareOpen(true)} />
             <ProductSearchPanel />
             <DragStrip />
             <DealsGrid />

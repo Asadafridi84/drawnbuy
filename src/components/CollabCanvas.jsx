@@ -2,14 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { useProductDrop } from '../hooks/useProductDrop';
 import { useSocket } from '../hooks/useSocket';
 import { useCanvasStore } from '../store/canvas';
-import { useCanvasStore as useCollabStore } from '../store';
+import { useCanvasStore as useCollabStore, useUIStore } from '../store';
 import { useAuthStore } from '../store/auth';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
 import { CHAT_MSGS } from '../data';
 
 const EMOJIS = ['😀','😂','🥰','😍','🤩','😎','🥳','🎉','🔥','💯','👏','✨','💜','💛','🩵','🛍️','🎨','👟','👗','💄','⌚','📱','💻','🎮','🏠','🍕','🛒','💪','🧸','📚'];
 
-export default function CollabCanvas() {
+export default function CollabCanvas({ onShare }) {
   const canvasRef = useRef(null);
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
@@ -89,6 +89,23 @@ export default function CollabCanvas() {
   const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef, [], sendProductDrop);
   const addSticker = useCanvasStore(s => s.addSticker);
   const user = useAuthStore(s => s.user);
+  const addToast = useUIStore(s => s.addToast);
+
+  const copyRoomLink = () => {
+    const link = `${window.location.origin}/?room=spring2026`;
+    navigator.clipboard?.writeText(link).catch(() => {});
+    addToast('Room link copied! Send it to your friends 🔗', 'success');
+  };
+
+  const saveCanvasPng = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const a = document.createElement('a');
+    a.download = 'drawnbuy-canvas.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    addToast('Canvas saved as PNG 💾', 'success');
+  };
   const [showStickerPicker, setShowStickerPicker] = useState(false);
   const STICKER_EMOJIS = ['🔥','❤️','👍','😍','💯','⭐','🛒','💰','✅','🎉','🤩','💅'];
   const dropSticker = (emoji) => {
@@ -255,7 +272,7 @@ export default function CollabCanvas() {
             </h2>
             <p style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.5)', margin: '3px 0 0' }}>Draw together, find products, shop as a team</p>
           </div>
-          <button className="invite-btn">🔗 Invite Friends &amp; Family</button>
+          <button className="invite-btn" onClick={copyRoomLink}>🔗 Invite Friends &amp; Family</button>
         </div>
 
         {/* Grid */}
@@ -299,8 +316,8 @@ export default function CollabCanvas() {
                   </div>
                 )}
               </div>
-              <button className="t-chip" style={{ marginLeft: 'auto' }}>💾 Save</button>
-              <button className="t-chip">📤 Share</button>
+              <button className="t-chip" style={{ marginLeft: 'auto' }} onClick={saveCanvasPng}>💾 Save</button>
+              <button className="t-chip" onClick={() => onShare?.()}>📤 Share</button>
             </div>
 
             <div className="cv-area" style={{ cursor: tool==='erase'?'cell':'crosshair' }}>
