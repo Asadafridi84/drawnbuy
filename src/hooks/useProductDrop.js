@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
 
-export function useProductDrop(canvasId, containerRef) {
+export function useProductDrop(canvasId, containerRef, syncCanvasIds = []) {
   const addCard   = useCanvasStore(s => s.addCard);
   const user      = useAuthStore(s => s.user);
   const guestId   = useRef('guest-' + Math.random().toString(36).slice(2, 7));
@@ -26,12 +26,20 @@ export function useProductDrop(canvasId, containerRef) {
     const x = Math.max(0, e.clientX - rect.left - 80);
     const y = Math.max(0, e.clientY - rect.top  - 60);
 
-    addCard(canvasId, {
-      id: Date.now().toString(),
-      product,
-      x,
-      y,
-      ownerId: userId,
+    const id = Date.now().toString();
+
+    // Add to primary canvas
+    addCard(canvasId, { id, product, x, y, ownerId: userId });
+
+    // Sync to additional canvases (e.g. hero -> main-collab)
+    syncCanvasIds.forEach((syncId, i) => {
+      addCard(syncId, {
+        id: id + '-sync-' + i,
+        product,
+        x: 80 + Math.random() * 400,
+        y: 60 + Math.random() * 300,
+        ownerId: userId,
+      });
     });
   };
 

@@ -6,7 +6,7 @@ import CanvasOverlayLayer from './CanvasOverlayLayer';
 function MiniCanvas() {
   const canvasRef = useRef(null);
   const heroContainerRef = useRef(null);
-  const { onDragOver: heroDragOver, onDrop: heroDrop } = useProductDrop('hero-canvas', heroContainerRef);
+  const { onDragOver: heroDragOver, onDrop: heroDrop } = useProductDrop('hero-canvas', heroContainerRef, ['main-collab']);
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
   const drawingRef = useRef(false);
@@ -38,19 +38,18 @@ function MiniCanvas() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e, canvas);
-    ctx.beginPath();
     if (tool === 'erase') {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.lineWidth = 20;
+      ctx.clearRect(pos.x - 10, pos.y - 10, 20, 20);
     } else {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = color;
       ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
     }
-    ctx.lineCap = 'round';
-    ctx.moveTo(lastPos.current.x, lastPos.current.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
     lastPos.current = pos;
     setHasDrawing(true);
   };
