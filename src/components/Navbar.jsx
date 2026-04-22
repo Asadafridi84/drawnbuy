@@ -328,7 +328,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           <a className="hot" onClick={() => goHome('dealsAnchor')}>Deals</a>
           <a onClick={() => goHome('collabSection')}>Canvas</a>
           <a onClick={() => goHome('catsSection')}>Categories</a>
-          <a onClick={() => goHome('liveSection')} style={{cursor:'pointer'}}>Live<span className="live-badge">247</span></a>
+          <a onClick={() => goHome('collabSection')} style={{cursor:'pointer'}}>Live<span className="live-badge">247</span></a>
           <a onClick={() => navigate('/')}>Home</a>
         </div>
 

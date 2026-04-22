@@ -51,19 +51,18 @@ export default function MiniFloatingCanvas() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e, canvas);
-    ctx.beginPath();
     if (tool === 'erase') {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.lineWidth = 16;
+      ctx.clearRect(pos.x - 10, pos.y - 10, 20, 20);
     } else {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = '#7c3aed';
       ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
     }
-    ctx.lineCap = 'round';
-    ctx.moveTo(lastPos.current.x, lastPos.current.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
     lastPos.current = pos;
   };
 
@@ -82,10 +81,17 @@ export default function MiniFloatingCanvas() {
     try { product = JSON.parse(raw); } catch { return; }
 
     if (destination === 'everyone') {
+      const cardId = Date.now().toString();
       addCard('main-collab', {
-        id: Date.now().toString(), product,
+        id: cardId, product,
         x: 80 + Math.random() * 250,
         y: 60 + Math.random() * 180,
+        ownerId: 'mini-guest',
+      });
+      addCard('mini-preview', {
+        id: cardId + '-preview', product,
+        x: 10 + Math.random() * 80,
+        y: 10 + Math.random() * 60,
         ownerId: 'mini-guest',
       });
       setConfirmMsg('Added to main canvas!');
@@ -207,7 +213,7 @@ export default function MiniFloatingCanvas() {
                 </button>
               ))}
               <button
-                onClick={() => window.open('https://drawnbuy.vercel.app/#collabSection', '_self')}
+                onClick={() => document.getElementById('collabSection')?.scrollIntoView({ behavior: 'smooth' }) || (window.location.href = '/#collabSection')}
                 style={{ flex: 1, padding: '4px 0', borderRadius: 6, border: '1.5px solid #fbbf24', background: 'rgba(251,191,36,.15)', color: '#fbbf24', fontSize: '.68rem', fontWeight: 700, cursor: 'pointer' }}
               >↗ Open Full</button>
             </div>

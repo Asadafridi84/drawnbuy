@@ -69,7 +69,7 @@ export default function ProductCard({ card, canvasId }) {
       <img
         src={card.product.img}
         alt={card.product.name}
-        style={{ width: '100%', height: 110, objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
+        style={{ width: '100%', height: imgH, objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
         onError={e => { e.target.style.background = '#f4f0ff'; e.target.style.display = 'none'; }}
       />
       <div style={{ padding: '8px 10px 8px' }}>

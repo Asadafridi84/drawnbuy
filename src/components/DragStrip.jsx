@@ -29,8 +29,8 @@ export default function DragStrip() {
   const rowRef = useRef(null);
 
   const sorted = [...ALL_PRODS].sort((a, b) => {
-    if (sort === 'price-asc') return parseInt(a.price) - parseInt(b.price);
-    if (sort === 'price-desc') return parseInt(b.price) - parseInt(a.price);
+    if (sort === 'price-asc') return parseInt(a.price.replace(/[^0-9]/g,'')) - parseInt(b.price.replace(/[^0-9]/g,''));
+    if (sort === 'price-desc') return parseInt(b.price.replace(/[^0-9]/g,'')) - parseInt(a.price.replace(/[^0-9]/g,''));
     if (sort === 'deals') return (b.deal ? 1 : 0) - (a.deal ? 1 : 0);
     return 0;
   });

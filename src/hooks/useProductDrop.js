@@ -1,10 +1,12 @@
+import { useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
 
 export function useProductDrop(canvasId, containerRef) {
-  const addCard = useCanvasStore(s => s.addCard);
-  const user    = useAuthStore(s => s.user);
-  const userId  = user?.id || 'guest-' + Math.random().toString(36).slice(2, 7);
+  const addCard   = useCanvasStore(s => s.addCard);
+  const user      = useAuthStore(s => s.user);
+  const guestId   = useRef('guest-' + Math.random().toString(36).slice(2, 7));
+  const userId    = user?.id || guestId.current;
 
   const onDragOver = (e) => {
     e.preventDefault();

@@ -19,7 +19,7 @@ export default function CategoryBar({ onSelect }) {
       background: '#fff',
       borderBottom: '2px solid #e5e7eb',
       position: 'sticky',
-      top: '64px',
+      top: '96px',
       zIndex: 200,
       overflowX: 'auto',
       overflowY: 'visible',

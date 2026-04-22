@@ -45,9 +45,14 @@ export default function ProductSearchPanel() {
     return () => clearInterval(interval);
   }, []);
 
-  const catProducts = DRAG_PRODS.filter(p =>
-    search ? p.name.toLowerCase().includes(search.toLowerCase()) : true
-  );
+  const catProducts = DRAG_PRODS.filter(p => {
+    const matchesSearch = search ? p.name.toLowerCase().includes(search.toLowerCase()) : true;
+    const matchesCat    = activeCat === 'all' || !activeCat
+      ? true
+      : (p.cat || '').toLowerCase().includes(activeCat.toLowerCase()) ||
+        p.name.toLowerCase().includes(activeCat.toLowerCase());
+    return matchesSearch && matchesCat;
+  });
 
   return (
     <div id="pspSection" style={{

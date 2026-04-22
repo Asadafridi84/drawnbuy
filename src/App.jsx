@@ -118,7 +118,7 @@ export default function App() {
             <Topbar />
             <Navbar onShare={() => setShareOpen(true)} cartCount={cartCount} onCatClick={setActiveCat} />
             <AdStrip />
-            <Hero />
+            <Hero onShare={() => setShareOpen(true)} />
             <CategoryBar />
             <CollabCanvas />
             <ProductSearchPanel />
@@ -160,10 +160,7 @@ export default function App() {
           <CategoryRouteWrapper onShare={() => setShareOpen(true)} cartCount={cartCount} />
         } />
 
-        {/* ── Category pages ──────────────────────────────── */}
-        <Route path="/category/:slug" element={
-          <CategoryRouteWrapper onShare={() => setShareOpen(true)} cartCount={cartCount} />
-        } />
+
 
         {/* ── 404 ─────────────────────────────────────────── */}
         <Route path="*" element={<NotFoundPage />} />

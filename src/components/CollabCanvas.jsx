@@ -72,20 +72,18 @@ export default function CollabCanvas() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const pos = getPos(e, canvas);
-    ctx.beginPath();
     if (tool === 'erase') {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.lineWidth = 24;
+      ctx.clearRect(pos.x - 12, pos.y - 12, 24, 24);
     } else {
       ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = color;
       ctx.lineWidth = sizes[size];
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
     }
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.moveTo(lastPos.current.x, lastPos.current.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
     lastPos.current = pos;
   };
 
@@ -269,6 +267,7 @@ export default function CollabCanvas() {
               ))}
             </div>
 
+            {activeTab === 'chat' && <>
             <div className="who-bar">
               <span style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.4)', fontWeight: '700' }}>In room:</span>
               {['Anna 🟢','Maja 🟢','You 🟢'].map(n => (
@@ -309,6 +308,22 @@ export default function CollabCanvas() {
                 <button className="sbtn" onClick={sendMsg}>→</button>
               </div>
             </div>
+            </>}
+            {activeTab === 'products' && (
+              <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,.5)', padding:'1rem', textAlign:'center' }}>
+                <div style={{ fontSize:'2rem', marginBottom:'.5rem' }}>🛍️</div>
+                <div style={{ fontWeight:700, marginBottom:'.3rem' }}>Drag products here</div>
+                <div style={{ fontSize:'.8rem' }}>Drag any product card from below onto the canvas</div>
+              </div>
+            )}
+            {activeTab === 'rooms' && (
+              <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,.5)', padding:'1rem', textAlign:'center' }}>
+                <div style={{ fontSize:'2rem', marginBottom:'.5rem' }}>🚪</div>
+                <div style={{ fontWeight:700, marginBottom:'.3rem' }}>Private Rooms</div>
+                <div style={{ fontSize:'.8rem', marginBottom:'1rem' }}>Draw and shop with specific friends</div>
+                <button onClick={() => window.location.href='/canvases'} style={{ background:'linear-gradient(90deg,#7c3aed,#5b21b6)', color:'#fff', border:'1.5px solid #fbbf24', borderRadius:8, padding:'8px 18px', cursor:'pointer', fontWeight:700 }}>Open Rooms →</button>
+              </div>
+            )}
           </div>
         </div>
       </div>
