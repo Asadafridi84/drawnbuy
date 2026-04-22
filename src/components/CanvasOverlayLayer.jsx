@@ -8,7 +8,7 @@ export default function CanvasOverlayLayer({ canvasId }) {
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
-      <div style={{ position: 'relative', width: '100%', height: '100%', pointerEvents: 'auto' }}>
+      <div style={{ position: 'relative', width: '100%', height: '100%', pointerEvents: 'none' }}>
         {cards.map(card => (
           <ProductCard key={card.id} card={card} canvasId={canvasId} />
         ))}

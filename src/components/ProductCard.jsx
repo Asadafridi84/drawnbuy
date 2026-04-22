@@ -60,6 +60,7 @@ export default function ProductCard({ card, canvasId }) {
         border: '2px solid #fbbf24',
         cursor: 'grab',
         zIndex: 10,
+        pointerEvents: 'auto',
         userSelect: 'none',
         overflow: 'hidden',
         transition: 'box-shadow .15s',
