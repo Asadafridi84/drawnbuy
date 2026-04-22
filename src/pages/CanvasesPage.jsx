@@ -6,7 +6,10 @@ import { useUIStore } from '../store';
 import { generateRoomId } from '../utils/security';
 import styles from './CanvasesPage.module.css';
 
-const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+const API = import.meta.env.VITE_SERVER_URL
+  || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? 'https://drawnbuy-backend.onrender.com'
+      : 'http://localhost:3001');
 
 export default function CanvasesPage() {
   const { user } = useAuthStore();

@@ -3,7 +3,13 @@ import { io } from 'socket.io-client';
 import { useCollabStore, useUIStore } from '../store';
 import { useCanvasStore as useCanvasProductStore } from '../store/canvas';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+// In production (Vercel) VITE_SERVER_URL must be set in the Vercel dashboard
+// to your Render backend URL, e.g. https://drawnbuy-backend.onrender.com
+// The localhost fallback is only for local development.
+const SERVER_URL = import.meta.env.VITE_SERVER_URL
+  || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? 'https://drawnbuy-backend.onrender.com'
+      : 'http://localhost:3001');
 
 // Singleton socket — one connection per browser session
 let socket = null;

@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+const API = import.meta.env.VITE_SERVER_URL
+  || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? 'https://drawnbuy-backend.onrender.com'
+      : 'http://localhost:3001');
 
 export const useAuthStore = create(
   persist(

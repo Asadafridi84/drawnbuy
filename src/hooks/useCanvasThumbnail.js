@@ -2,7 +2,10 @@ import { useCallback, useRef } from 'react';
 import { useAuthStore } from '../store/auth';
 import { useCollabStore } from '../store';
 
-const API = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+const API = import.meta.env.VITE_SERVER_URL
+  || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+      ? 'https://drawnbuy-backend.onrender.com'
+      : 'http://localhost:3001');
 
 /**
  * useCanvasThumbnail
