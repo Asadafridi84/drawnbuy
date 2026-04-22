@@ -82,10 +82,9 @@ function MiniCanvas() {
       </div>
 
       {/* Canvas */}
-      <div style={{ background: '#fff', height: '190px', position: 'relative', cursor: tool === 'erase' ? 'cell' : 'crosshair' }}>
+      <div ref={heroContainerRef} style={{ background: '#fff', height: '190px', position: 'relative', cursor: tool === 'erase' ? 'cell' : 'crosshair' }}>
         <div
-          ref={heroContainerRef}
-          style={{ position: 'relative', flex: 1 }}
+          style={{ position: 'relative', width: '100%', height: '100%' }}
         >
           <canvas
           ref={canvasRef}

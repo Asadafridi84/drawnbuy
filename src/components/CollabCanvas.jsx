@@ -232,7 +232,7 @@ export default function CollabCanvas() {
             <div className="cv-area" style={{ cursor: tool==='erase'?'cell':'crosshair' }}>
               <div
                   ref={canvasContainerRef}
-                  style={{ position: 'relative', flex: 1 }}
+                  style={{ position: 'relative', flex: 1, width: '100%', height: '100%' }}
                 >
                   <canvas
                 ref={canvasRef}

@@ -171,7 +171,7 @@ export default function MiniFloatingCanvas() {
             {/* Canvas drop area */}
             <div
               ref={containerRef}
-              style={{ position: 'relative' }}
+              style={{ position: 'relative', width: '100%' }}
             >
               <canvas
                 ref={canvasRef}
