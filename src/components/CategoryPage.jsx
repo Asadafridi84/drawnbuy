@@ -68,7 +68,16 @@ export default function CategoryPage({ cat, onClose }) {
         {/* Products grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: '14px' }}>
           {products.map((p, i) => (
-            <div key={i} className="cp-dc">
+            <div key={i} className="cp-dc"
+              draggable
+              onDragStart={e => {
+                e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({
+                  name: p.name, price: p.price, img: p.img,
+                  url: p.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(p.name)}&tag=drawnbuy-21`
+                }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+            >
               {p.deal && (
                 <div style={{ position: 'absolute', top: '9px', left: '9px', fontSize: '10px', fontWeight: '800', padding: '3px 8px', borderRadius: '6px', zIndex: 1, background: '#fef2f2', color: '#dc2626' }}>{p.deal}</div>
               )}

@@ -13,6 +13,13 @@ const safeOpen = (url) => {
 };
 
 export default function ProductCard({ card, canvasId }) {
+  // Auto-size: mini canvas (mini-preview, hero-canvas) = 100px, full = 160px
+  const isMini = canvasId === 'mini-preview' || canvasId === 'hero-canvas';
+  const cardW  = isMini ? 100 : 160;
+  const imgH   = isMini ? 70  : 110;
+  const fontSize = isMini ? '.6rem' : '.75rem';
+  const priceSize = isMini ? '.7rem' : '.82rem';
+  const btnSize = isMini ? '.55rem' : '.65rem';
   const moveCard   = useCanvasStore(s => s.moveCard);
   const removeCard = useCanvasStore(s => s.removeCard);
   const user       = useAuthStore(s => s.user);
@@ -46,7 +53,7 @@ export default function ProductCard({ card, canvasId }) {
         position: 'absolute',
         left: pos.x,
         top: pos.y,
-        width: 160,
+        width: cardW,
         background: '#fff',
         borderRadius: 12,
         boxShadow: '0 4px 24px rgba(124,58,237,.25)',
@@ -74,7 +81,7 @@ export default function ProductCard({ card, canvasId }) {
         <div style={{ display: 'flex', gap: 4 }}>
           <button
             onClick={() => safeOpen(card.product.url)}
-            style={{ flex: 1, background: 'linear-gradient(90deg,#7c3aed,#5b21b6)', color: '#fff', border: '1.5px solid #fbbf24', borderRadius: 6, padding: '5px 0', fontSize: '.65rem', fontWeight: 700, cursor: 'pointer' }}
+            style={{ flex: 1, background: 'linear-gradient(90deg,#7c3aed,#5b21b6)', color: '#fff', border: '1.5px solid #fbbf24', borderRadius: 6, padding: '5px 0', fontSize: btnSize, fontWeight: 700, cursor: 'pointer' }}
           >
             Add to Cart
           </button>

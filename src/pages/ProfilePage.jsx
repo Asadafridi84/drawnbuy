@@ -261,7 +261,17 @@ export default function ProfilePage() {
   const wbSave=()=>{const c=canvasRef.current;if(!c)return;const a=document.createElement('a');a.download='drawnbuy-canvas.png';a.href=c.toDataURL();a.click();showToast('Canvas saved!');};
 
   const ProdCard = ({p}) => (
-    <div className="prod-card" onClick={()=>safeOpen(p.url)}>
+    <div className="prod-card" onClick={()=>safeOpen(p.url)}
+      draggable
+      onDragStart={e => {
+        e.stopPropagation();
+        e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({
+          name: p.name, price: p.price, img: p.img,
+          url: p.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(p.name)}&tag=drawnbuy-21`
+        }));
+        e.dataTransfer.effectAllowed = 'copy';
+      }}
+    >
       <img className="prod-img" src={p.img} alt={p.name} onError={e=>{e.target.style.background='#f4f0ff';e.target.style.display='none';}}/>
       <div className="prod-info">
         <div className="prod-name">{p.name}</div>
