@@ -46,6 +46,7 @@ export default function CollabCanvas({ onShare }) {
   // Socket setup
   const participants = useCollabStore(s => s.participants);
 
+  const user = useAuthStore(s => s.user);
   const { connect, sendDraw, sendMessage, sendProductDrop, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
@@ -94,7 +95,6 @@ export default function CollabCanvas({ onShare }) {
   const canvasContainerRef = useRef(null);
   const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef, [], sendProductDrop);
   const addSticker = useCanvasStore(s => s.addSticker);
-  const user = useAuthStore(s => s.user);
   const addToast = useUIStore(s => s.addToast);
 
   const copyRoomLink = () => {

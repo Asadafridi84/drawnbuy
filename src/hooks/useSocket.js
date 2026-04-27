@@ -73,6 +73,19 @@ export function useSocket() {
     s.on('canvas-cleared', () => handlers.onRemoteClear?.());
     s.on('canvas-state', (events) => handlers.onCanvasState?.(events));
 
+    s.on('product-state', (products) => {
+      if (!Array.isArray(products)) return;
+      products.forEach((data) => {
+        addCard(data.canvasId || 'main-collab', {
+          id: data.id || Date.now().toString(),
+          product: { name: data.name, price: data.price, img: data.img, url: data.url },
+          x: data.x || 80,
+          y: data.y || 60,
+          ownerId: data.droppedBy || 'remote',
+        });
+      });
+    });
+
     s.on('participants', (list) => setParticipants(list));
     s.on('user-joined', (user) => addToast(`${user.name} joined 👋`, 'info'));
     s.on('user-left', (user) => addToast(`${user.name} left`, 'info'));

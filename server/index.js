@@ -73,7 +73,7 @@ const io = new Server(httpServer, {
 const rooms = new Map();
 
 function getRoom(id) {
-  if (!rooms.has(id)) rooms.set(id, { users: new Map(), canvas: [], messages: [] });
+  if (!rooms.has(id)) rooms.set(id, { users: new Map(), canvas: [], messages: [], products: [] });
   return rooms.get(id);
 }
 function sanitize(s) {
@@ -95,6 +95,7 @@ io.on('connection', (socket) => {
     const r = getRoom(room);
     r.users.set(socket.id, user);
     socket.emit('canvas-state', r.canvas);
+    socket.emit('product-state', r.products);
     socket.emit('chat-history', r.messages.slice(-50));
     socket.to(room).emit('user-joined', user);
     io.to(room).emit('participants', [...r.users.values()]);
@@ -133,7 +134,7 @@ io.on('connection', (socket) => {
 
   socket.on('product-dropped', (d) => {
     if (!room) return;
-    socket.to(room).emit('product-dropped', {
+    const sanitizedProduct = {
       // identity / position
       id:        sanitize(String(d.id        || '')),
       productId: sanitize(String(d.productId || '')),
@@ -150,7 +151,11 @@ io.on('connection', (socket) => {
         ? d.img.slice(0, 500) : '',
       url: (typeof d.url === 'string' && /^https?:\/\//i.test(d.url))
         ? d.url.slice(0, 500) : '',
-    });
+    };
+    const r = getRoom(room);
+    r.products.push(sanitizedProduct);
+    if (r.products.length > 100) r.products = r.products.slice(-100);
+    socket.to(room).emit('product-dropped', sanitizedProduct);
   });
 
   socket.on('disconnect', () => {
