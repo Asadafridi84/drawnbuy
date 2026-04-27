@@ -7,9 +7,27 @@ const SOCIALS = [
 ];
 
 const FOOTER_LINKS = {
-  'Company': ['About DrawNBuy', 'How It Works', 'Affiliate Program', 'Press Kit', 'Careers'],
-  'Support': ['Help Center', 'Contact Us', 'Privacy Policy', 'Terms of Service', 'Cookie Settings'],
-  'Discover': ["Women's Fashion", "Men's Fashion", 'Tech & Gadgets', 'Home & Living', 'Deals & Offers'],
+  'Company': [
+    { label: 'About DrawNBuy',    href: '/#hiwSection' },
+    { label: 'How It Works',      href: '/#hiwSection' },
+    { label: 'Affiliate Program', href: '/signup' },
+    { label: 'Press Kit',         href: 'mailto:press@drawnbuy.com' },
+    { label: 'Careers',           href: 'mailto:hello@drawnbuy.com' },
+  ],
+  'Support': [
+    { label: 'Help Center',      href: 'mailto:hello@drawnbuy.com' },
+    { label: 'Contact Us',       href: 'mailto:hello@drawnbuy.com' },
+    { label: 'Privacy Policy',   href: '/' },
+    { label: 'Terms of Service', href: '/' },
+    { label: 'Cookie Settings',  href: '/' },
+  ],
+  'Discover': [
+    { label: "Women's Fashion", href: '/category/womens-fashion' },
+    { label: "Men's Fashion",   href: '/category/mens-fashion' },
+    { label: 'Tech & Gadgets',  href: '/category/smartphones' },
+    { label: 'Home & Living',   href: '/category/home-decor' },
+    { label: 'Deals & Offers',  href: '/#dealsAnchor' },
+  ],
 };
 
 export default function Footer() {
@@ -74,7 +92,7 @@ export default function Footer() {
         {Object.entries(FOOTER_LINKS).map(([title, links]) => (
           <div key={title} className="footer-col">
             <h4>{title}</h4>
-            {links.map(l => <a key={l}>{l}</a>)}
+            {links.map(l => <a key={l.label} href={l.href}>{l.label}</a>)}
           </div>
         ))}
 
@@ -95,9 +113,9 @@ export default function Footer() {
       <div className="footer-bottom">
         <span>© 2026 DrawNBuy AB — Stockholm, Sweden 🇸🇪</span>
         <div style={{ display: 'flex', gap: '16px' }}>
-          <a style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Privacy</a>
-          <a style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Terms</a>
-          <a style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Cookies</a>
+          <a href="/" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Privacy</a>
+          <a href="/" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Terms</a>
+          <a href="/" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Cookies</a>
         </div>
       </div>
     </footer>

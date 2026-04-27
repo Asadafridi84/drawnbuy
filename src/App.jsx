@@ -84,7 +84,6 @@ function CategoryRouteWrapper({ onShare, cartCount }) {
       <div style={{paddingTop:'1rem'}}>
         <CategoryPage cat={cat} onClose={null} />
       </div>
-      <ToastContainer />
     </>
   );
 }
@@ -96,7 +95,6 @@ function PageShell({ children, onShare, cartCount }) {
       <Topbar />
       <Navbar onShare={onShare} cartCount={cartCount} />
       {children}
-      <ToastContainer />
     </>
   );
 }
@@ -110,8 +108,13 @@ export default function App() {
   return (
     <>
       <style>{GLOBAL_STYLES}</style>
-
       <HashScroller />
+
+      {/* ── Global overlays — rendered on EVERY page ────────── */}
+      <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} />
+      <MiniFloatingCanvas />
+      <ToastContainer />
+
       <Routes>
         {/* ── Homepage ─────────────────────────────────────── */}
         <Route path="/" element={
@@ -129,10 +132,7 @@ export default function App() {
             <Sponsors />
             <HowItWorks />
             <Footer />
-            <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} />
             {activeCat && <CategoryPage cat={activeCat} onClose={() => setActiveCat(null)} />}
-            <MiniFloatingCanvas />
-            <ToastContainer />
           </>
         } />
 
@@ -160,8 +160,6 @@ export default function App() {
         <Route path="/category/:slug" element={
           <CategoryRouteWrapper onShare={() => setShareOpen(true)} cartCount={cartCount} />
         } />
-
-
 
         {/* ── 404 ─────────────────────────────────────────── */}
         <Route path="*" element={<NotFoundPage />} />

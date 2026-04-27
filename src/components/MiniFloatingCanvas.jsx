@@ -1,17 +1,27 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSocket } from '../hooks/useSocket';
 import { useProductDrop } from '../hooks/useProductDrop';
+import { useAuthStore } from '../store/auth';
 
 export default function MiniFloatingCanvas() {
   const [minimized, setMinimized] = useState(false);
   const containerRef = useRef(null);
-  const { sendProductDrop } = useSocket();
+  const [searchParams] = useSearchParams();
+  const roomId = searchParams.get('room') || 'main';
+  const user = useAuthStore(s => s.user);
+  const { sendProductDrop, connect } = useSocket();
   const { onDragOver, onDrop } = useProductDrop('main-collab', containerRef, [], sendProductDrop);
+
+  // Ensure socket is joined to the current room on every page
+  useEffect(() => {
+    connect(roomId, user?.name || 'Guest');
+  }, [roomId]);
 
   const openFullCanvas = () => {
     const el = document.getElementById('collabSection');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
-    else window.location.href = '/#collabSection';
+    else window.location.href = `/?room=${roomId}`;
   };
 
   return (
