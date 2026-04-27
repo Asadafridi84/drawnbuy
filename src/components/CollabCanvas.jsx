@@ -36,7 +36,7 @@ export default function CollabCanvas({ onShare }) {
   // Combine local + socket messages for display, keeping chronological order
   const msgs = [
     ...localMsgs,
-    ...socketMsgs.map(m => ({ name: m.sender, me: false, text: m.text, time: m.time })),
+    ...socketMsgs.map(m => ({ name: m.sender, me: false, text: m.text, time: m.time, type: m.type, audioSrc: m.audioSrc })),
   ];
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function CollabCanvas({ onShare }) {
   const participants = useCollabStore(s => s.participants);
 
   const user = useAuthStore(s => s.user);
-  const { connect, sendDraw, sendMessage, sendProductDrop, onRemoteDraw, onCanvasState } = useSocket();
+  const { connect, sendDraw, sendMessage, sendProductDrop, sendVoiceMessage, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
     connect(roomId, username);
@@ -220,7 +220,43 @@ export default function CollabCanvas({ onShare }) {
   };
   const [showStickerPicker, setShowStickerPicker] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [touchCursor, setTouchCursor] = useState(null); // {x,y} relative to canvas container
+  const [touchCursor, setTouchCursor] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (ev) => { if (ev.data.size > 0) audioChunksRef.current.push(ev.data); };
+      recorder.start();
+      setIsRecording(true);
+    } catch {
+      addToast('Microphone access denied 🎤', 'error');
+    }
+  };
+
+  const stopRecording = () => {
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === 'inactive') return;
+    recorder.stop();
+    recorder.onstop = () => {
+      const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const b64 = reader.result;
+        sendVoiceMessage(b64);
+        const time = new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+        setLocalMsgs(m => [...m, { name: 'You', me: true, type: 'voice', audioSrc: b64, time }]);
+      };
+      reader.readAsDataURL(blob);
+      recorder.stream?.getTracks().forEach(t => t.stop());
+    };
+    setIsRecording(false);
+  }; // {x,y} relative to canvas container
   const STICKER_EMOJIS = ['🔥','❤️','👍','😍','💯','⭐','🛒','💰','✅','🎉','🤩','💅'];
   const dropSticker = (emoji) => {
     addSticker('main-collab', {
@@ -375,6 +411,11 @@ export default function CollabCanvas({ onShare }) {
         .cinp:focus { border-color:rgba(103,232,249,.4); }
         .sbtn { background:#fbbf24; color:#3b0764; border:none; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:.85rem; font-weight:800; flex-shrink:0; }
         .emoji-btn { background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3); border-radius:8px; padding:5px 10px; font-size:18px; cursor:pointer; transition:.15s; flex-shrink:0; }
+        @keyframes recpulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)} 50%{box-shadow:0 0 0 6px rgba(239,68,68,.0)} }
+        .mic-btn { background:rgba(124,58,237,.25); border:1.5px solid rgba(124,58,237,.5); border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:.2s; flex-shrink:0; font-size:15px; }
+        .mic-btn:hover { background:rgba(124,58,237,.4); border-color:#7c3aed; }
+        .mic-btn.rec { background:rgba(239,68,68,.3); border-color:#ef4444; animation:recpulse .8s infinite; }
+        .voice-bbl audio { width:150px; height:28px; border-radius:6px; outline:none; }
         .emoji-picker { position:absolute; bottom:100%; left:0; background:#fff; border:1.5px solid #ede9fe; border-radius:14px; padding:.7rem; box-shadow:0 8px 40px rgba(124,58,237,.25); z-index:9998; width:260px; max-height:200px; overflow-y:auto; }
         .emoji-grid { display:grid; grid-template-columns:repeat(8,1fr); gap:2px; }
         .ep-em { font-size:20px; cursor:pointer; padding:5px; border-radius:8px; text-align:center; transition:.1s; display:flex; align-items:center; justify-content:center; }
@@ -515,13 +556,13 @@ export default function CollabCanvas({ onShare }) {
               <button className="t-chip" onClick={() => onShare?.()}>📤 Invite</button>
             </div>
 
-            <div className="cv-area" style={{ cursor: tool==='erase'?'cell':'crosshair' }}>
-              <div
-                  ref={canvasContainerRef}
-                  style={{ position: 'relative', flex: 1, width: '100%', height: '100%' }}
-                  onDragOver={onDragOver}
-                  onDrop={onDrop}
-                >
+            <div className="cv-area"
+              ref={canvasContainerRef}
+              style={{ cursor: tool==='erase'?'cell':'crosshair' }}
+              onDragOver={onDragOver}
+              onDrop={onDrop}
+            >
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                   <canvas
                 ref={canvasRef}
                 data-canvas-id="main-collab"
@@ -577,7 +618,13 @@ export default function CollabCanvas({ onShare }) {
               {msgs.map((m, i) => (
                 <div key={i} className={`mw ${m.me ? 'me' : 'them'}`}>
                   {!m.me && <div className="mname">{m.name}</div>}
-                  <div className="mbbl">{m.text}</div>
+                  {m.type === 'voice' ? (
+                    <div className="mbbl voice-bbl" style={{ padding: '6px 8px', display:'flex', alignItems:'center', gap:6 }}>
+                      🎤 <audio controls src={m.audioSrc} />
+                    </div>
+                  ) : (
+                    <div className="mbbl">{m.text}</div>
+                  )}
                   <div className="mtime">{m.time}</div>
                 </div>
               ))}
@@ -594,6 +641,14 @@ export default function CollabCanvas({ onShare }) {
                 </div>
               )}
               <div className="cinp-row">
+                <button
+                  className={`mic-btn${isRecording ? ' rec' : ''}`}
+                  onMouseDown={startRecording}
+                  onMouseUp={stopRecording}
+                  onTouchStart={startRecording}
+                  onTouchEnd={stopRecording}
+                  title="Hold to record voice"
+                >🎤</button>
                 <button className="emoji-btn" onClick={() => setEmojiOpen(o => !o)}>😊</button>
                 <textarea
                   className="cinp"

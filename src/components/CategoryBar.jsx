@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CATS } from '../data';
 
 export default function CategoryBar({ onSelect }) {
   const [active, setActive] = useState('all');
+  const navigate = useNavigate();
 
   const chips = [
     { slug: 'all', name: '🔥 All', emoji: '' },
@@ -12,6 +14,7 @@ export default function CategoryBar({ onSelect }) {
   const handleSelect = (slug) => {
     setActive(slug);
     onSelect?.(slug);
+    if (slug !== 'all') navigate('/category/' + slug);
   };
 
   return (

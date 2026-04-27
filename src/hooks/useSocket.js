@@ -106,6 +106,16 @@ export function useSocket() {
       });
     });
 
+    s.on('voice-message', (data) => {
+      addMessage({
+        id: Date.now(),
+        type: 'voice',
+        audioSrc: data.audioBase64,
+        sender: data.senderName || 'Someone',
+        time: new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+      });
+    });
+
     s.on('product-dropped', (data) => {
       addToast(`${data.emoji || '📦'} ${data.droppedBy || 'Someone'} placed ${data.name} on canvas!`, 'info');
       // Also render the product card on the remote client's canvas
@@ -136,6 +146,9 @@ export function useSocket() {
   const sendProductDrop = useCallback((product, x, y) => {
     socket?.emit('product-dropped', { ...product, x, y });
   }, []);
+  const sendVoiceMessage = useCallback((audioBase64) => {
+    socket?.emit('voice-message', { audioBase64 });
+  }, []);
 
   // ── Handler registration ──────────────────────────────────────────────────
   // onRemoteDraw supports multiple subscribers; returns an unsubscribe function
@@ -152,7 +165,7 @@ export function useSocket() {
 
   return {
     connect, disconnect,
-    sendDraw, sendClear, sendMessage, sendEmoji, sendProductDrop,
+    sendDraw, sendClear, sendMessage, sendEmoji, sendProductDrop, sendVoiceMessage,
     onRemoteDraw, onRemoteClear, onCanvasState, onConnect, onDisconnect,
     isConnected: () => socket?.connected ?? false,
   };

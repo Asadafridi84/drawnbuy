@@ -158,6 +158,13 @@ io.on('connection', (socket) => {
     socket.to(room).emit('product-dropped', sanitizedProduct);
   });
 
+  socket.on('voice-message', (d) => {
+    if (!room) return;
+    const audioBase64 = typeof d.audioBase64 === 'string' ? d.audioBase64.slice(0, 800_000) : '';
+    if (!audioBase64) return;
+    socket.to(room).emit('voice-message', { audioBase64, senderName: user?.name || 'Guest' });
+  });
+
   socket.on('disconnect', () => {
     if (!room || !user) return;
     const r = getRoom(room);
