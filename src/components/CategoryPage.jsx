@@ -22,10 +22,14 @@ export default function CategoryPage({ cat, onClose }) {
   const [wishlist, setWishlist] = useState({});
   const products = getCatProducts(cat);
 
+  const isModal = Boolean(onClose);
+
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: '#f4f0ff',
-      zIndex: 500, overflowY: 'auto',
+      ...(isModal
+        ? { position: 'fixed', inset: 0, zIndex: 500, overflowY: 'auto' }
+        : { position: 'relative', minHeight: '100vh' }),
+      background: '#f4f0ff',
       animation: 'cpIn .25s ease',
     }}>
       <style>{`
