@@ -7,6 +7,7 @@ import Topbar             from './components/Topbar';
 import Navbar             from './components/Navbar';
 import ToastContainer     from './components/ToastContainer';
 import ShareModal         from './components/ShareModal';
+import { useCartStore }   from './store';
 
 // Homepage sections
 import AdStrip            from './components/AdStrip';
@@ -104,7 +105,7 @@ function PageShell({ children, onShare, cartCount }) {
 export default function App() {
   const [shareOpen, setShareOpen] = useState(false);
   const [activeCat, setActiveCat] = useState(null);
-  const [cartCount] = useState(3);
+  const cartCount = useCartStore(s => s.items.reduce((sum, i) => sum + i.qty, 0));
 
   return (
     <>

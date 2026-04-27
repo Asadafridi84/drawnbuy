@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProductDrop } from '../hooks/useProductDrop';
 import { useSocket } from '../hooks/useSocket';
 import { useCanvasStore } from '../store/canvas';
@@ -10,6 +11,9 @@ import { CHAT_MSGS } from '../data';
 const EMOJIS = ['😀','😂','🥰','😍','🤩','😎','🥳','🎉','🔥','💯','👏','✨','💜','💛','🩵','🛍️','🎨','👟','👗','💄','⌚','📱','💻','🎮','🏠','🍕','🛒','💪','🧸','📚'];
 
 export default function CollabCanvas({ onShare }) {
+  const [searchParams] = useSearchParams();
+  const roomId = searchParams.get('room') || 'main';
+
   const canvasRef = useRef(null);
   const [tool, setTool] = useState('draw');
   const [color, setColor] = useState('#7c3aed');
@@ -45,7 +49,7 @@ export default function CollabCanvas({ onShare }) {
   const { connect, sendDraw, sendMessage, sendProductDrop, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
-    connect('spring2026', username);
+    connect(roomId, username);
 
     // Replay a single incoming draw stroke onto the canvas
     const unsubDraw = onRemoteDraw((d) => {
@@ -84,7 +88,7 @@ export default function CollabCanvas({ onShare }) {
     });
 
     return () => { unsubDraw?.(); };
-  }, []);
+  }, [roomId]); // re-join when room param changes
 
   // Product drop + overlay — passes sendProductDrop to emit to remote clients
   const canvasContainerRef = useRef(null);
@@ -94,7 +98,7 @@ export default function CollabCanvas({ onShare }) {
   const addToast = useUIStore(s => s.addToast);
 
   const copyRoomLink = () => {
-    const link = `${window.location.origin}/?room=spring2026`;
+    const link = `${window.location.origin}/?room=${roomId}`;
     navigator.clipboard?.writeText(link).catch(() => {});
     addToast('Room link copied! Send it to your friends 🔗', 'success');
   };
@@ -466,7 +470,7 @@ export default function CollabCanvas({ onShare }) {
                   </div>
                 ))}
               </div>
-              <span style={{ color: 'rgba(255,255,255,.65)', fontSize: '12px', fontWeight: '600', marginLeft: 'auto' }}>Room: #spring2026</span>
+              <span style={{ color: 'rgba(255,255,255,.65)', fontSize: '12px', fontWeight: '600', marginLeft: 'auto' }}>Room: #{roomId}</span>
 
               {/* Live avatar bubbles */}
               {(() => {

@@ -4,7 +4,8 @@ export default function ShareModal({ open, onClose }) {
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const link = 'https://drawnbuy.vercel.app/canvas/spring2026';
+  const roomId = new URLSearchParams(window.location.search).get('room') || 'main';
+  const link = `${window.location.origin}/?room=${roomId}`;
 
   const copy = () => {
     navigator.clipboard?.writeText(link).catch(() => {});
