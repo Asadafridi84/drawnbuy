@@ -34,6 +34,7 @@ export default function EmojiSticker({ sticker, canvasId }) {
 
   return (
     <div
+      className="emoji-sticker"
       onMouseDown={onMouseDown}
       onDoubleClick={() => isOwner && setShowDel(v => !v)}
       style={{ position: 'absolute', left: pos.x, top: pos.y, cursor: 'grab', zIndex: 11, userSelect: 'none', fontSize: 32, lineHeight: 1, pointerEvents: 'auto' }}

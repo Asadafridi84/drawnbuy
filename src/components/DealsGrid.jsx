@@ -15,7 +15,7 @@ function CountdownTimer() {
   const s = secs % 60;
   const pad = n => String(n).padStart(2, '0');
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '4px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '800' }}>
+    <span className="dc-countdown" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '4px 12px', borderRadius: '8px', fontSize: '13px', fontWeight: '800' }}>
       ⏱ {pad(h)}:{pad(m)}:{pad(s)} left
     </span>
   );
