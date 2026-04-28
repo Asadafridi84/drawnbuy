@@ -13,6 +13,11 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL
 
 // Singleton socket — one connection per browser session
 let socket = null;
+// Guard: register socket.on listeners only once across React re-renders / StrictMode
+let listenersRegistered = false;
+// Store room + username so we can rejoin after a socket reconnect
+let currentRoomId = null;
+let currentUsername = 'Anonymous';
 // handlers that accept a single latest callback (overwrite semantics)
 const handlers = {};
 // handlers that accumulate multiple subscribers (array semantics)
@@ -37,6 +42,10 @@ export function useSocket() {
 
   // ── Connect & join room ───────────────────────────────────────────────────
   const connect = useCallback((roomId, username = 'Anonymous') => {
+    // Always keep room/username fresh for auto-rejoin after reconnect
+    currentRoomId = roomId;
+    currentUsername = username;
+
     const s = getSocket();
     if (s.connected) {
       s.emit('join-room', { roomId, username });
@@ -47,132 +56,141 @@ export function useSocket() {
 
     s.once('connect', () => {
       console.log('[socket] connected', s.id);
-      s.emit('join-room', { roomId, username });
+      s.emit('join-room', { roomId: currentRoomId, username: currentUsername });
       handlers.onConnect?.();
     });
 
-    s.on('disconnect', (reason) => {
-      console.log('[socket] disconnected', reason);
-      handlers.onDisconnect?.();
-      if (reason !== 'io client disconnect') {
-        addToast('Connection lost. Reconnecting…', 'error');
-      }
-    });
+    // Register all incoming-event listeners exactly once.
+    // React StrictMode double-invokes effects; the flag prevents stacking.
+    if (!listenersRegistered) {
+      listenersRegistered = true;
 
-    s.on('reconnect', () => {
-      addToast('✅ Reconnected!', 'success');
-      handlers.onConnect?.();
-    });
+      s.on('disconnect', (reason) => {
+        console.log('[socket] disconnected', reason);
+        handlers.onDisconnect?.();
+        if (reason !== 'io client disconnect') {
+          addToast('Connection lost. Reconnecting…', 'error');
+        }
+      });
 
-    s.on('connect_error', (err) => {
-      console.warn('[socket] error:', err.message);
-    });
+      s.on('reconnect', () => {
+        addToast('✅ Reconnected!', 'success');
+        // Re-join the room — server loses room membership on reconnect
+        if (currentRoomId) {
+          s.emit('join-room', { roomId: currentRoomId, username: currentUsername });
+        }
+        handlers.onConnect?.();
+      });
 
-    // ── Incoming events ────────────────────────────────────────────────────
-    s.on('draw', (data) => multiHandlers.onRemoteDraw.forEach(fn => fn(data)));
-    s.on('canvas-cleared', () => handlers.onRemoteClear?.());
-    s.on('canvas-state', (events) => handlers.onCanvasState?.(events));
+      s.on('connect_error', (err) => {
+        console.warn('[socket] error:', err.message);
+      });
 
-    s.on('product-state', (products) => {
-      if (!Array.isArray(products)) return;
-      products.forEach((data) => {
+      // ── Incoming events ──────────────────────────────────────────────────
+      s.on('draw', (data) => multiHandlers.onRemoteDraw.forEach(fn => fn(data)));
+      s.on('canvas-cleared', () => handlers.onRemoteClear?.());
+      s.on('canvas-state', (events) => handlers.onCanvasState?.(events));
+
+      s.on('product-state', (products) => {
+        if (!Array.isArray(products)) return;
+        products.forEach((data) => {
+          addCard(data.canvasId || 'main-collab', {
+            id: data.id || Date.now().toString(),
+            product: { name: data.name, price: data.price, img: data.img, url: data.url },
+            x: data.x || 80,
+            y: data.y || 60,
+            ownerId: data.droppedBy || 'remote',
+          });
+        });
+      });
+
+      s.on('participants', (list) => setParticipants(list));
+      s.on('user-joined', (user) => addToast(`${user.name} joined 👋`, 'info'));
+      s.on('user-left', (user) => addToast(`${user.name} left`, 'info'));
+
+      s.on('chat-message', (msg) => {
+        if (msg.senderId === s.id) return; // don't echo own messages
+        addMessage({
+          ...msg,
+          time: new Date(msg.time).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+        });
+      });
+
+      s.on('emoji-reaction', ({ emoji, sender }) => {
+        addMessage({
+          id: Date.now(), text: emoji, sender,
+          time: new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+          type: 'emoji',
+        });
+      });
+
+      s.on('voice-message', (data) => {
+        addMessage({
+          id: Date.now(),
+          type: 'voice',
+          audioSrc: data.audioBase64,
+          sender: data.senderName || 'Someone',
+          time: new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+        });
+      });
+
+      s.on('sticker-placed', (data) => {
+        useCanvasProductStore.getState().addSticker(data.canvasId || 'main-collab', {
+          id: data.id,
+          emoji: data.emoji,
+          x: data.x || 80,
+          y: data.y || 60,
+          ownerId: data.ownerId || 'remote',
+        });
+      });
+
+      s.on('product-dropped', (data) => {
+        addToast(`${data.emoji || '📦'} ${data.droppedBy || 'Someone'} placed ${data.name} on canvas!`, 'info');
         addCard(data.canvasId || 'main-collab', {
           id: data.id || Date.now().toString(),
-          product: { name: data.name, price: data.price, img: data.img, url: data.url },
+          product: {
+            name: data.name,
+            price: data.price,
+            img: data.img,
+            url: data.url,
+          },
           x: data.x || 80,
           y: data.y || 60,
           ownerId: data.droppedBy || 'remote',
         });
       });
-    });
 
-    s.on('participants', (list) => setParticipants(list));
-    s.on('user-joined', (user) => addToast(`${user.name} joined 👋`, 'info'));
-    s.on('user-left', (user) => addToast(`${user.name} left`, 'info'));
-
-    s.on('chat-message', (msg) => {
-      if (msg.senderId === s.id) return; // don't echo own messages
-      addMessage({
-        ...msg,
-        time: new Date(msg.time).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+      s.on('move-product', (data) => {
+        useCanvasProductStore.getState().moveCard(
+          data.canvasId || 'main-collab',
+          data.cardId,
+          data.x,
+          data.y,
+        );
       });
-    });
 
-    s.on('emoji-reaction', ({ emoji, sender }) => {
-      addMessage({
-        id: Date.now(), text: emoji, sender,
-        time: new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
-        type: 'emoji',
+      s.on('remove-product', (data) => {
+        useCanvasProductStore.getState().removeCardById(
+          data.canvasId || 'main-collab',
+          data.cardId,
+        );
       });
-    });
 
-    s.on('voice-message', (data) => {
-      addMessage({
-        id: Date.now(),
-        type: 'voice',
-        audioSrc: data.audioBase64,
-        sender: data.senderName || 'Someone',
-        time: new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+      s.on('remove-sticker', (data) => {
+        useCanvasProductStore.getState().removeStickerById(
+          data.canvasId || 'main-collab',
+          data.stickerId,
+        );
       });
-    });
 
-    s.on('sticker-placed', (data) => {
-      useCanvasProductStore.getState().addSticker(data.canvasId || 'main-collab', {
-        id: data.id,
-        emoji: data.emoji,
-        x: data.x || 80,
-        y: data.y || 60,
-        ownerId: data.ownerId || 'remote',
+      s.on('clear-all', (data) => {
+        const store = useCanvasProductStore.getState();
+        const cid = data?.canvasId || 'main-collab';
+        store.clearAllCards(cid);
+        store.clearAllStickers(cid);
+        handlers.onRemoteClear?.(); // reuse same handler to wipe canvas drawing
       });
-    });
-
-    s.on('product-dropped', (data) => {
-      addToast(`${data.emoji || '📦'} ${data.droppedBy || 'Someone'} placed ${data.name} on canvas!`, 'info');
-      // Also render the product card on the remote client's canvas
-      addCard(data.canvasId || 'main-collab', {
-        id: data.id || Date.now().toString(),
-        product: {
-          name: data.name,
-          price: data.price,
-          img: data.img,
-          url: data.url,
-        },
-        x: data.x || 80,
-        y: data.y || 60,
-        ownerId: data.droppedBy || 'remote',
-      });
-    });
-
-    s.on('move-product', (data) => {
-      useCanvasProductStore.getState().moveCard(
-        data.canvasId || 'main-collab',
-        data.cardId,
-        data.x,
-        data.y,
-      );
-    });
-
-    s.on('remove-product', (data) => {
-      useCanvasProductStore.getState().removeCardById(
-        data.canvasId || 'main-collab',
-        data.cardId,
-      );
-    });
-
-    s.on('remove-sticker', (data) => {
-      useCanvasProductStore.getState().removeStickerById(
-        data.canvasId || 'main-collab',
-        data.stickerId,
-      );
-    });
-
-    s.on('clear-all', (data) => {
-      const store = useCanvasProductStore.getState();
-      const cid = data?.canvasId || 'main-collab';
-      store.clearAllCards(cid);
-      store.clearAllStickers(cid);
-      handlers.onRemoteClear?.(); // reuse same handler to wipe canvas drawing
-    });
+    }
   }, []);
 
   const disconnect = useCallback(() => {

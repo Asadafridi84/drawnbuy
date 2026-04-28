@@ -65,9 +65,12 @@ export function useProductDrop(canvasId, containerRef, syncCanvasIds = [], sendP
     });
 
     // 3. Emit to socket so remote clients see the drop
+    // If this canvas syncs to another (e.g. hero → main-collab), emit to the
+    // sync target so remote clients add the card to the right canvas.
     if (sendProductDrop) {
+      const socketCanvasId = syncCanvasIds.length > 0 ? syncCanvasIds[0] : canvasId;
       sendProductDrop(
-        { ...product, id, canvasId, droppedBy: userId },
+        { ...product, id, canvasId: socketCanvasId, droppedBy: userId },
         x,
         y,
       );

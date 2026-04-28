@@ -204,6 +204,9 @@ io.on('connection', (socket) => {
       cardId:   sanitize(String(d.cardId   || '')),
       canvasId: sanitize(String(d.canvasId || 'main-collab')),
     };
+    // Remove from server-side product list so late joiners don't see deleted cards
+    const r = getRoom(room);
+    r.products = r.products.filter(p => p.id !== data.cardId);
     socket.to(room).emit('remove-product', data);
   });
 
