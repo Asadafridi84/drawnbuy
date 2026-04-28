@@ -178,6 +178,15 @@ io.on('connection', (socket) => {
     socket.to(room).emit('sticker-placed', sticker);
   });
 
+  socket.on('clear-all', (d) => {
+    if (!room) return;
+    const r = getRoom(room);
+    r.canvas   = [];
+    r.products = [];
+    const canvasId = sanitize(String(d?.canvasId || 'main-collab'));
+    socket.to(room).emit('clear-all', { canvasId });
+  });
+
   socket.on('move-product', (d) => {
     if (!room) return;
     const data = {

@@ -58,6 +58,7 @@ export default function ProductCard({ card, canvasId }) {
 
   return (
     <div
+      className="cv-card"
       draggable={true}
       onDragStart={(e) => {
         e.stopPropagation();

@@ -126,7 +126,7 @@ export default function DragStrip() {
           {sorted.map((p, i) => (
             <div
               key={i}
-              className="pc"
+              className="pc ds-card"
               draggable
               onDragStart={e => {
                 e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({ name: p.name, price: p.price, img: p.img, url: p.url }));

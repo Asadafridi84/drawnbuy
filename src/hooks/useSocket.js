@@ -165,6 +165,14 @@ export function useSocket() {
         data.stickerId,
       );
     });
+
+    s.on('clear-all', (data) => {
+      const store = useCanvasProductStore.getState();
+      const cid = data?.canvasId || 'main-collab';
+      store.clearAllCards(cid);
+      store.clearAllStickers(cid);
+      handlers.onRemoteClear?.(); // reuse same handler to wipe canvas drawing
+    });
   }, []);
 
   const disconnect = useCallback(() => {
@@ -185,9 +193,10 @@ export function useSocket() {
   const sendSticker = useCallback((sticker) => {
     socket?.emit('sticker-placed', sticker);
   }, []);
-  const sendMoveProduct = useCallback((data) => socket?.emit('move-product', data), []);
+  const sendMoveProduct   = useCallback((data) => socket?.emit('move-product', data), []);
   const sendRemoveProduct = useCallback((data) => socket?.emit('remove-product', data), []);
   const sendRemoveSticker = useCallback((data) => socket?.emit('remove-sticker', data), []);
+  const sendClearAll      = useCallback((data) => socket?.emit('clear-all', data), []);
 
   // ── Handler registration ──────────────────────────────────────────────────
   // onRemoteDraw supports multiple subscribers; returns an unsubscribe function
@@ -204,7 +213,7 @@ export function useSocket() {
 
   return {
     connect, disconnect,
-    sendDraw, sendClear, sendMessage, sendEmoji, sendProductDrop, sendVoiceMessage, sendSticker,
+    sendDraw, sendClear, sendClearAll, sendMessage, sendEmoji, sendProductDrop, sendVoiceMessage, sendSticker,
     sendMoveProduct, sendRemoveProduct, sendRemoveSticker,
     onRemoteDraw, onRemoteClear, onCanvasState, onConnect, onDisconnect,
     isConnected: () => socket?.connected ?? false,

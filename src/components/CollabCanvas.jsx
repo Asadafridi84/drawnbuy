@@ -47,7 +47,7 @@ export default function CollabCanvas({ onShare }) {
   const participants = useCollabStore(s => s.participants);
 
   const user = useAuthStore(s => s.user);
-  const { connect, sendDraw, sendMessage, sendProductDrop, sendVoiceMessage, sendSticker, sendMoveProduct, onRemoteDraw, onCanvasState } = useSocket();
+  const { connect, sendDraw, sendClear, sendClearAll, sendMessage, sendProductDrop, sendVoiceMessage, sendSticker, sendMoveProduct, onRemoteDraw, onRemoteClear, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
     connect(roomId, username);
@@ -66,6 +66,12 @@ export default function CollabCanvas({ onShare }) {
       ctx.moveTo(d.x1, d.y1);
       ctx.lineTo(d.x2, d.y2);
       ctx.stroke();
+    });
+
+    // Wipe drawing when a remote user clears canvas or triggers clear-all
+    onRemoteClear(() => {
+      const canvas = canvasRef.current;
+      if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     });
 
     // Replay full canvas history when joining a room that already has strokes
@@ -278,6 +284,7 @@ export default function CollabCanvas({ onShare }) {
     if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     clearAllCards('main-collab');
     clearAllStickers('main-collab');
+    sendClearAll({ canvasId: 'main-collab' });
     addToast('Canvas cleared 🧹', 'info');
   };
 
@@ -346,6 +353,7 @@ export default function CollabCanvas({ onShare }) {
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    sendClear();
   };
 
   const sendMsg = () => {
