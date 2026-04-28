@@ -1,8 +1,8 @@
 const STEPS = [
-  { icon: '✏️', title: 'Draw Your Idea', desc: 'Sketch what you want on the collaborative canvas. Use freehand drawing or simple shapes.' },
-  { icon: '🔍', title: 'AI Finds Products', desc: 'Our AI recognises your drawing and instantly surfaces matching real products from top stores.' },
-  { icon: '🎨', title: 'Drag to Canvas', desc: 'Drag products from the search panel onto your canvas. Arrange, compare, and share your wishlist.' },
-  { icon: '🛒', title: 'Shop Together', desc: 'Invite friends & family to your canvas. Chat, react, and buy — all in one place.' },
+  { img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=200&h=200&fit=crop', title: 'Draw Your Idea', desc: 'Sketch what you want on the collaborative canvas. Use freehand drawing or simple shapes.' },
+  { img: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?w=200&h=200&fit=crop', title: 'AI Finds Products', desc: 'Our AI recognises your drawing and instantly surfaces matching real products from top stores.' },
+  { img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop', title: 'Drag to Canvas', desc: 'Drag products from the search panel onto your canvas. Arrange, compare, and share your wishlist.' },
+  { img: 'https://images.unsplash.com/photo-1522125670776-3c7abb882bc2?w=200&h=200&fit=crop', title: 'Shop Together', desc: 'Invite friends & family to your canvas. Chat, react, and buy — all in one place.' },
 ];
 
 export default function HowItWorks() {
@@ -21,8 +21,8 @@ export default function HowItWorks() {
         .hiw-step:hover { transform:translateY(-6px); }
         .hiw-num { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#7c3aed,#5b21b6); color:#fff; font-weight:900; font-size:16px; display:flex; align-items:center; justify-content:center; margin:0 auto .75rem; box-shadow:0 4px 20px rgba(124,58,237,.5); transition:all .25s; }
         .hiw-step:hover .hiw-num { transform:scale(1.15); box-shadow:0 8px 28px rgba(124,58,237,.7); }
-        .hiw-icon-wrap { width:64px; height:64px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; margin:0 auto .75rem; transition:all .25s; backdrop-filter:blur(4px); }
-        .hiw-step:hover .hiw-icon-wrap { background:rgba(255,255,255,.15); border-color:rgba(251,191,36,.4); transform:rotate(-5deg); }
+        .hiw-icon-wrap { width:64px; height:64px; border-radius:16px; overflow:hidden; border:2px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; margin:0 auto .75rem; transition:all .25s; }
+        .hiw-step:hover .hiw-icon-wrap { border-color:rgba(251,191,36,.6); transform:rotate(-5deg) scale(1.08); }
         .hiw-title { font-size:.92rem; font-weight:900; color:#fff; margin-bottom:.5rem; }
         .hiw-desc { font-size:.76rem; color:#e8d5ff; line-height:1.6; font-weight:500; }
         .hiw-cta-btn { background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#1a0a3e; border:none; border-radius:12px; padding:12px 32px; font-size:.95rem; font-weight:900; cursor:pointer; font-family:inherit; transition:all .2s cubic-bezier(.34,1.56,.64,1); box-shadow:0 4px 20px rgba(251,191,36,.4); }
@@ -43,7 +43,7 @@ export default function HowItWorks() {
             <div key={i} className="hiw-step">
               <div className="hiw-num">{i + 1}</div>
               <div className="hiw-icon-wrap">
-                <span style={{ fontSize: '28px' }}>{s.icon}</span>
+                <img src={s.img} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} loading="lazy" />
               </div>
               <div className="hiw-title">{s.title}</div>
               <div className="hiw-desc">{s.desc}</div>

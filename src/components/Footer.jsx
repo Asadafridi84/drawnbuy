@@ -17,9 +17,9 @@ const FOOTER_LINKS = {
   'Support': [
     { label: 'Help Center',      href: 'mailto:hello@drawnbuy.com' },
     { label: 'Contact Us',       href: 'mailto:hello@drawnbuy.com' },
-    { label: 'Privacy Policy',   href: '/' },
-    { label: 'Terms of Service', href: '/' },
-    { label: 'Cookie Settings',  href: '/' },
+    { label: 'Privacy Policy',   href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Cookie Settings',  href: '/cookies' },
   ],
   'Discover': [
     { label: "Women's Fashion", href: '/category/womens-fashion' },
@@ -113,9 +113,9 @@ export default function Footer() {
       <div className="footer-bottom">
         <span>© 2026 DrawNBuy AB — Stockholm, Sweden 🇸🇪</span>
         <div style={{ display: 'flex', gap: '16px' }}>
-          <a href="/" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Privacy</a>
-          <a href="/" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Terms</a>
-          <a href="/" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Cookies</a>
+          <a href="/privacy" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Privacy</a>
+          <a href="/terms"   style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Terms</a>
+          <a href="/cookies" style={{ color: '#67e8f9', textDecoration: 'none', cursor: 'pointer' }}>Cookies</a>
         </div>
       </div>
     </footer>

@@ -165,6 +165,19 @@ io.on('connection', (socket) => {
     socket.to(room).emit('voice-message', { audioBase64, senderName: user?.name || 'Guest' });
   });
 
+  socket.on('sticker-placed', (d) => {
+    if (!room) return;
+    const sticker = {
+      id:       sanitize(String(d.id       || Date.now())),
+      canvasId: sanitize(String(d.canvasId || 'main-collab')),
+      emoji:    sanitize(String(d.emoji    || '🔥')),
+      x: +d.x || 80,
+      y: +d.y || 60,
+      ownerId: sanitize(String(d.ownerId || user?.name || 'remote')),
+    };
+    socket.to(room).emit('sticker-placed', sticker);
+  });
+
   socket.on('disconnect', () => {
     if (!room || !user) return;
     const r = getRoom(room);

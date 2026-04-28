@@ -32,6 +32,9 @@ import ProfilePage        from './pages/ProfilePage';
 import CanvasesPage       from './pages/CanvasesPage';
 import NotFoundPage       from './pages/NotFoundPage';
 import ProtectedRoute     from './components/ProtectedRoute';
+import PrivacyPage        from './pages/PrivacyPage';
+import TermsPage          from './pages/TermsPage';
+import CookiesPage        from './pages/CookiesPage';
 
 const GLOBAL_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&display=swap');
@@ -160,6 +163,11 @@ export default function App() {
         <Route path="/category/:slug" element={
           <CategoryRouteWrapper onShare={() => setShareOpen(true)} cartCount={cartCount} />
         } />
+
+        {/* ── Legal pages ─────────────────────────────────── */}
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms"   element={<TermsPage />} />
+        <Route path="/cookies" element={<CookiesPage />} />
 
         {/* ── 404 ─────────────────────────────────────────── */}
         <Route path="*" element={<NotFoundPage />} />

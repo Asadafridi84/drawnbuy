@@ -4,6 +4,7 @@ export default function ShareModal({ open, onClose }) {
   const [copied, setCopied] = useState(false);
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
+  const [showQR, setShowQR] = useState(false);
   const roomId = new URLSearchParams(window.location.search).get('room') || 'main';
   const link = `${window.location.origin}/?room=${roomId}`;
 
@@ -77,7 +78,7 @@ export default function ShareModal({ open, onClose }) {
             { bg: '#fef9c3', icon: '📧', label: 'Email',     sub: 'Send by email', url: `mailto:?subject=Join my DrawNBuy Canvas&body=${encodeURIComponent('Hey! Join my shopping canvas on DrawNBuy: ' + link)}` },
             { bg: '#f3e8ff', icon: '📷', label: 'QR Code',   sub: 'Scan to open',  url: null },
           ].map(opt => (
-            <div key={opt.label} className="sopt" onClick={() => opt.url && window.open(opt.url, '_blank')}>
+            <div key={opt.label} className="sopt" onClick={() => opt.label === 'QR Code' ? setShowQR(v => !v) : (opt.url && window.open(opt.url, '_blank'))}>
               <div className="sicon" style={{ background: opt.bg }}>{opt.icon}</div>
               <div>
                 <div style={{ fontSize: '.78rem', fontWeight: '700', color: '#1a0a3e' }}>{opt.label}</div>
@@ -86,6 +87,18 @@ export default function ShareModal({ open, onClose }) {
             </div>
           ))}
         </div>
+
+        {/* QR Code */}
+        {showQR && (
+          <div style={{ textAlign: 'center', padding: '.75rem', background: '#f9f7ff', borderRadius: '10px', border: '1.5px solid #ede9fe', marginBottom: '.75rem' }}>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(link)}`}
+              alt="QR Code"
+              style={{ width: 150, height: 150, borderRadius: 8, display: 'block', margin: '0 auto' }}
+            />
+            <div style={{ fontSize: '.72rem', color: '#7c3aed', fontWeight: '600', marginTop: '.4rem' }}>Scan to open canvas</div>
+          </div>
+        )}
 
         {/* Invite by email */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', margin: '.75rem 0' }}>

@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { DEALS } from '../data';
+import { useCanvasStore } from '../store/canvas';
+import { useSocket } from '../hooks/useSocket';
+import { useUIStore } from '../store';
 
 function CountdownTimer() {
   const [secs, setSecs] = useState(3600 * 4 + 23 * 60 + 47);
@@ -34,7 +37,23 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
     return map;
   });
 
+  const addCard = useCanvasStore(s => s.addCard);
+  const { sendProductDrop } = useSocket();
+  const addToast = useUIStore(s => s.addToast);
+
   const toggleWish = i => setWishlist(w => ({ ...w, [i]: !w[i] }));
+
+  const addToCanvas = (d, e) => {
+    e.stopPropagation();
+    const id = Date.now().toString();
+    const product = { name: d.name, price: d.price, img: d.img, url: d.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(d.name)}&tag=drawnbuy-21` };
+    const x = 80 + Math.random() * 400;
+    const y = 60 + Math.random() * 200;
+    addCard('main-collab', { id, product, x, y, ownerId: 'guest' });
+    sendProductDrop({ ...product, id, canvasId: 'main-collab', emoji: '🛍️', droppedBy: 'You' }, x, y);
+    addToast(`${d.name} added to canvas 🎨`, 'success');
+    document.getElementById('collabSection')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const filtered = selectedCategory === 'all'
     ? DEALS
@@ -93,7 +112,7 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <CountdownTimer />
-          <a style={{ color: '#7c3aed', fontSize: '13px', fontWeight: '700', cursor: 'pointer' }}>View all deals →</a>
+          <a href="/#dealsAnchor" style={{ color: '#7c3aed', fontSize: '13px', fontWeight: '700', cursor: 'pointer', textDecoration: 'none' }}>View all deals →</a>
         </div>
       </div>
 
@@ -140,7 +159,7 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
               <div style={{ display: 'flex', gap: '5px', marginTop: '6px' }}>
                 <button className="dc-buybtn" style={{ flex: 2 }} onClick={() => window.open(d.url, '_blank')}>Buy on {d.store}</button>
               </div>
-              <button className="dc-addbtn">🎨 Add to Canvas</button>
+              <button className="dc-addbtn" onClick={(e) => addToCanvas(d, e)}>🎨 Add to Canvas</button>
             </div>
           </div>
         ))}

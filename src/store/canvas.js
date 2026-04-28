@@ -29,6 +29,10 @@ export const useCanvasStore = create((set) => ({
     }
   })),
 
+  clearAllCards: (canvasId) => set(state => ({
+    cards: { ...state.cards, [canvasId]: [] }
+  })),
+
   // Emoji stickers: { canvasId: [{ id, emoji, x, y, ownerId }] }
   stickers: {},
 
@@ -55,6 +59,10 @@ export const useCanvasStore = create((set) => ({
         !(s.id === stickerId && s.ownerId === userId)
       )
     }
+  })),
+
+  clearAllStickers: (canvasId) => set(state => ({
+    stickers: { ...state.stickers, [canvasId]: [] }
   })),
 
   // Recording state: { canvasId: { userId, userName } | null }

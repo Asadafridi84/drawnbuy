@@ -47,7 +47,7 @@ export default function CollabCanvas({ onShare }) {
   const participants = useCollabStore(s => s.participants);
 
   const user = useAuthStore(s => s.user);
-  const { connect, sendDraw, sendMessage, sendProductDrop, sendVoiceMessage, onRemoteDraw, onCanvasState } = useSocket();
+  const { connect, sendDraw, sendMessage, sendProductDrop, sendVoiceMessage, sendSticker, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
     connect(roomId, username);
@@ -95,6 +95,8 @@ export default function CollabCanvas({ onShare }) {
   const canvasContainerRef = useRef(null);
   const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef, [], sendProductDrop);
   const addSticker = useCanvasStore(s => s.addSticker);
+  const clearAllCards = useCanvasStore(s => s.clearAllCards);
+  const clearAllStickers = useCanvasStore(s => s.clearAllStickers);
   const addToast = useUIStore(s => s.addToast);
 
   const copyRoomLink = () => {
@@ -259,14 +261,24 @@ export default function CollabCanvas({ onShare }) {
   }; // {x,y} relative to canvas container
   const STICKER_EMOJIS = ['🔥','❤️','👍','😍','💯','⭐','🛒','💰','✅','🎉','🤩','💅'];
   const dropSticker = (emoji) => {
-    addSticker('main-collab', {
+    const sticker = {
       id: Date.now().toString(),
       emoji,
       x: 80 + Math.random() * 300,
       y: 60 + Math.random() * 200,
       ownerId: user?.id || 'guest',
-    });
+    };
+    addSticker('main-collab', sticker);
+    sendSticker({ ...sticker, canvasId: 'main-collab' });
     setShowStickerPicker(false);
+  };
+
+  const clearAll = () => {
+    const canvas = canvasRef.current;
+    if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    clearAllCards('main-collab');
+    clearAllStickers('main-collab');
+    addToast('Canvas cleared 🧹', 'info');
   };
 
   const getPos = (e, canvas) => {
@@ -537,7 +549,8 @@ export default function CollabCanvas({ onShare }) {
               {[['draw','✏️ Draw'],['erase','🧹 Erase']].map(([t,l]) => (
                 <button key={t} className={`t-chip ${tool===t?'on':''}`} onClick={() => setTool(t)}>{l}</button>
               ))}
-              <button className="t-chip" onClick={clearCanvas}>Clear</button>
+              <button className="t-chip" onClick={clearCanvas}>Clear Drawing</button>
+              <button className="t-chip" onClick={clearAll} style={{ color: '#fca5a5', borderColor: 'rgba(239,68,68,.3)' }}>🗑️ Clear All</button>
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setShowStickerPicker(v => !v)}

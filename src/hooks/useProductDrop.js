@@ -2,11 +2,15 @@ import { useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
 
+const CARD_W = 160;
+const CARD_H = 200;
+
 export function useProductDrop(canvasId, containerRef, syncCanvasIds = [], sendProductDrop = null) {
-  const addCard   = useCanvasStore(s => s.addCard);
-  const user      = useAuthStore(s => s.user);
-  const guestId   = useRef('guest-' + Math.random().toString(36).slice(2, 7));
-  const userId    = user?.id || guestId.current;
+  const addCard      = useCanvasStore(s => s.addCard);
+  const user         = useAuthStore(s => s.user);
+  const guestId      = useRef('guest-' + Math.random().toString(36).slice(2, 7));
+  const userId       = user?.id || guestId.current;
+  const lastDropRef  = useRef(0);
 
   const onDragOver = (e) => {
     e.preventDefault();
@@ -15,6 +19,10 @@ export function useProductDrop(canvasId, containerRef, syncCanvasIds = [], sendP
 
   const onDrop = (e) => {
     e.preventDefault();
+    const now = Date.now();
+    if (now - lastDropRef.current < 300) return; // dupe guard
+    lastDropRef.current = now;
+
     const raw = e.dataTransfer.getData('application/drawnbuy-product');
     if (!raw) return;
     let product;
@@ -23,8 +31,8 @@ export function useProductDrop(canvasId, containerRef, syncCanvasIds = [], sendP
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    const x = Math.max(0, e.clientX - rect.left - 80);
-    const y = Math.max(0, e.clientY - rect.top  - 60);
+    const x = Math.max(0, Math.min(e.clientX - rect.left - 80, rect.width  - CARD_W));
+    const y = Math.max(0, Math.min(e.clientY - rect.top  - 60, rect.height - CARD_H));
     const id = Date.now().toString();
 
     // 1. Add to primary canvas locally

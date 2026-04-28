@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CATS, GROUPS } from '../data';
 
 export default function CategoriesGrid() {
   const [activeGroup, setActiveGroup] = useState('all');
   const [search, setSearch] = useState('');
   const [hovered, setHovered] = useState(null);
+  const navigate = useNavigate();
 
   const filtered = CATS.filter(c => {
     const matchGroup = activeGroup === 'all' || c.group === activeGroup;
@@ -78,6 +80,7 @@ export default function CategoriesGrid() {
             style={{ animationDelay: `${i * 0.03}s` }}
             onMouseEnter={() => setHovered(c.slug)}
             onMouseLeave={() => setHovered(null)}
+            onClick={() => navigate('/category/' + c.slug)}
           >
             {c.badge && badgeStyle(c.badge) && (
               <div style={{ position: 'absolute', top: '7px', left: '7px', fontSize: '9px', fontWeight: '800', padding: '2px 7px', borderRadius: '20px', zIndex: 1, ...badgeStyle(c.badge) }}>

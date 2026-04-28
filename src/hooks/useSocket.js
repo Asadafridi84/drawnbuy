@@ -116,6 +116,16 @@ export function useSocket() {
       });
     });
 
+    s.on('sticker-placed', (data) => {
+      useCanvasProductStore.getState().addSticker(data.canvasId || 'main-collab', {
+        id: data.id,
+        emoji: data.emoji,
+        x: data.x || 80,
+        y: data.y || 60,
+        ownerId: data.ownerId || 'remote',
+      });
+    });
+
     s.on('product-dropped', (data) => {
       addToast(`${data.emoji || '📦'} ${data.droppedBy || 'Someone'} placed ${data.name} on canvas!`, 'info');
       // Also render the product card on the remote client's canvas
@@ -149,6 +159,9 @@ export function useSocket() {
   const sendVoiceMessage = useCallback((audioBase64) => {
     socket?.emit('voice-message', { audioBase64 });
   }, []);
+  const sendSticker = useCallback((sticker) => {
+    socket?.emit('sticker-placed', sticker);
+  }, []);
 
   // ── Handler registration ──────────────────────────────────────────────────
   // onRemoteDraw supports multiple subscribers; returns an unsubscribe function
@@ -165,7 +178,7 @@ export function useSocket() {
 
   return {
     connect, disconnect,
-    sendDraw, sendClear, sendMessage, sendEmoji, sendProductDrop, sendVoiceMessage,
+    sendDraw, sendClear, sendMessage, sendEmoji, sendProductDrop, sendVoiceMessage, sendSticker,
     onRemoteDraw, onRemoteClear, onCanvasState, onConnect, onDisconnect,
     isConnected: () => socket?.connected ?? false,
   };

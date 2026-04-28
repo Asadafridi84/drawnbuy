@@ -28,7 +28,7 @@ function SideAdPanel({ ads, timerPct }) {
 
 export default function ProductSearchPanel() {
   const [search, setSearch] = useState('');
-  const [activeCat, setActiveCat] = useState(CATS[0].slug);
+  const [activeCat, setActiveCat] = useState('all');
   const [adIdx, setAdIdx] = useState(0);
   const [timerPct, setTimerPct] = useState(0);
 
@@ -106,6 +106,10 @@ export default function ProductSearchPanel() {
 
           {/* Category chips */}
           <div style={{ display: 'flex', gap: '.35rem', overflowX: 'auto', paddingBottom: '.5rem', scrollbarWidth: 'none', marginBottom: '.7rem' }}>
+            <button
+              className={`cat-chip ${activeCat === 'all' ? 'on' : ''}`}
+              onClick={() => setActiveCat('all')}
+            >🔥 All</button>
             {CATS.slice(0, 14).map(c => (
               <button
                 key={c.slug}
