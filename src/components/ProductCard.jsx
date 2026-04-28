@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
+import { useSocket } from '../hooks/useSocket';
 
 const safeOpen = (url) => {
   if (!url) return;
@@ -26,27 +27,30 @@ const DEFAULT_SIZE = { cardW: 140, imgH: 90, fontSize: '.68rem', priceSize: '.75
 export default function ProductCard({ card, canvasId }) {
   const sz = CANVAS_SIZES[canvasId] || DEFAULT_SIZE;
   const { cardW, imgH, fontSize, priceSize, btnSize, pad } = sz;
-  const moveCard   = useCanvasStore(s => s.moveCard);
-  const removeCard = useCanvasStore(s => s.removeCard);
-  const user       = useAuthStore(s => s.user);
-  const userId     = user?.id || '';
-  const isOwner    = card.ownerId === userId || card.ownerId?.startsWith('guest');
+  const moveCard       = useCanvasStore(s => s.moveCard);
+  const removeCardById = useCanvasStore(s => s.removeCardById);
+  const { sendMoveProduct, sendRemoveProduct } = useSocket();
 
   const dragStart = useRef(null);
   const [pos, setPos] = useState({ x: card.x, y: card.y });
 
   const onMouseDown = (e) => {
     e.stopPropagation();
-    dragStart.current = { mx: e.clientX, my: e.clientY, x: pos.x, y: pos.y };
+    dragStart.current = { mx: e.clientX, my: e.clientY, x: pos.x, y: pos.y, finalX: pos.x, finalY: pos.y };
     const onMove = (ev) => {
       const nx = dragStart.current.x + (ev.clientX - dragStart.current.mx);
       const ny = dragStart.current.y + (ev.clientY - dragStart.current.my);
+      dragStart.current.finalX = nx;
+      dragStart.current.finalY = ny;
       setPos({ x: nx, y: ny });
       moveCard(canvasId, card.id, nx, ny);
     };
     const onUp = () => {
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
+      if (dragStart.current) {
+        sendMoveProduct({ cardId: card.id, canvasId, x: dragStart.current.finalX, y: dragStart.current.finalY });
+      }
     };
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
@@ -54,6 +58,14 @@ export default function ProductCard({ card, canvasId }) {
 
   return (
     <div
+      draggable={true}
+      onDragStart={(e) => {
+        e.stopPropagation();
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('move-card-id', card.id);
+        e.dataTransfer.setData('move-canvas-id', canvasId);
+        e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify(card.product));
+      }}
       onMouseDown={onMouseDown}
       style={{
         position: 'absolute',
@@ -92,14 +104,17 @@ export default function ProductCard({ card, canvasId }) {
           >
             Add to Cart
           </button>
-          {isOwner && (
-            <button
-              onClick={() => removeCard(canvasId, card.id, userId)}
-              style={{ background: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', borderRadius: 6, padding: '5px 8px', fontSize: '.65rem', fontWeight: 700, cursor: 'pointer' }}
-            >
-              ✕
-            </button>
-          )}
+          <button
+            className="card-delete-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              removeCardById(canvasId, card.id);
+              sendRemoveProduct({ cardId: card.id, canvasId });
+            }}
+            style={{ background: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5', borderRadius: 6, padding: '5px 8px', fontSize: '.65rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            ✕
+          </button>
         </div>
       </div>
     </div>

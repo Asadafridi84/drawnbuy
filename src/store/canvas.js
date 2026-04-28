@@ -29,6 +29,13 @@ export const useCanvasStore = create((set) => ({
     }
   })),
 
+  removeCardById: (canvasId, cardId) => set(state => ({
+    cards: {
+      ...state.cards,
+      [canvasId]: (state.cards[canvasId] || []).filter(c => c.id !== cardId)
+    }
+  })),
+
   clearAllCards: (canvasId) => set(state => ({
     cards: { ...state.cards, [canvasId]: [] }
   })),
@@ -58,6 +65,13 @@ export const useCanvasStore = create((set) => ({
       [canvasId]: (state.stickers[canvasId] || []).filter(s =>
         !(s.id === stickerId && s.ownerId === userId)
       )
+    }
+  })),
+
+  removeStickerById: (canvasId, stickerId) => set(state => ({
+    stickers: {
+      ...state.stickers,
+      [canvasId]: (state.stickers[canvasId] || []).filter(s => s.id !== stickerId)
     }
   })),
 

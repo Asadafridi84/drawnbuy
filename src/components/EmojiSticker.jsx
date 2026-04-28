@@ -1,13 +1,15 @@
 import { useState, useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
+import { useSocket } from '../hooks/useSocket';
 
 export default function EmojiSticker({ sticker, canvasId }) {
-  const moveSticker   = useCanvasStore(s => s.moveSticker);
-  const removeSticker = useCanvasStore(s => s.removeSticker);
-  const user          = useAuthStore(s => s.user);
-  const userId        = user?.id || '';
-  const isOwner       = sticker.ownerId === userId || sticker.ownerId?.startsWith('guest');
+  const moveSticker      = useCanvasStore(s => s.moveSticker);
+  const removeStickerById = useCanvasStore(s => s.removeStickerById);
+  const user             = useAuthStore(s => s.user);
+  const userId           = user?.id || '';
+  const isOwner          = sticker.ownerId === userId || sticker.ownerId?.startsWith('guest');
+  const { sendRemoveSticker } = useSocket();
 
   const [pos, setPos]       = useState({ x: sticker.x, y: sticker.y });
   const [showDel, setShowDel] = useState(false);
@@ -40,7 +42,11 @@ export default function EmojiSticker({ sticker, canvasId }) {
       {sticker.emoji}
       {showDel && isOwner && (
         <button
-          onClick={() => removeSticker(canvasId, sticker.id, userId)}
+          onClick={(e) => {
+            e.stopPropagation();
+            removeStickerById(canvasId, sticker.id);
+            sendRemoveSticker({ stickerId: sticker.id, canvasId });
+          }}
           style={{ position: 'absolute', top: -8, right: -8, background: '#ef4444', color: '#fff', border: 'none', borderRadius: '50%', width: 18, height: 18, fontSize: 10, cursor: 'pointer', fontWeight: 800, lineHeight: '18px', padding: 0 }}
         >✕</button>
       )}

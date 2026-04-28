@@ -142,6 +142,29 @@ export function useSocket() {
         ownerId: data.droppedBy || 'remote',
       });
     });
+
+    s.on('move-product', (data) => {
+      useCanvasProductStore.getState().moveCard(
+        data.canvasId || 'main-collab',
+        data.cardId,
+        data.x,
+        data.y,
+      );
+    });
+
+    s.on('remove-product', (data) => {
+      useCanvasProductStore.getState().removeCardById(
+        data.canvasId || 'main-collab',
+        data.cardId,
+      );
+    });
+
+    s.on('remove-sticker', (data) => {
+      useCanvasProductStore.getState().removeStickerById(
+        data.canvasId || 'main-collab',
+        data.stickerId,
+      );
+    });
   }, []);
 
   const disconnect = useCallback(() => {
@@ -162,6 +185,9 @@ export function useSocket() {
   const sendSticker = useCallback((sticker) => {
     socket?.emit('sticker-placed', sticker);
   }, []);
+  const sendMoveProduct = useCallback((data) => socket?.emit('move-product', data), []);
+  const sendRemoveProduct = useCallback((data) => socket?.emit('remove-product', data), []);
+  const sendRemoveSticker = useCallback((data) => socket?.emit('remove-sticker', data), []);
 
   // ── Handler registration ──────────────────────────────────────────────────
   // onRemoteDraw supports multiple subscribers; returns an unsubscribe function
@@ -179,6 +205,7 @@ export function useSocket() {
   return {
     connect, disconnect,
     sendDraw, sendClear, sendMessage, sendEmoji, sendProductDrop, sendVoiceMessage, sendSticker,
+    sendMoveProduct, sendRemoveProduct, sendRemoveSticker,
     onRemoteDraw, onRemoteClear, onCanvasState, onConnect, onDisconnect,
     isConnected: () => socket?.connected ?? false,
   };

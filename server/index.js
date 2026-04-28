@@ -25,7 +25,7 @@ app.use(helmet({
       defaultSrc:     ["'self'"],
       scriptSrc:      ["'self'"],
       styleSrc:       ["'self'", "'unsafe-inline'"],
-      imgSrc:         ["'self'", "data:", "blob:", "https://placehold.co", "https://images.unsplash.com", "https://images.pexels.com"],
+      imgSrc:         ["'self'", "data:", "blob:", "https://placehold.co", "https://images.unsplash.com", "https://images.pexels.com", "https://api.qrserver.com"],
       connectSrc:     ["'self'", CLIENT_ORIGIN, 'https://drawnbuy.vercel.app'],
       fontSrc:        ["'self'"],
       objectSrc:      ["'none'"],
@@ -176,6 +176,35 @@ io.on('connection', (socket) => {
       ownerId: sanitize(String(d.ownerId || user?.name || 'remote')),
     };
     socket.to(room).emit('sticker-placed', sticker);
+  });
+
+  socket.on('move-product', (d) => {
+    if (!room) return;
+    const data = {
+      cardId:   sanitize(String(d.cardId   || '')),
+      canvasId: sanitize(String(d.canvasId || 'main-collab')),
+      x: +d.x || 0,
+      y: +d.y || 0,
+    };
+    socket.to(room).emit('move-product', data);
+  });
+
+  socket.on('remove-product', (d) => {
+    if (!room) return;
+    const data = {
+      cardId:   sanitize(String(d.cardId   || '')),
+      canvasId: sanitize(String(d.canvasId || 'main-collab')),
+    };
+    socket.to(room).emit('remove-product', data);
+  });
+
+  socket.on('remove-sticker', (d) => {
+    if (!room) return;
+    const data = {
+      stickerId: sanitize(String(d.stickerId || '')),
+      canvasId:  sanitize(String(d.canvasId  || 'main-collab')),
+    };
+    socket.to(room).emit('remove-sticker', data);
   });
 
   socket.on('disconnect', () => {

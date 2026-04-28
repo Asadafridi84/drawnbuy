@@ -47,7 +47,7 @@ export default function CollabCanvas({ onShare }) {
   const participants = useCollabStore(s => s.participants);
 
   const user = useAuthStore(s => s.user);
-  const { connect, sendDraw, sendMessage, sendProductDrop, sendVoiceMessage, sendSticker, onRemoteDraw, onCanvasState } = useSocket();
+  const { connect, sendDraw, sendMessage, sendProductDrop, sendVoiceMessage, sendSticker, sendMoveProduct, onRemoteDraw, onCanvasState } = useSocket();
   useEffect(() => {
     const username = user?.name || 'Guest';
     connect(roomId, username);
@@ -93,7 +93,7 @@ export default function CollabCanvas({ onShare }) {
 
   // Product drop + overlay — passes sendProductDrop to emit to remote clients
   const canvasContainerRef = useRef(null);
-  const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef, [], sendProductDrop);
+  const { onDragOver, onDrop } = useProductDrop('main-collab', canvasContainerRef, [], sendProductDrop, sendMoveProduct);
   const addSticker = useCanvasStore(s => s.addSticker);
   const clearAllCards = useCanvasStore(s => s.clearAllCards);
   const clearAllStickers = useCanvasStore(s => s.clearAllStickers);
@@ -500,7 +500,7 @@ export default function CollabCanvas({ onShare }) {
             </h2>
             <p style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.5)', margin: '3px 0 0' }}>Draw together, find products, shop as a team</p>
           </div>
-          <button className="invite-btn" onClick={copyRoomLink}>🔗 Invite Friends &amp; Family</button>
+          <button className="invite-btn" onClick={() => onShare?.()}>🔗 Invite Friends &amp; Family</button>
         </div>
 
         {/* Grid */}
