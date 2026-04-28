@@ -15,6 +15,8 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL
 let socket = null;
 // Guard: register socket.on listeners only once across React re-renders / StrictMode
 let listenersRegistered = false;
+// Tracks whether we've connected at least once (for reconnect toast)
+let hasConnectedBefore = false;
 // Store room + username so we can rejoin after a socket reconnect
 let currentRoomId = null;
 let currentUsername = 'Anonymous';
@@ -52,18 +54,23 @@ export function useSocket() {
       return;
     }
 
-    s.connect();
-
-    s.once('connect', () => {
-      console.log('[socket] connected', s.id);
-      s.emit('join-room', { roomId: currentRoomId, username: currentUsername });
-      handlers.onConnect?.();
-    });
-
     // Register all incoming-event listeners exactly once.
     // React StrictMode double-invokes effects; the flag prevents stacking.
+    // connect handler lives here (not outside) so it is also guarded.
     if (!listenersRegistered) {
       listenersRegistered = true;
+
+      // Persistent 'connect' fires on first connect AND every reconnect.
+      // Using s.on (not s.once) so reconnects automatically re-join the room.
+      s.on('connect', () => {
+        console.log('[socket] connected', s.id);
+        s.emit('join-room', { roomId: currentRoomId, username: currentUsername });
+        if (hasConnectedBefore) {
+          addToast('✅ Reconnected!', 'success');
+        }
+        hasConnectedBefore = true;
+        handlers.onConnect?.();
+      });
 
       s.on('disconnect', (reason) => {
         console.log('[socket] disconnected', reason);
@@ -71,15 +78,6 @@ export function useSocket() {
         if (reason !== 'io client disconnect') {
           addToast('Connection lost. Reconnecting…', 'error');
         }
-      });
-
-      s.on('reconnect', () => {
-        addToast('✅ Reconnected!', 'success');
-        // Re-join the room — server loses room membership on reconnect
-        if (currentRoomId) {
-          s.emit('join-room', { roomId: currentRoomId, username: currentUsername });
-        }
-        handlers.onConnect?.();
       });
 
       s.on('connect_error', (err) => {
@@ -191,6 +189,8 @@ export function useSocket() {
         handlers.onRemoteClear?.(); // reuse same handler to wipe canvas drawing
       });
     }
+
+    s.connect();
   }, []);
 
   const disconnect = useCallback(() => {

@@ -124,7 +124,7 @@ io.on('connection', (socket) => {
     if (!room || !user) return;
     const msg = { id:Date.now(), text:sanitize(text), sender:user.name, senderId:socket.id, time:new Date().toISOString() };
     getRoom(room).messages.push(msg);
-    io.to(room).emit('chat-message', msg);
+    socket.to(room).emit('chat-message', msg);
   });
 
   socket.on('emoji-reaction', ({ emoji }) => {
