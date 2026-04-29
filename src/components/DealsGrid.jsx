@@ -100,6 +100,32 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
         .dc-addbtn:hover { opacity:.85; transform:scale(1.02); }
       `}</style>
 
+      {/* Hot Picks */}
+      <div style={{ marginBottom:'1.5rem', borderLeft:'4px solid #fbbf24', paddingLeft:'1rem' }}>
+        <h3 style={{ fontSize:'1rem', fontWeight:800, color:'#1a0a3e', margin:'0 0 .75rem' }}>
+          🔥 Hot on Canvases Right Now
+        </h3>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:'12px' }}>
+          {DEALS.slice(0,4).map((d,i) => {
+            const people = [23,41,17,35][i];
+            return (
+              <div key={i} style={{ position:'relative', borderRadius:12, overflow:'hidden', cursor:'pointer', background:'#fff', border:'1.5px solid #e5e7eb', transition:'.2s' }}
+                draggable
+                onDragStart={e => { e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({name:d.name,price:d.price,img:d.img,url:d.url||''})); e.dataTransfer.effectAllowed='copy'; }}>
+                <img src={d.img} alt={d.name} style={{ width:'100%', height:140, objectFit:'cover', display:'block' }} loading="lazy"/>
+                <div style={{ position:'absolute', top:8, right:8, background:'#7c3aed', color:'#fff', fontSize:'10px', fontWeight:800, padding:'3px 8px', borderRadius:20, whiteSpace:'nowrap' }}>
+                  🎨 {people} drew today
+                </div>
+                <div style={{ padding:'8px 10px' }}>
+                  <div style={{ fontWeight:700, fontSize:'.82rem', color:'#1a0a3e', marginBottom:'2px' }}>{d.name}</div>
+                  <div style={{ fontWeight:800, fontSize:'.9rem', color:'#7c3aed' }}>{d.price}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Section header */}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '1rem' }}>
         <div>

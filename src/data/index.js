@@ -1,5 +1,38 @@
 // ─── DrawNBuy Data — extracted from v12_secure ───────────────────────────────
 
+export const MOODS = [
+  { emoji:'🛋️', label:'Living Room', color:'#7c3aed22', slug:'furniture'       },
+  { emoji:'🛏️', label:'Bedroom',     color:'#fbbf2422', slug:'home-decor'      },
+  { emoji:'🍳', label:'Kitchen',     color:'#67e8f922', slug:'kitchen-gadgets' },
+  { emoji:'🏋️', label:'Fitness',     color:'#f43f5e22', slug:'training-health' },
+  { emoji:'👗', label:'Fashion',     color:'#a78bfa22', slug:'womens-fashion'  },
+  { emoji:'🎮', label:'Gaming',      color:'#22d3ee22', slug:'gaming'          },
+  { emoji:'👶', label:'Kids & Baby', color:'#fb923c22', slug:'kids-toys'       },
+  { emoji:'🌿', label:'Outdoor',     color:'#4ade8022', slug:'outdoor-sports'  },
+];
+
+export const INSPO = [
+  { title:'Summer Beach Haul',    user:'@maja.s',  room:'public',
+    preview:'🏖️', products:['Sunglasses','Beach Towel','Flip Flops'],
+    likes:142, draws:38, bg:'linear-gradient(135deg,#67e8f9,#3b82f6)' },
+  { title:'New Apartment Setup',  user:'@erik.j',  room:'friends',
+    preview:'🏠', products:['IKEA Sofa','Floor Lamp','Rug'],
+    likes:89, draws:21, bg:'linear-gradient(135deg,#7c3aed,#5b21b6)' },
+  { title:'Gaming Setup 2025',    user:'@sofia.b', room:'public',
+    preview:'🎮', products:['Monitor','Chair','Headphones'],
+    likes:203, draws:67, bg:'linear-gradient(135deg,#1a0a3e,#3b0764)' },
+  { title:'Wedding Wishlist',     user:'@anna.l',  room:'private',
+    preview:'💍', products:['Dress','Shoes','Jewelry'],
+    likes:56, draws:12, bg:'linear-gradient(135deg,#fbbf24,#f97316)' },
+];
+
+export const ACTIVITY_TICKER = [
+  '🎨 Maja just added Nike Air Max to her canvas',
+  '👥 Erik & Sofia are drawing together in Room #gaming',
+  '❤️ Anna wishlisted 3 products from @maja.s canvas',
+  '🛒 12 people bought from shared canvases today',
+];
+
 export const ADS = [
   {emoji:'🛒', text:'Amazon Prime — Free next-day delivery on millions of items', btn:'Try Prime Free →', url:'https://amazon.com', bg:'linear-gradient(90deg,#f59e0b,#fbbf24)', color:'#1a0a3e', btnBg:'#1a0a3e', btnColor:'#fbbf24'},
   {emoji:'👟', text:'Nike — New Spring 2026 Collection just dropped', btn:'Shop Nike →', url:'https://nike.com', bg:'#0a0a0a', color:'#fff', btnBg:'#fff', btnColor:'#111'},

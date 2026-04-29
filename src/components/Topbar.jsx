@@ -1,5 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { COUNTRIES } from '../data';
+
+const STATS = [
+  { label:'Active Canvases', target:10000, suffix:'K+', divisor:1000, color:'#fbbf24' },
+  { label:'Products',        target:500000, suffix:'K+', divisor:1000, color:'#67e8f9' },
+  { label:'Happy Shoppers',  target:50000,  suffix:'K+', divisor:1000, color:'#a78bfa' },
+  { label:'Canvases Live Now', target:1200, suffix:'+',  divisor:1,    color:'#4ade80'  },
+];
+
+function AnimatedStat({ target, suffix, divisor, label, color }) {
+  const [val, setVal] = useState(0);
+  const [pulse, setPulse] = useState(false);
+  const hasRun = useRef(false);
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+    const end = target / divisor;
+    const duration = 1500;
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      setVal(Math.round(ease * end * 10) / 10);
+      if (t < 1) requestAnimationFrame(step);
+      else { setPulse(true); setTimeout(() => setPulse(false), 600); }
+    };
+    requestAnimationFrame(step);
+  }, [target, divisor]);
+  const display = divisor >= 1000 ? (Number.isInteger(val) ? val : val.toFixed(1)) : Math.round(val);
+  return (
+    <span style={{ display:'inline-flex', alignItems:'center', gap:4 }}>
+      <span style={{ color, fontWeight:800, fontSize:'12px', transition:'transform .15s', transform: pulse ? 'scale(1.18)' : 'scale(1)', display:'inline-block' }}>
+        {display}{suffix}
+      </span>
+      <span style={{ color:'rgba(255,255,255,.45)', fontSize:'10px' }}>{label}</span>
+    </span>
+  );
+}
 
 const GEO_DATA = {
   SE: { tag:"Sweden's #1 Social Shopping Canvas",    currency:'SEK', threshold:'500 SEK',  langs:'EN / SV' },
@@ -55,8 +92,12 @@ export default function Topbar() {
       overflow: 'hidden',
     }}>
       
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap:'wrap' }}>
         <span>{country.flag} {geo.tag}</span>
+        <span style={{ color: 'rgba(255,255,255,.3)' }}>|</span>
+        {STATS.map(s => (
+          <AnimatedStat key={s.label} {...s} />
+        ))}
         <span style={{ color: 'rgba(255,255,255,.3)' }}>|</span>
         <span>🔒 Secure &amp; trusted</span>
         <span style={{ color: 'rgba(255,255,255,.3)' }}>|</span>

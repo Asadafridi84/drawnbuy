@@ -18,6 +18,7 @@ import CollabCanvas       from './components/CollabCanvas';
 import ProductSearchPanel from './components/ProductSearchPanel';
 import DragStrip          from './components/DragStrip';
 import DealsGrid          from './components/DealsGrid';
+import InspirationFeed    from './components/InspirationFeed';
 import CategoriesGrid     from './components/CategoriesGrid';
 import Sponsors           from './components/Sponsors';
 import HowItWorks         from './components/HowItWorks';
@@ -132,6 +133,7 @@ export default function App() {
             <ProductSearchPanel />
             <DragStrip />
             <DealsGrid />
+            <InspirationFeed />
             <CategoriesGrid onCatClick={setActiveCat} />
             <Sponsors />
             <HowItWorks />

@@ -23,6 +23,7 @@ const IC = {
   notifs:    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
   security:  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
   data:      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>,
+  journal:   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
 };
 
 const TABS = [
@@ -32,6 +33,7 @@ const TABS = [
   { id:'friends',    label:'Friends',               icon: IC.friends   },
   { id:'messages',   label:'Messages',              icon: IC.messages  },
   { id:'wishlist',   label:'Wishlist',              icon: IC.wishlist  },
+  { id:'journal',    label:'Journal',               icon: IC.journal   },
   { id:'live',       label:'Live',                  icon: IC.live      },
   { id:'rooms',      label:'Rooms',                 icon: IC.rooms     },
   { id:'orders',     label:'Orders',                icon: IC.orders    },
@@ -157,6 +159,11 @@ export default function ProfilePage() {
   const [coverPicker, setCoverPicker] = useState(false);
   const [avatarPicker, setAvatarPicker] = useState(false);
   const [droppedProducts, setDroppedProducts] = useState([]);
+  const [journalEntries, setJournalEntries] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('dnb_journal') || '[]'); } catch { return []; }
+  });
+  const [journalModal, setJournalModal] = useState(false);
+  const [journalText, setJournalText] = useState('');
 
   const [chatText, setChatText] = useState('');
   const [chatMsgs, setChatMsgs] = useState([
@@ -282,6 +289,17 @@ export default function ProfilePage() {
   const addToWishlist = (prod) => {
     const added = wishlistAdd(prod);
     showToast(added ? '♡ Added to wishlist!' : 'Already in wishlist');
+  };
+
+  const saveJournalEntry = () => {
+    if (!journalText.trim()) return;
+    const entry = { id: Date.now(), text: journalText.trim(), date: new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) };
+    const updated = [entry, ...journalEntries];
+    setJournalEntries(updated);
+    localStorage.setItem('dnb_journal', JSON.stringify(updated));
+    setJournalText('');
+    setJournalModal(false);
+    showToast('Journal entry saved!');
   };
 
   const scrollTabs = (dir) => {
@@ -685,6 +703,47 @@ export default function ProfilePage() {
                 {WISHLIST_PRODUCTS.map(p=><ProdCard key={p.id} p={p}/>)}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ── JOURNAL ── */}
+        {tab==='journal' && (
+          <div className="pc">
+            {journalModal && (
+              <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.5)',zIndex:900,display:'flex',alignItems:'center',justifyContent:'center'}}
+                onClick={()=>setJournalModal(false)}>
+                <div style={{background:'#fff',borderRadius:16,padding:'1.5rem',maxWidth:480,width:'90%',position:'relative',boxShadow:'0 20px 60px rgba(0,0,0,.3)'}}
+                  onClick={e=>e.stopPropagation()}>
+                  <button onClick={()=>setJournalModal(false)} style={{position:'absolute',top:12,right:12,background:'none',border:'none',fontSize:18,cursor:'pointer',color:'#9ca3af'}}>✕</button>
+                  <div style={{fontSize:'1rem',fontWeight:800,color:'#1a0a3e',marginBottom:'.75rem'}}>📓 New Journal Entry</div>
+                  <textarea className="fi" value={journalText} onChange={e=>setJournalText(e.target.value)} rows={5} placeholder="What are you looking for? What caught your eye today? Any wishlist ideas..." style={{resize:'vertical',marginBottom:'1rem'}}/>
+                  <button className="bp" onClick={saveJournalEntry}>Save Entry</button>
+                </div>
+              </div>
+            )}
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'.25rem'}}>
+              <div className="st">Your Shopping Journal</div>
+              <button className="bp" style={{fontSize:'.78rem',padding:'6px 14px'}} onClick={()=>setJournalModal(true)}>+ Add Entry</button>
+            </div>
+            <div className="ss">Notes, ideas, and wishlist moments.</div>
+            {journalEntries.length===0 ? (
+              <div style={{textAlign:'center',padding:'3rem 1.5rem',color:'#9ca3af'}}>
+                <div style={{fontSize:'2.5rem',marginBottom:'.75rem'}}>📓</div>
+                <div style={{fontWeight:800,color:'#1a0a3e',marginBottom:'.35rem'}}>Start your journal</div>
+                <div style={{fontSize:'.85rem',lineHeight:1.6}}>Note what you love, what you are looking for, what you want to draw next 🎨</div>
+                <button className="bp" style={{marginTop:'1rem'}} onClick={()=>setJournalModal(true)}>Write First Entry</button>
+              </div>
+            ) : (
+              <div style={{display:'flex',flexDirection:'column',gap:'.85rem'}}>
+                {journalEntries.map(e=>(
+                  <div key={e.id} style={{background:'#f4f0ff',borderRadius:12,padding:'1rem',border:'1.5px solid #ede9fe',position:'relative'}}>
+                    <div style={{fontSize:'.7rem',color:'#9ca3af',fontWeight:700,marginBottom:'.4rem'}}>{e.date}</div>
+                    <div style={{fontSize:'.88rem',color:'#1a0a3e',lineHeight:1.6,whiteSpace:'pre-wrap'}}>{e.text}</div>
+                    <button onClick={()=>{const u=journalEntries.filter(x=>x.id!==e.id);setJournalEntries(u);localStorage.setItem('dnb_journal',JSON.stringify(u));}} style={{position:'absolute',top:10,right:10,background:'none',border:'none',color:'#d1d5db',cursor:'pointer',fontSize:'.8rem'}}>✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

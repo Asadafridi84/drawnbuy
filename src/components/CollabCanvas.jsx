@@ -6,9 +6,26 @@ import { useCanvasStore } from '../store/canvas';
 import { useCollabStore, useUIStore } from '../store';
 import { useAuthStore } from '../store/auth';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
-import { CHAT_MSGS } from '../data';
+import { CHAT_MSGS, ACTIVITY_TICKER } from '../data';
 
 const EMOJIS = ['😀','😂','🥰','😍','🤩','😎','🥳','🎉','🔥','💯','👏','✨','💜','💛','🩵','🛍️','🎨','👟','👗','💄','⌚','📱','💻','🎮','🏠','🍕','🛒','💪','🧸','📚'];
+
+function ActivityTicker() {
+  const [idx, setIdx] = useState(0);
+  const [vis, setVis] = useState(true);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVis(false);
+      setTimeout(() => { setIdx(i => (i + 1) % ACTIVITY_TICKER.length); setVis(true); }, 300);
+    }, 4000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div style={{ background:'rgba(0,0,0,.3)', borderBottom:'1px solid rgba(103,232,249,.12)', padding:'5px 10px', fontSize:'11px', color:'#67e8f9', fontWeight:600, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', opacity:vis?1:0, transition:'opacity .3s', flexShrink:0 }}>
+      {ACTIVITY_TICKER[idx]}
+    </div>
+  );
+}
 
 export default function CollabCanvas({ onShare }) {
   const [searchParams] = useSearchParams();
@@ -621,6 +638,7 @@ export default function CollabCanvas({ onShare }) {
             </div>
 
             {activeTab === 'chat' && <>
+            <ActivityTicker />
             <div className="who-bar">
               <span style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.4)', fontWeight: '700' }}>In room:</span>
               {(participants.length > 0 ? participants : [

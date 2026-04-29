@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { CATS } from '../data';
 import { useAuthStore } from '../store/auth';
-import { useCollabStore } from '../store';
+import { useCollabStore, useUIStore } from '../store';
 
 const LogoMark = () => (
   <div style={{ position: 'relative', width: '46px', height: '46px', flexShrink: 0 }}>
@@ -55,12 +55,16 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
   // Show real room count when socket is connected, otherwise a platform-wide estimate
   const liveCount = participants.length > 0 ? participants.length : 247;
 
+  const addUIToast = useUIStore(s => s.addToast);
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catDdOpen, setCatDdOpen] = useState(false);
   const [catFilter, setCatFilter] = useState('');
   const [searchVal, setSearchVal] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
+  const [imgSearchOpen, setImgSearchOpen] = useState(false);
   const ddRef = useRef(null);
+  const imgFileRef = useRef(null);
 
   const filteredCats = CATS.filter(c =>
     c.name.toLowerCase().includes(catFilter.toLowerCase())
@@ -146,6 +150,12 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
         }
         .nav-search-wrap input::placeholder { color:rgba(255,255,255,.45); }
         .nav-search-wrap input:focus { background:rgba(255,255,255,.2); border-color:#67e8f9; }
+        .nav-cam-btn {
+          background:rgba(255,255,255,.18); border:none; color:#fff; padding:0 11px;
+          border-left:1px solid rgba(255,255,255,.15); cursor:pointer; font-size:13px;
+          display:flex; align-items:center; justify-content:center; transition:.15s;
+        }
+        .nav-cam-btn:hover { background:rgba(255,255,255,.28); }
         .nav-search-btn {
           background:#fbbf24; border:none; color:#3b0764; padding:0 15px;
           border-radius:0 10px 10px 0; cursor:pointer; font-size:15px; font-weight:800;
@@ -236,6 +246,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
         <a className="mob-link" onClick={() => { goHome('pspSection'); setMobileOpen(false); }}>Products</a>
         <a className="mob-link" onClick={() => { goHome('dealsAnchor'); setMobileOpen(false); }}>Deals</a>
         <a className="mob-link" onClick={() => { goHome('catsSection'); setMobileOpen(false); }}>Categories</a>
+        <a className="mob-link" onClick={() => { goHome('inspiration'); setMobileOpen(false); }}>Inspiration</a>
         <a className="mob-link" onClick={() => { goHome('hiwSection'); setMobileOpen(false); }}>How It Works</a>
         <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
           {user ? (
@@ -251,6 +262,35 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           )}
         </div>
       </div>
+
+      {/* Image Search Modal */}
+      {imgSearchOpen && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.55)', zIndex:900, display:'flex', alignItems:'center', justifyContent:'center' }}
+          onClick={() => setImgSearchOpen(false)}>
+          <div style={{ background:'#fff', borderRadius:16, padding:'1.5rem', maxWidth:380, width:'90%', position:'relative', boxShadow:'0 20px 60px rgba(0,0,0,.3)', fontFamily:'Space Grotesk,sans-serif' }}
+            onClick={e => e.stopPropagation()}>
+            <button onClick={() => setImgSearchOpen(false)} style={{ position:'absolute', top:12, right:12, background:'none', border:'none', fontSize:18, cursor:'pointer', color:'#9ca3af' }}>✕</button>
+            <div style={{ fontSize:'1.1rem', fontWeight:800, color:'#1a0a3e', marginBottom:'.3rem' }}>📷 Search by Image</div>
+            <div style={{ fontSize:'.82rem', color:'#6b7280', marginBottom:'1rem' }}>Drop or paste a product photo to find similar items</div>
+            <div style={{ border:'2px dashed #ede9fe', borderRadius:12, padding:'1.75rem', textAlign:'center', background:'#f4f0ff', cursor:'pointer' }}
+              onClick={() => imgFileRef.current?.click()}>
+              <div style={{ fontSize:'2.5rem', marginBottom:'.5rem' }}>📷</div>
+              <div style={{ fontWeight:700, color:'#7c3aed', fontSize:'.88rem' }}>Click to upload image</div>
+              <div style={{ fontSize:'.72rem', color:'#9ca3af', marginTop:'.25rem' }}>PNG, JPG, WebP supported</div>
+            </div>
+            <input ref={imgFileRef} type="file" accept="image/*" style={{ display:'none' }} onChange={e => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              setSearchVal('[image-search:' + f.name + ']');
+              setImgSearchOpen(false);
+              addUIToast('Image search coming soon — try typing the product name!', 'info');
+            }}/>
+            <div style={{ marginTop:'.75rem', fontSize:'.72rem', color:'#9ca3af', textAlign:'center' }}>
+              Image search arriving soon 🚀 — paste an image URL to try
+            </div>
+          </div>
+        </div>
+      )}
 
       <nav className="nav-root">
         {/* Logo */}
@@ -313,6 +353,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
             onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
             onFocus={() => setSearchOpen(true)}
           />
+          <button className="nav-cam-btn" onClick={() => setImgSearchOpen(true)} title="Search by image">📷</button>
           <button className="nav-search-btn">🔍</button>
           {searchOpen && suggestions.length > 0 && (
             <div className="search-sugg">
@@ -332,6 +373,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           <a className="hot" onClick={() => goHome('dealsAnchor')}>Deals</a>
           <a onClick={() => goHome('collabSection')}>Canvas</a>
           <a onClick={() => goHome('catsSection')}>Categories</a>
+          <a onClick={() => goHome('inspiration')} style={{cursor:'pointer'}}>Inspiration</a>
           <a onClick={() => goHome('collabSection')} style={{cursor:'pointer'}}>Live<span className="live-badge">{liveCount}</span></a>
           <a onClick={() => navigate('/')}>Home</a>
         </div>
