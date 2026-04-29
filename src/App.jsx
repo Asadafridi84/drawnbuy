@@ -40,9 +40,17 @@ import CookiesPage        from './pages/CookiesPage';
 
 const GLOBAL_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: rgba(124,58,237,.1); }
+  html { scroll-behavior: smooth; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
   body { font-family: 'Space Grotesk', sans-serif; background: #f4f0ff; color: #1a0a3e; font-size: 15px; line-height: 1.5; overflow-x: hidden; }
+  /* Global scrollable strips */
+  .scrollable-x { overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .scrollable-x::-webkit-scrollbar { display:none; }
+  /* Minimum touch targets */
+  @media (max-width:768px) {
+    button, a { touch-action: manipulation; }
+    input, select, textarea { font-size: 16px !important; }
+  }
   :root {
     --p: #7c3aed; --pd: #5b21b6; --pdd: #3b0764;
     --gold: #fbbf24; --goldd: #d97706;

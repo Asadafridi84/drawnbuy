@@ -1,0 +1,90 @@
+{
+  "results": [
+    {
+      "status": "✅ PASS",
+      "id": "S1-draw",
+      "note": "Friend 2 sees drawing from Friend 1 in real time"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S2-drop-A",
+      "note": "Product card appeared on Friend 1 canvas (1)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S2-drop-B",
+      "note": "Product card synced to Friend 2 (1)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S3-hero-A",
+      "note": "Hero drop added to main canvas A (now 2 cards)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S3-hero-B",
+      "note": "Hero drop synced to Friend 2 main canvas (2 cards)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S4-chat-once",
+      "note": "Message appeared exactly ONCE on Friend 2"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S5-sticker-A",
+      "note": "Sticker placed on Friend 1 (1)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S5-sticker-B",
+      "note": "Sticker synced to Friend 2 (1)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6-delete-A",
+      "note": "Card removed locally on A (2→1)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6-delete-B",
+      "note": "Delete synced to Friend 2 (2→1)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S7-clearall-A",
+      "note": "Clear All removed all cards from A"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S7-clearall-B",
+      "note": "Clear All synced to Friend 2 (2→0 cards)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S8-latejoin-cards",
+      "note": "Friend 3 sees 2 product cards on join"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S8-latejoin-drawing",
+      "note": "Friend 3 sees existing canvas drawing"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "FIX3-mic",
+      "note": "No microphone/Permissions-Policy violations"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "FIX3-csp",
+      "note": "No CSP violations"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "CONSOLE",
+      "note": "No other JS errors"
+    }
+  ],
+  "consoleErrors": []
+}

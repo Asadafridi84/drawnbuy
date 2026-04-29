@@ -1,15 +1,5 @@
 // ─── DrawNBuy Data — extracted from v12_secure ───────────────────────────────
 
-export const MOODS = [
-  { emoji:'🛋️', label:'Living Room', color:'#7c3aed22', slug:'furniture'       },
-  { emoji:'🛏️', label:'Bedroom',     color:'#fbbf2422', slug:'home-decor'      },
-  { emoji:'🍳', label:'Kitchen',     color:'#67e8f922', slug:'kitchen-gadgets' },
-  { emoji:'🏋️', label:'Fitness',     color:'#f43f5e22', slug:'training-health' },
-  { emoji:'👗', label:'Fashion',     color:'#a78bfa22', slug:'womens-fashion'  },
-  { emoji:'🎮', label:'Gaming',      color:'#22d3ee22', slug:'gaming'          },
-  { emoji:'👶', label:'Kids & Baby', color:'#fb923c22', slug:'kids-toys'       },
-  { emoji:'🌿', label:'Outdoor',     color:'#4ade8022', slug:'outdoor-sports'  },
-];
 
 export const INSPO = [
   { title:'Summer Beach Haul',    user:'@maja.s',  room:'public',

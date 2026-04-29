@@ -1,0 +1,292 @@
+{
+  "results": [
+    {
+      "status": "✅ PASS",
+      "id": "S1-topbar",
+      "note": "Topbar renders: \"🇬🇧 UK's #1 Social Shopping Canvas|🔒 Secure & tr\"..."
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S1-currency",
+      "note": "Currency/country selector present"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S2-navbar",
+      "note": "Navbar renders"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S2-sharemodal",
+      "note": "ShareModal opens from navbar"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S2-qr",
+      "note": "QR Code renders in ShareModal"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S2-dropdown",
+      "note": "Category dropdown opens"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S3-adstrip",
+      "note": "Ad strip renders: \"@import url('https://fonts.googleapis.com/css2?fam\"..."
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S4-hero",
+      "note": "Hero renders — h1: \"Draw it.Find it.Buy it.\""
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S4-minicanvas",
+      "note": "Mini canvas element found in hero"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S4-draggable",
+      "note": "81 draggable elements found on page"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S5-catbar",
+      "note": "Category bar shows 32 chips"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S5-catnav",
+      "note": "Chip \"👗 Women's Fashion\" navigated → https://drawnbuy.vercel.app/category/womens-fashion"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6-cvarea",
+      "note": "cv-area size: 877×480px"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6A-drawsync",
+      "note": "Drawing synced from Context A to Context B ✓"
+    },
+    {
+      "status": "❌ FAIL",
+      "id": "S6B-drop",
+      "note": "Could not locate drag source or target — dragCard:null cv:{\"x\":481,\"y\":-1965}"
+    },
+    {
+      "status": "⚠️  PARTIAL",
+      "id": "S6C-dup",
+      "note": "Could not test duplication — no existing card found on canvas yet"
+    },
+    {
+      "status": "❌ FAIL",
+      "id": "S6D-delbtn",
+      "note": "No delete button (.card-delete-btn) found on product cards"
+    },
+    {
+      "status": "⚠️  PARTIAL",
+      "id": "S6E-sticker-A",
+      "note": "Sticker DOM selector not matching on A"
+    },
+    {
+      "status": "⚠️  PARTIAL",
+      "id": "S6E-sticker-B",
+      "note": "Sticker not detected on Context B"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6F-chat",
+      "note": "Chat message synced from A to B ✓"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6G-mic",
+      "note": "Mic button found: class=\"mic-btn\""
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6H-invite",
+      "note": "ShareModal opens from Invite Friends button"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6I-catchup",
+      "note": "New context C sees existing canvas drawing ✓"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6J-isolation",
+      "note": "Different room (D) has empty canvas — rooms are isolated ✓"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S6K-clearall",
+      "note": "Clear All button present in toolbar"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S7-default",
+      "note": "PSP shows 24 products by default"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S7-allchip",
+      "note": "\"All\" chip is active by default"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S7-filter",
+      "note": "Gaming filter shows 2 products"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S7-search",
+      "note": "Search \"yoga\" returns 1 results"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S8-dragstrip",
+      "note": "DragStrip shows 41 cards"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S8-images",
+      "note": "DragStrip has 41 product images"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S8-wish",
+      "note": "Wish buttons present (41)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S9-deals",
+      "note": "Deals shows 8 cards"
+    },
+    {
+      "status": "⚠️  PARTIAL",
+      "id": "S9-countdown",
+      "note": "Countdown timer not found"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S9-addtocv",
+      "note": "\"Add to Canvas\" button present on deal cards"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S9-viewall",
+      "note": "\"View all deals\" link: \"View all deals →\""
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S10-grid",
+      "note": "Categories grid shows 31 categories"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S10-filters",
+      "note": "11 group filter buttons"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S10-nav",
+      "note": "Category card navigated → https://drawnbuy.vercel.app/category/womens-fashion"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S11-sponsors",
+      "note": "Sponsors section found: \"DrawNBuy — Draw it. Find it. B\""
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S12-hiw-images",
+      "note": "HIW shows 4 real images (not emoji)"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S12-cta",
+      "note": "HIW CTA button present"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S13-privacy",
+      "note": "Privacy link: https://drawnbuy.vercel.app/privacy"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S13-terms",
+      "note": "Terms link: https://drawnbuy.vercel.app/terms"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "S13-cookies",
+      "note": "Cookies link: https://drawnbuy.vercel.app/cookies"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "CAT-products",
+      "note": "Category page shows 16 draggable products"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "CAT-mini",
+      "note": "MiniFloatingCanvas visible on category page"
+    },
+    {
+      "status": "✅ PASS",
+      "id": "LEGAL-privacy",
+      "note": "/privacy: \"Privacy Policy\""
+    },
+    {
+      "status": "✅ PASS",
+      "id": "LEGAL-terms",
+      "note": "/terms: \"Terms of Service\""
+    },
+    {
+      "status": "✅ PASS",
+      "id": "LEGAL-cookies",
+      "note": "/cookies: \"Cookie Policy\""
+    },
+    {
+      "status": "❌ FAIL",
+      "id": "CONSOLE",
+      "note": "1 JS errors: [CTX-A] Loading the image 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fdrawnbuy.vercel.app%2F%3Froom%3Dscanroom1' violates the following Content Security Policy directive: \"img-src 'self' data: blob: https://placehold.co https://images.unsplash.com https://images.pexels.com\". The action has been blocked."
+    }
+  ],
+  "bugs": [
+    {
+      "id": "S6B-drop",
+      "note": "Could not locate drag source or target — dragCard:null cv:{\"x\":481,\"y\":-1965}"
+    },
+    {
+      "id": "S6C-dup",
+      "note": "Could not test duplication — no existing card found on canvas yet"
+    },
+    {
+      "id": "S6D-delbtn",
+      "note": "No delete button (.card-delete-btn) found on product cards"
+    },
+    {
+      "id": "S6E-sticker-A",
+      "note": "Sticker DOM selector not matching on A"
+    },
+    {
+      "id": "S6E-sticker-B",
+      "note": "Sticker not detected on Context B"
+    },
+    {
+      "id": "S9-countdown",
+      "note": "Countdown timer not found"
+    },
+    {
+      "id": "CONSOLE",
+      "note": "1 JS errors: [CTX-A] Loading the image 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fdrawnbuy.vercel.app%2F%3Froom%3Dscanroom1' violates the following Content Security Policy directive: \"img-src 'self' data: blob: https://placehold.co https://images.unsplash.com https://images.pexels.com\". The action has been blocked."
+    }
+  ],
+  "consoleErrors": [
+    "[CTX-A] Loading the image 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fdrawnbuy.vercel.app%2F%3Froom%3Dscanroom1' violates the following Content Security Policy directive: \"img-src 'self' data: blob: https://placehold.co https://images.unsplash.com https://images.pexels.com\". The action has been blocked."
+  ]
+}

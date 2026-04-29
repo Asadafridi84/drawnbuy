@@ -91,8 +91,16 @@ export default function Topbar() {
       position: 'relative',
       overflow: 'hidden',
     }}>
+      <style>{`
+        @media(max-width:480px) { .topbar { display:none !important; } }
+        @media(min-width:481px) and (max-width:768px) {
+          .topbar-right { display:none !important; }
+          .topbar-stats { display:none !important; }
+          .topbar { padding: 5px 1rem !important; font-size: 11px !important; }
+        }
+      `}</style>
       
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap:'wrap' }}>
+      <div className="topbar-stats" style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap:'wrap' }}>
         <span>{country.flag} {geo.tag}</span>
         <span style={{ color: 'rgba(255,255,255,.3)' }}>|</span>
         {STATS.map(s => (
@@ -103,7 +111,7 @@ export default function Topbar() {
         <span style={{ color: 'rgba(255,255,255,.3)' }}>|</span>
         <span><span className="live-dot"></span>🚚 Free delivery over {geo.threshold}</span>
       </div>
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div className="topbar-right" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <span style={{ color:'rgba(255,255,255,.4)', fontSize:'10px' }}>{geo.langs}</span>
         <span style={{ color:'rgba(255,255,255,.3)' }}>|</span>
         <select

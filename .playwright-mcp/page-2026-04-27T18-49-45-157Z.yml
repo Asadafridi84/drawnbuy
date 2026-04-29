@@ -1,0 +1,1114 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: "🇬🇧 UK's #1 Social Shopping Canvas"
+      - generic [ref=e6]: "|"
+      - generic [ref=e7]: 🔒 Secure & trusted
+      - generic [ref=e8]: "|"
+      - generic [ref=e9]: 🚚 Free delivery over £30
+    - generic [ref=e11]:
+      - generic [ref=e12]: EN
+      - generic [ref=e13]: "|"
+      - combobox [ref=e14]:
+        - option "🇸🇪 Sweden"
+        - option "🇳🇴 Norway"
+        - option "🇩🇰 Denmark"
+        - option "🇫🇮 Finland"
+        - option "🇩🇪 Germany"
+        - option "🇬🇧 UK" [selected]
+        - option "🇺🇸 USA"
+        - option "🇫🇷 France"
+        - option "🇪🇸 Spain"
+        - option "🇮🇹 Italy"
+        - option "🇳🇱 Netherlands"
+        - option "🇦🇺 Australia"
+        - option "🇨🇦 Canada"
+        - option "🇮🇳 India"
+        - option "🇧🇷 Brazil"
+        - option "🇯🇵 Japan"
+        - option "🇵🇱 Poland"
+      - generic [ref=e15]: 💱 GBP
+      - generic [ref=e16]: "|"
+      - generic [ref=e17]: Track Order
+      - generic [ref=e18]: Blog
+      - generic [ref=e19]: Sell on DrawNBuy
+      - link "📧 hello@drawnbuy.com" [ref=e20] [cursor=pointer]:
+        - /url: mailto:hello@drawnbuy.com
+  - navigation [ref=e21]:
+    - link "DrawNBuy Draw it. Find it. Buy it." [ref=e22] [cursor=pointer]:
+      - /url: /
+      - img [ref=e24]:
+        - generic [ref=e28]: D
+        - generic [ref=e29]: "'"
+        - generic [ref=e30]: "n"
+        - generic [ref=e31]: "&grave;"
+        - generic [ref=e32]: B
+      - generic [ref=e40]:
+        - generic [ref=e41]: DrawNBuy
+        - generic [ref=e42]: Draw it. Find it. Buy it.
+    - button "All Categories" [ref=e44] [cursor=pointer]:
+      - text: All Categories
+      - img [ref=e45]
+    - generic [ref=e47]:
+      - textbox "Search e.g. Nike, iPhone, IKEA sofa..." [ref=e48]
+      - button "🔍" [ref=e49] [cursor=pointer]
+    - generic [ref=e50]:
+      - generic [ref=e51] [cursor=pointer]: Deals
+      - generic [ref=e52] [cursor=pointer]: Canvas
+      - generic [ref=e53] [cursor=pointer]: Categories
+      - generic [ref=e54] [cursor=pointer]:
+        - text: Live
+        - generic [ref=e55]: "1"
+      - generic [ref=e56] [cursor=pointer]: Home
+    - generic [ref=e57]:
+      - button "Share Canvas" [ref=e58] [cursor=pointer]:
+        - img [ref=e59]
+        - text: Share Canvas
+      - img [ref=e67] [cursor=pointer]
+      - button "Log In" [ref=e70] [cursor=pointer]
+      - button "Sign Up Free" [ref=e71] [cursor=pointer]
+  - generic [ref=e72]:
+    - generic [ref=e73]: 📱 Samsung Galaxy S25 — Pre-order & get free Galaxy Buds
+    - button "Order Now →" [ref=e1151] [cursor=pointer]
+  - generic [ref=e82]:
+    - generic [ref=e83]:
+      - generic [ref=e84]: 🌍 World's First Social Shopping Canvas
+      - heading "Draw it. Find it. Buy it." [level=1] [ref=e85]:
+        - text: Draw it.
+        - text: Find it.
+        - text: Buy it.
+      - paragraph [ref=e86]: Sketch your wishlist on a real-time collaborative canvas, drag real products onto it, and shop with friends — all in one place.
+      - generic [ref=e87]:
+        - button "🎨 Start Drawing Free" [ref=e88] [cursor=pointer]
+        - button "Invite Friends" [ref=e89] [cursor=pointer]
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - generic [ref=e92]: 10K+
+          - generic [ref=e93]: Active Canvases
+        - generic [ref=e94]:
+          - generic [ref=e95]: 500K+
+          - generic [ref=e96]: Products
+        - generic [ref=e97]:
+          - generic [ref=e98]: 50K+
+          - generic [ref=e99]: Happy Shoppers
+    - generic [ref=e101]:
+      - generic [ref=e102]:
+        - generic [ref=e103]: LIVE
+        - generic [ref=e105]: Your Canvas
+        - generic [ref=e106]:
+          - generic [ref=e107]: A
+          - generic [ref=e108]: M
+          - generic [ref=e109]: J
+      - generic [ref=e110]:
+        - generic:
+          - generic: ✏️ Click to draw!
+      - generic [ref=e113]:
+        - button "✏️ Draw" [ref=e114] [cursor=pointer]
+        - button "🧹 Erase" [ref=e115] [cursor=pointer]
+        - button "🗑 Clear" [ref=e116] [cursor=pointer]
+  - generic [ref=e125]:
+    - button "🔥 All" [ref=e126] [cursor=pointer]
+    - button "👗 Women's Fashion" [ref=e127] [cursor=pointer]
+    - button "👔 Men's Fashion" [ref=e128] [cursor=pointer]
+    - button "👟 Shoes & Sneakers" [ref=e129] [cursor=pointer]
+    - button "💄 Beauty & Cosmetics" [ref=e130] [cursor=pointer]
+    - button "⌚ Watches & Jewelry" [ref=e131] [cursor=pointer]
+    - button "📱 Smartphones" [ref=e132] [cursor=pointer]
+    - button "💻 Laptops & Computers" [ref=e133] [cursor=pointer]
+    - button "🎧 Audio & Headphones" [ref=e134] [cursor=pointer]
+    - button "🎮 Gaming" [ref=e135] [cursor=pointer]
+    - button "🖊️ Office Supplies" [ref=e136] [cursor=pointer]
+    - button "🛋️ Furniture" [ref=e137] [cursor=pointer]
+    - button "🏡 Home Decor" [ref=e138] [cursor=pointer]
+    - button "🍳 Kitchen Gadgets" [ref=e139] [cursor=pointer]
+    - button "🌱 Garden & Outdoor" [ref=e140] [cursor=pointer]
+    - button "💪 Training & Health" [ref=e141] [cursor=pointer]
+    - button "🧴 Hygiene & Care" [ref=e142] [cursor=pointer]
+    - button "🍕 Food & Snacks" [ref=e143] [cursor=pointer]
+    - button "🛒 Food Store" [ref=e144] [cursor=pointer]
+    - button "🍽️ Restaurants" [ref=e145] [cursor=pointer]
+    - button "🧒 Kids' Clothes" [ref=e146] [cursor=pointer]
+    - button "🧸 Kids' Toys" [ref=e147] [cursor=pointer]
+    - button "📚 Books" [ref=e148] [cursor=pointer]
+    - button "🎨 Art Supplies" [ref=e149] [cursor=pointer]
+    - button "🚗 Car Accessories" [ref=e150] [cursor=pointer]
+    - button "🐾 Pets" [ref=e151] [cursor=pointer]
+    - button "🏪 Shopping Stores" [ref=e152] [cursor=pointer]
+    - button "🔧 Car Parts" [ref=e153] [cursor=pointer]
+    - button "🏎️ Car Repair & Garage" [ref=e154] [cursor=pointer]
+    - button "🏋️ Men's Sportswear" [ref=e155] [cursor=pointer]
+    - button "🤸 Women's Sportswear" [ref=e156] [cursor=pointer]
+    - button "👟 Sport Shoes" [ref=e157] [cursor=pointer]
+  - generic [ref=e159]:
+    - generic [ref=e160]:
+      - generic [ref=e161]:
+        - heading "🎨 Collaborative Canvas 1 drawing now" [level=2] [ref=e1152]:
+          - text: 🎨 Collaborative Canvas
+          - generic [ref=e163]: 1 drawing now
+        - paragraph [ref=e165]: Draw together, find products, shop as a team
+      - button "🔗 Invite Friends & Family" [ref=e166] [cursor=pointer]
+    - generic [ref=e167]:
+      - generic [ref=e168]:
+        - generic [ref=e169]:
+          - generic [ref=e170]: LIVE
+          - generic [ref=e186]: "Room: #test123"
+          - generic "Guest" [ref=e1153]:
+            - generic "Guest" [ref=e1154]: G
+        - generic [ref=e187]:
+          - button "✏️ Draw" [ref=e188] [cursor=pointer]
+          - button "🧹 Erase" [ref=e189] [cursor=pointer]
+          - button "Clear" [ref=e190] [cursor=pointer]
+          - button "+ Sticker" [ref=e192] [cursor=pointer]
+          - button "💾 Save" [ref=e193] [cursor=pointer]
+          - button "📸 Share Canvas" [ref=e194] [cursor=pointer]
+          - button "📤 Invite" [ref=e195] [cursor=pointer]
+        - generic [ref=e196]:
+          - generic:
+            - generic: ✏️ Draw or drag a product here — friends see it live!
+      - generic [ref=e199]:
+        - generic "Toggle chat"
+        - generic [ref=e200]:
+          - button "💬 Chat" [ref=e201] [cursor=pointer]
+          - button "🛍️ Products" [ref=e202] [cursor=pointer]
+          - button "🚪 Rooms" [ref=e203] [cursor=pointer]
+        - generic [ref=e204]:
+          - generic [ref=e205]: "In room:"
+          - generic [ref=e1155]: Guest
+        - generic [ref=e212]:
+          - generic [ref=e213]:
+            - generic [ref=e214]: Anna
+            - generic [ref=e215]: Omg this Nike Air Max is so cute! 😍
+            - generic [ref=e216]: 14:23
+          - generic [ref=e217]:
+            - generic [ref=e218]: Maja
+            - generic [ref=e219]: Adding it to the canvas now!
+            - generic [ref=e220]: 14:23
+          - generic [ref=e221]:
+            - generic [ref=e222]: We should get matching ones 👟👟
+            - generic [ref=e223]: 14:24
+          - generic [ref=e224]:
+            - generic [ref=e225]: Anna
+            - generic [ref=e226]: YES! What size are you?
+            - generic [ref=e227]: 14:24
+        - generic [ref=e229]:
+          - button "😊" [ref=e230] [cursor=pointer]
+          - textbox "Message Anna & Maja… 😊" [ref=e231]
+          - button "→" [ref=e232] [cursor=pointer]
+  - generic [ref=e234]:
+    - generic [ref=e236]:
+      - generic [ref=e237] [cursor=pointer]:
+        - img "Scented Candle Set" [ref=e1157]
+        - generic [ref=e239]:
+          - generic [ref=e240]: Scented Candle Set
+          - generic [ref=e241]: 249 kr
+      - generic [ref=e242] [cursor=pointer]:
+        - img "Yoga Mat Premium" [ref=e1158]
+        - generic [ref=e244]:
+          - generic [ref=e245]: Yoga Mat Premium
+          - generic [ref=e246]: 349 kr
+      - generic [ref=e247] [cursor=pointer]:
+        - img "LEGO Creator Set" [ref=e1159]
+        - generic [ref=e249]:
+          - generic [ref=e250]: LEGO Creator Set
+          - generic [ref=e251]: 499 kr
+    - generic [ref=e254]:
+      - generic [ref=e255]:
+        - generic [ref=e256]:
+          - generic [ref=e257]: 🔍 Find & drag products to your canvas
+          - generic [ref=e258]: ✋ Drag to canvas · Click to open store
+        - textbox "Search e.g. Nike, watch, H&M dress, iPhone..." [ref=e259]
+      - generic [ref=e260]:
+        - button "👗 Women's Fashion" [ref=e261] [cursor=pointer]
+        - button "👔 Men's Fashion" [ref=e262] [cursor=pointer]
+        - button "👟 Shoes & Sneakers" [ref=e263] [cursor=pointer]
+        - button "💄 Beauty & Cosmetics" [ref=e264] [cursor=pointer]
+        - button "⌚ Watches & Jewelry" [ref=e265] [cursor=pointer]
+        - button "📱 Smartphones" [ref=e266] [cursor=pointer]
+        - button "💻 Laptops & Computers" [ref=e267] [cursor=pointer]
+        - button "🎧 Audio & Headphones" [ref=e268] [cursor=pointer]
+        - button "🎮 Gaming" [ref=e269] [cursor=pointer]
+        - button "🖊️ Office Supplies" [ref=e270] [cursor=pointer]
+        - button "🛋️ Furniture" [ref=e271] [cursor=pointer]
+        - button "🏡 Home Decor" [ref=e272] [cursor=pointer]
+        - button "🍳 Kitchen Gadgets" [ref=e273] [cursor=pointer]
+        - button "🌱 Garden & Outdoor" [ref=e274] [cursor=pointer]
+    - generic [ref=e277]:
+      - generic [ref=e278] [cursor=pointer]:
+        - img "Adidas Ultraboost" [ref=e1160]
+        - generic [ref=e280]:
+          - generic [ref=e281]: Adidas Ultraboost
+          - generic [ref=e282]: 1 599 kr
+      - generic [ref=e283] [cursor=pointer]:
+        - img "Bestseller Book" [ref=e1161]
+        - generic [ref=e285]:
+          - generic [ref=e286]: Bestseller Book
+          - generic [ref=e287]: 149 kr
+      - generic [ref=e288] [cursor=pointer]:
+        - img "Plant Pot Set" [ref=e1162]
+        - generic [ref=e290]:
+          - generic [ref=e291]: Plant Pot Set
+          - generic [ref=e292]: 299 kr
+  - generic [ref=e295]:
+    - generic [ref=e296]:
+      - generic [ref=e297]:
+        - generic [ref=e298]: 🛍️ Drag Products to Canvas
+        - generic [ref=e299]: ✋ Drag any product to your canvas
+        - generic [ref=e300] [cursor=pointer]: ⏸ Pause
+      - combobox [ref=e301] [cursor=pointer]:
+        - option "⭐ Featured" [selected]
+        - option "🔥 Best Deals"
+        - 'option "💰 Price: Low to High"'
+        - 'option "💎 Price: High to Low"'
+    - generic [ref=e303]:
+      - generic [ref=e304]:
+        - generic [ref=e305]: "-40%"
+        - generic [ref=e306]: DRAG
+        - img "Luxury Watch"
+        - generic [ref=e307]:
+          - generic [ref=e308]: Luxury Watch
+          - generic [ref=e309]: 1 490 kr2 490 kr
+          - generic [ref=e310]:
+            - button "🛒 Add" [ref=e311] [cursor=pointer]
+            - button "♡" [ref=e312] [cursor=pointer]
+      - generic [ref=e313]:
+        - generic [ref=e314]: "-25%"
+        - generic [ref=e315]: DRAG
+        - img "Nike Air Force 1"
+        - generic [ref=e316]:
+          - generic [ref=e317]: Nike Air Force 1
+          - generic [ref=e318]: 1 299 kr1 599 kr
+          - generic [ref=e319]:
+            - button "🛒 Add" [ref=e320] [cursor=pointer]
+            - button "♡" [ref=e321] [cursor=pointer]
+      - generic [ref=e322]:
+        - generic [ref=e323]: "-15%"
+        - generic [ref=e324]: DRAG
+        - img "Sony WH-1000XM5"
+        - generic [ref=e325]:
+          - generic [ref=e326]: Sony WH-1000XM5
+          - generic [ref=e327]: 2 799 kr3 299 kr
+          - generic [ref=e328]:
+            - button "🛒 Add" [ref=e329] [cursor=pointer]
+            - button "♡" [ref=e330] [cursor=pointer]
+      - generic [ref=e331]:
+        - generic [ref=e332]: DRAG
+        - img "MacBook Air M3"
+        - generic [ref=e333]:
+          - generic [ref=e334]: MacBook Air M3
+          - generic [ref=e335]: 14 995 kr
+          - generic [ref=e336]:
+            - button "🛒 Add" [ref=e337] [cursor=pointer]
+            - button "♡" [ref=e338] [cursor=pointer]
+      - generic [ref=e339]:
+        - generic [ref=e340]: "-30%"
+        - generic [ref=e341]: DRAG
+        - img "Polaroid Camera"
+        - generic [ref=e342]:
+          - generic [ref=e343]: Polaroid Camera
+          - generic [ref=e344]: 550 kr790 kr
+          - generic [ref=e345]:
+            - button "🛒 Add" [ref=e346] [cursor=pointer]
+            - button "♡" [ref=e347] [cursor=pointer]
+      - generic [ref=e348]:
+        - generic [ref=e349]: DRAG
+        - img "Chanel No.5"
+        - generic [ref=e350]:
+          - generic [ref=e351]: Chanel No.5
+          - generic [ref=e352]: 890 kr
+          - generic [ref=e353]:
+            - button "🛒 Add" [ref=e354] [cursor=pointer]
+            - button "♡" [ref=e355] [cursor=pointer]
+      - generic [ref=e356]:
+        - generic [ref=e357]: DRAG
+        - img "Adidas Ultraboost"
+        - generic [ref=e358]:
+          - generic [ref=e359]: Adidas Ultraboost
+          - generic [ref=e360]: 1 599 kr
+          - generic [ref=e361]:
+            - button "🛒 Add" [ref=e362] [cursor=pointer]
+            - button "♡" [ref=e363] [cursor=pointer]
+      - generic [ref=e364]:
+        - generic [ref=e365]: "-25%"
+        - generic [ref=e366]: DRAG
+        - img "PS5 Controller"
+        - generic [ref=e367]:
+          - generic [ref=e368]: PS5 Controller
+          - generic [ref=e369]: 599 kr790 kr
+          - generic [ref=e370]:
+            - button "🛒 Add" [ref=e371] [cursor=pointer]
+            - button "♡" [ref=e372] [cursor=pointer]
+      - generic [ref=e373]:
+        - generic [ref=e374]: "-15%"
+        - generic [ref=e375]: DRAG
+        - img "AirPods Pro 2"
+        - generic [ref=e376]:
+          - generic [ref=e377]: AirPods Pro 2
+          - generic [ref=e378]: 2 799 kr3 299 kr
+          - generic [ref=e379]:
+            - button "🛒 Add" [ref=e380] [cursor=pointer]
+            - button "♡" [ref=e381] [cursor=pointer]
+      - generic [ref=e382]:
+        - generic [ref=e383]: DRAG
+        - img "IKEA KALLAX Shelf"
+        - generic [ref=e384]:
+          - generic [ref=e385]: IKEA KALLAX Shelf
+          - generic [ref=e386]: 649 kr
+          - generic [ref=e387]:
+            - button "🛒 Add" [ref=e388] [cursor=pointer]
+            - button "♡" [ref=e389] [cursor=pointer]
+      - generic [ref=e390]:
+        - generic [ref=e391]: "-20%"
+        - generic [ref=e392]: DRAG
+        - img "KitchenAid Mixer"
+        - generic [ref=e393]:
+          - generic [ref=e394]: KitchenAid Mixer
+          - generic [ref=e395]: 5 299 kr6 499 kr
+          - generic [ref=e396]:
+            - button "🛒 Add" [ref=e397] [cursor=pointer]
+            - button "♡" [ref=e398] [cursor=pointer]
+      - generic [ref=e399]:
+        - generic [ref=e400]: DRAG
+        - img "Levi's 501 Jeans"
+        - generic [ref=e401]:
+          - generic [ref=e402]: Levi's 501 Jeans
+          - generic [ref=e403]: 899 kr
+          - generic [ref=e404]:
+            - button "🛒 Add" [ref=e405] [cursor=pointer]
+            - button "♡" [ref=e406] [cursor=pointer]
+      - generic [ref=e407]:
+        - generic [ref=e408]: "-28%"
+        - generic [ref=e409]: DRAG
+        - img "Dyson V15 Vacuum"
+        - generic [ref=e410]:
+          - generic [ref=e411]: Dyson V15 Vacuum
+          - generic [ref=e412]: 6 499 kr8 990 kr
+          - generic [ref=e413]:
+            - button "🛒 Add" [ref=e414] [cursor=pointer]
+            - button "♡" [ref=e415] [cursor=pointer]
+      - generic [ref=e416]:
+        - generic [ref=e417]: DRAG
+        - img "H&M Linen Blazer"
+        - generic [ref=e418]:
+          - generic [ref=e419]: H&M Linen Blazer
+          - generic [ref=e420]: 699 kr
+          - generic [ref=e421]:
+            - button "🛒 Add" [ref=e422] [cursor=pointer]
+            - button "♡" [ref=e423] [cursor=pointer]
+      - generic [ref=e424]:
+        - generic [ref=e425]: DRAG
+        - img "iPad Air M2"
+        - generic [ref=e426]:
+          - generic [ref=e427]: iPad Air M2
+          - generic [ref=e428]: 8 999 kr
+          - generic [ref=e429]:
+            - button "🛒 Add" [ref=e430] [cursor=pointer]
+            - button "♡" [ref=e431] [cursor=pointer]
+      - generic [ref=e432]:
+        - generic [ref=e433]: "-33%"
+        - generic [ref=e434]: DRAG
+        - img "Zara Maxi Dress"
+        - generic [ref=e435]:
+          - generic [ref=e436]: Zara Maxi Dress
+          - generic [ref=e437]: 399 kr599 kr
+          - generic [ref=e438]:
+            - button "🛒 Add" [ref=e439] [cursor=pointer]
+            - button "♡" [ref=e440] [cursor=pointer]
+      - generic [ref=e441]:
+        - generic [ref=e442]: "-15%"
+        - generic [ref=e443]: DRAG
+        - img "AirPods Pro 2"
+        - generic [ref=e444]:
+          - generic [ref=e445]: AirPods Pro 2
+          - generic [ref=e446]: 2 799 kr3 299 kr
+          - generic [ref=e447]:
+            - button "🛒 Add" [ref=e448] [cursor=pointer]
+            - button "♡" [ref=e449] [cursor=pointer]
+      - generic [ref=e450]:
+        - generic [ref=e451]: DRAG
+        - img "IKEA KALLAX"
+        - generic [ref=e452]:
+          - generic [ref=e453]: IKEA KALLAX
+          - generic [ref=e454]: 649 kr
+          - generic [ref=e455]:
+            - button "🛒 Add" [ref=e456] [cursor=pointer]
+            - button "♡" [ref=e457] [cursor=pointer]
+      - generic [ref=e458]:
+        - generic [ref=e459]: "-20%"
+        - generic [ref=e460]: DRAG
+        - img "KitchenAid Mixer"
+        - generic [ref=e461]:
+          - generic [ref=e462]: KitchenAid Mixer
+          - generic [ref=e463]: 5 299 kr6 499 kr
+          - generic [ref=e464]:
+            - button "🛒 Add" [ref=e465] [cursor=pointer]
+            - button "♡" [ref=e466] [cursor=pointer]
+      - generic [ref=e467]:
+        - generic [ref=e468]: DRAG
+        - img "Levi's 501 Jeans"
+        - generic [ref=e469]:
+          - generic [ref=e470]: Levi's 501 Jeans
+          - generic [ref=e471]: 899 kr
+          - generic [ref=e472]:
+            - button "🛒 Add" [ref=e473] [cursor=pointer]
+            - button "♡" [ref=e474] [cursor=pointer]
+      - generic [ref=e475]:
+        - generic [ref=e476]: "-28%"
+        - generic [ref=e477]: DRAG
+        - img "Dyson V15 Vacuum"
+        - generic [ref=e478]:
+          - generic [ref=e479]: Dyson V15 Vacuum
+          - generic [ref=e480]: 6 499 kr8 990 kr
+          - generic [ref=e481]:
+            - button "🛒 Add" [ref=e482] [cursor=pointer]
+            - button "♡" [ref=e483] [cursor=pointer]
+      - generic [ref=e484]:
+        - generic [ref=e485]: DRAG
+        - img "H&M Linen Blazer"
+        - generic [ref=e486]:
+          - generic [ref=e487]: H&M Linen Blazer
+          - generic [ref=e488]: 699 kr
+          - generic [ref=e489]:
+            - button "🛒 Add" [ref=e490] [cursor=pointer]
+            - button "♡" [ref=e491] [cursor=pointer]
+      - generic [ref=e492]:
+        - generic [ref=e493]: DRAG
+        - img "iPad Air M2"
+        - generic [ref=e494]:
+          - generic [ref=e495]: iPad Air M2
+          - generic [ref=e496]: 8 999 kr
+          - generic [ref=e497]:
+            - button "🛒 Add" [ref=e498] [cursor=pointer]
+            - button "♡" [ref=e499] [cursor=pointer]
+      - generic [ref=e500]:
+        - generic [ref=e501]: "-33%"
+        - generic [ref=e502]: DRAG
+        - img "Zara Maxi Dress"
+        - generic [ref=e503]:
+          - generic [ref=e504]: Zara Maxi Dress
+          - generic [ref=e505]: 399 kr599 kr
+          - generic [ref=e506]:
+            - button "🛒 Add" [ref=e507] [cursor=pointer]
+            - button "♡" [ref=e508] [cursor=pointer]
+      - generic [ref=e509]:
+        - generic [ref=e510]: "-20%"
+        - generic [ref=e511]: DRAG
+        - img "Samsung 4K TV"
+        - generic [ref=e512]:
+          - generic [ref=e513]: Samsung 4K TV
+          - generic [ref=e514]: 7 999 kr9 990 kr
+          - generic [ref=e515]:
+            - button "🛒 Add" [ref=e516] [cursor=pointer]
+            - button "♡" [ref=e517] [cursor=pointer]
+      - generic [ref=e518]:
+        - generic [ref=e519]: DRAG
+        - img "Nike Running Shoes"
+        - generic [ref=e520]:
+          - generic [ref=e521]: Nike Running Shoes
+          - generic [ref=e522]: 1 199 kr
+          - generic [ref=e523]:
+            - button "🛒 Add" [ref=e524] [cursor=pointer]
+            - button "♡" [ref=e525] [cursor=pointer]
+      - generic [ref=e526]:
+        - generic [ref=e527]: "-21%"
+        - generic [ref=e528]: DRAG
+        - img "Vitamix Blender"
+        - generic [ref=e529]:
+          - generic [ref=e530]: Vitamix Blender
+          - generic [ref=e531]: 5 890 kr7 490 kr
+          - generic [ref=e532]:
+            - button "🛒 Add" [ref=e533] [cursor=pointer]
+            - button "♡" [ref=e534] [cursor=pointer]
+      - generic [ref=e535]:
+        - generic [ref=e536]: DRAG
+        - img "Louis Vuitton Bag"
+        - generic [ref=e537]:
+          - generic [ref=e538]: Louis Vuitton Bag
+          - generic [ref=e539]: 12 900 kr
+          - generic [ref=e540]:
+            - button "🛒 Add" [ref=e541] [cursor=pointer]
+            - button "♡" [ref=e542] [cursor=pointer]
+      - generic [ref=e543]:
+        - generic [ref=e544]: "-19%"
+        - generic [ref=e545]: DRAG
+        - img "LEGO Technic Set"
+        - generic [ref=e546]:
+          - generic [ref=e547]: LEGO Technic Set
+          - generic [ref=e548]: 1 299 kr1 599 kr
+          - generic [ref=e549]:
+            - button "🛒 Add" [ref=e550] [cursor=pointer]
+            - button "♡" [ref=e551] [cursor=pointer]
+      - generic [ref=e552]:
+        - generic [ref=e553]: DRAG
+        - img "Kindle Paperwhite"
+        - generic [ref=e554]:
+          - generic [ref=e555]: Kindle Paperwhite
+          - generic [ref=e556]: 1 249 kr
+          - generic [ref=e557]:
+            - button "🛒 Add" [ref=e558] [cursor=pointer]
+            - button "♡" [ref=e559] [cursor=pointer]
+      - generic [ref=e560]:
+        - generic [ref=e561]: "-14%"
+        - generic [ref=e562]: DRAG
+        - img "GoPro HERO 12"
+        - generic [ref=e563]:
+          - generic [ref=e564]: GoPro HERO 12
+          - generic [ref=e565]: 4 299 kr4 990 kr
+          - generic [ref=e566]:
+            - button "🛒 Add" [ref=e567] [cursor=pointer]
+            - button "♡" [ref=e568] [cursor=pointer]
+      - generic [ref=e569]:
+        - generic [ref=e570]: "-32%"
+        - generic [ref=e571]: DRAG
+        - img "Nespresso Vertuo"
+        - generic [ref=e572]:
+          - generic [ref=e573]: Nespresso Vertuo
+          - generic [ref=e574]: 1 690 kr2 490 kr
+          - generic [ref=e575]:
+            - button "🛒 Add" [ref=e576] [cursor=pointer]
+            - button "♡" [ref=e577] [cursor=pointer]
+      - generic [ref=e578]:
+        - generic [ref=e579]: DRAG
+        - img "Acne Studios Jeans"
+        - generic [ref=e580]:
+          - generic [ref=e581]: Acne Studios Jeans
+          - generic [ref=e582]: 3 200 kr
+          - generic [ref=e583]:
+            - button "🛒 Add" [ref=e584] [cursor=pointer]
+            - button "♡" [ref=e585] [cursor=pointer]
+    - generic [ref=e586]:
+      - button "◀ Scroll back" [ref=e587] [cursor=pointer]
+      - generic [ref=e588]: 33 products
+      - button "Scroll forward ▶" [ref=e589] [cursor=pointer]
+  - generic [ref=e590]:
+    - generic [ref=e591]:
+      - generic [ref=e592]:
+        - generic [ref=e593]: Limited time
+        - heading "🔥 Flash Deals HOT" [level=2] [ref=e594]:
+          - text: 🔥 Flash Deals
+          - generic [ref=e595]: HOT
+      - generic [ref=e596]:
+        - generic [ref=e597]: ⏱ 04:19:12 left
+        - generic [ref=e598] [cursor=pointer]: View all deals →
+    - generic [ref=e599]:
+      - generic [ref=e600] [cursor=pointer]:
+        - generic [ref=e601]: "-30%"
+        - button "♡" [ref=e602]
+        - img "Nike Air Max 270 React" [ref=e604]
+        - generic [ref=e605]:
+          - generic [ref=e606]: Amazon
+          - generic [ref=e607]: Nike Air Max 270 React
+          - generic [ref=e608]:
+            - generic [ref=e609]: ★★★★★
+            - generic [ref=e610]: (2.4k)
+            - generic [ref=e611]: 6 viewing
+          - generic [ref=e612]:
+            - generic [ref=e613]: 699 kr
+            - generic [ref=e614]: 999 kr
+            - generic [ref=e615]: Save 300 kr
+          - button "Buy on Amazon" [ref=e617]
+          - button "🎨 Add to Canvas" [ref=e618]
+      - generic [ref=e619] [cursor=pointer]:
+        - generic [ref=e620]: "-25%"
+        - button "♡" [ref=e621]
+        - img "Charlotte Tilbury Beauty" [ref=e623]
+        - generic [ref=e624]:
+          - generic [ref=e625]: Amazon
+          - generic [ref=e626]: Charlotte Tilbury Beauty
+          - generic [ref=e627]:
+            - generic [ref=e628]: ★★★★☆
+            - generic [ref=e629]: (891)
+            - generic [ref=e630]: 15 viewing
+          - generic [ref=e631]:
+            - generic [ref=e632]: 370 kr
+            - generic [ref=e633]: 490 kr
+            - generic [ref=e634]: Save 120 kr
+          - button "Buy on Amazon" [ref=e636]
+          - button "🎨 Add to Canvas" [ref=e637]
+      - generic [ref=e638] [cursor=pointer]:
+        - generic [ref=e639]: SALE
+        - button "♡" [ref=e640]
+        - img "PS5 DualSense Controller" [ref=e642]
+        - generic [ref=e643]:
+          - generic [ref=e644]: Amazon
+          - generic [ref=e645]: PS5 DualSense Controller
+          - generic [ref=e646]:
+            - generic [ref=e647]: ★★★★★
+            - generic [ref=e648]: (5.1k)
+            - generic [ref=e649]: 10 viewing
+          - generic [ref=e650]:
+            - generic [ref=e651]: 599 kr
+            - generic [ref=e652]: 790 kr
+            - generic [ref=e653]: Save 191 kr
+          - button "Buy on Amazon" [ref=e655]
+          - button "🎨 Add to Canvas" [ref=e656]
+      - generic [ref=e657] [cursor=pointer]:
+        - generic [ref=e658]: "-40%"
+        - button "♡" [ref=e659]
+        - img "Ninja Air Fryer Pro XL" [ref=e661]
+        - generic [ref=e662]:
+          - generic [ref=e663]: Amazon
+          - generic [ref=e664]: Ninja Air Fryer Pro XL
+          - generic [ref=e665]:
+            - generic [ref=e666]: ★★★★★
+            - generic [ref=e667]: (3.2k)
+            - generic [ref=e668]: 13 viewing
+          - generic [ref=e669]:
+            - generic [ref=e670]: 799 kr
+            - generic [ref=e671]: 1 299 kr
+            - generic [ref=e672]: Save 500 kr
+          - button "Buy on Amazon" [ref=e674]
+          - button "🎨 Add to Canvas" [ref=e675]
+      - generic [ref=e676] [cursor=pointer]:
+        - generic [ref=e677]: "-20%"
+        - button "♡" [ref=e678]
+        - img "Zara Spring Maxi Dress" [ref=e680]
+        - generic [ref=e681]:
+          - generic [ref=e682]: Zalando
+          - generic [ref=e683]: Zara Spring Maxi Dress
+          - generic [ref=e684]:
+            - generic [ref=e685]: ★★★★☆
+            - generic [ref=e686]: (342)
+            - generic [ref=e687]: 8 viewing
+          - generic [ref=e688]:
+            - generic [ref=e689]: 390 kr
+            - generic [ref=e690]: 490 kr
+            - generic [ref=e691]: Save 100 kr
+          - button "Buy on Zalando" [ref=e693]
+          - button "🎨 Add to Canvas" [ref=e694]
+      - generic [ref=e695] [cursor=pointer]:
+        - generic [ref=e696]: "-50%"
+        - button "♡" [ref=e697]
+        - img "Chanel Chance Eau de Parfum" [ref=e699]
+        - generic [ref=e700]:
+          - generic [ref=e701]: Amazon
+          - generic [ref=e702]: Chanel Chance Eau de Parfum
+          - generic [ref=e703]:
+            - generic [ref=e704]: ★★★★★
+            - generic [ref=e705]: (1.8k)
+            - generic [ref=e706]: 11 viewing
+          - generic [ref=e707]:
+            - generic [ref=e708]: 890 kr
+            - generic [ref=e709]: 1 790 kr
+            - generic [ref=e710]: Save 900 kr
+          - button "Buy on Amazon" [ref=e712]
+          - button "🎨 Add to Canvas" [ref=e713]
+      - generic [ref=e714] [cursor=pointer]:
+        - generic [ref=e715]: NEW
+        - button "♡" [ref=e716]
+        - img "iPhone 16 Pro 256GB" [ref=e718]
+        - generic [ref=e719]:
+          - generic [ref=e720]: Amazon
+          - generic [ref=e721]: iPhone 16 Pro 256GB
+          - generic [ref=e722]:
+            - generic [ref=e723]: ★★★★★
+            - generic [ref=e724]: (7.3k)
+            - generic [ref=e725]: 13 viewing
+          - generic [ref=e726]:
+            - generic [ref=e727]: 9 999 kr
+            - generic [ref=e728]: 11 790 kr
+            - generic [ref=e729]: Save 1 791 kr
+          - button "Buy on Amazon" [ref=e731]
+          - button "🎨 Add to Canvas" [ref=e732]
+      - generic [ref=e733] [cursor=pointer]:
+        - generic [ref=e734]: "-35%"
+        - button "♡" [ref=e735]
+        - img "Apple Watch SE 2nd gen" [ref=e737]
+        - generic [ref=e738]:
+          - generic [ref=e739]: Amazon
+          - generic [ref=e740]: Apple Watch SE 2nd gen
+          - generic [ref=e741]:
+            - generic [ref=e742]: ★★★★☆
+            - generic [ref=e743]: (4.6k)
+            - generic [ref=e744]: 7 viewing
+          - generic [ref=e745]:
+            - generic [ref=e746]: 1 799 kr
+            - generic [ref=e747]: 2 690 kr
+            - generic [ref=e748]: Save 891 kr
+          - button "Buy on Amazon" [ref=e750]
+          - button "🎨 Add to Canvas" [ref=e751]
+  - generic [ref=e752]:
+    - generic [ref=e753]:
+      - generic [ref=e754]:
+        - generic [ref=e755]: Browse by category
+        - heading "📦 All Categories 31 categories" [level=2] [ref=e756]:
+          - text: 📦 All Categories
+          - generic [ref=e757]: 31 categories
+      - textbox "🔍 Search categories..." [ref=e758]
+    - generic [ref=e759]:
+      - button "🔥 All" [ref=e760] [cursor=pointer]
+      - button "👗 Fashion" [ref=e761] [cursor=pointer]
+      - button "💻 Tech" [ref=e762] [cursor=pointer]
+      - button "🏠 Home" [ref=e763] [cursor=pointer]
+      - button "❤️ Health" [ref=e764] [cursor=pointer]
+      - button "🍕 Food" [ref=e765] [cursor=pointer]
+      - button "🧒 Kids" [ref=e766] [cursor=pointer]
+      - button "📚 Books" [ref=e767] [cursor=pointer]
+      - button "🐾 Pets" [ref=e768] [cursor=pointer]
+      - button "🚗 Cars" [ref=e769] [cursor=pointer]
+      - button "🏪 Other" [ref=e770] [cursor=pointer]
+    - generic [ref=e771]:
+      - generic [ref=e772] [cursor=pointer]:
+        - generic [ref=e773]: HOT
+        - img "Women's Fashion" [ref=e775]
+        - generic: Shop Now
+        - generic [ref=e776]:
+          - generic [ref=e777]: 👗
+          - generic [ref=e778]: Women's Fashion
+          - generic [ref=e779]: 12,400+ products
+      - generic [ref=e780] [cursor=pointer]:
+        - img "Men's Fashion" [ref=e782]
+        - generic: Shop Now
+        - generic [ref=e783]:
+          - generic [ref=e784]: 👔
+          - generic [ref=e785]: Men's Fashion
+          - generic [ref=e786]: 9,800+ products
+      - generic [ref=e787] [cursor=pointer]:
+        - generic [ref=e788]: SALE
+        - img "Shoes & Sneakers" [ref=e790]
+        - generic: Shop Now
+        - generic [ref=e791]:
+          - generic [ref=e792]: 👟
+          - generic [ref=e793]: Shoes & Sneakers
+          - generic [ref=e794]: 8,200+ products
+      - generic [ref=e795] [cursor=pointer]:
+        - generic [ref=e796]: TOP
+        - img "Beauty & Cosmetics" [ref=e798]
+        - generic: Shop Now
+        - generic [ref=e799]:
+          - generic [ref=e800]: 💄
+          - generic [ref=e801]: Beauty & Cosmetics
+          - generic [ref=e802]: 11,500+ products
+      - generic [ref=e803] [cursor=pointer]:
+        - img "Watches & Jewelry" [ref=e805]
+        - generic: Shop Now
+        - generic [ref=e806]:
+          - generic [ref=e807]: ⌚
+          - generic [ref=e808]: Watches & Jewelry
+          - generic [ref=e809]: 6,300+ products
+      - generic [ref=e810] [cursor=pointer]:
+        - generic [ref=e811]: NEW
+        - img "Smartphones" [ref=e813]
+        - generic: Shop Now
+        - generic [ref=e814]:
+          - generic [ref=e815]: 📱
+          - generic [ref=e816]: Smartphones
+          - generic [ref=e817]: 3,100+ products
+      - generic [ref=e818] [cursor=pointer]:
+        - img "Laptops & Computers" [ref=e820]
+        - generic: Shop Now
+        - generic [ref=e821]:
+          - generic [ref=e822]: 💻
+          - generic [ref=e823]: Laptops & Computers
+          - generic [ref=e824]: 4,700+ products
+      - generic [ref=e825] [cursor=pointer]:
+        - generic [ref=e826]: SALE
+        - img "Audio & Headphones" [ref=e828]
+        - generic: Shop Now
+        - generic [ref=e829]:
+          - generic [ref=e830]: 🎧
+          - generic [ref=e831]: Audio & Headphones
+          - generic [ref=e832]: 5,500+ products
+      - generic [ref=e833] [cursor=pointer]:
+        - generic [ref=e834]: HOT
+        - img "Gaming" [ref=e836]
+        - generic: Shop Now
+        - generic [ref=e837]:
+          - generic [ref=e838]: 🎮
+          - generic [ref=e839]: Gaming
+          - generic [ref=e840]: 6,100+ products
+      - generic [ref=e841] [cursor=pointer]:
+        - generic [ref=e842]: NEW
+        - img "Office Supplies" [ref=e844]
+        - generic: Shop Now
+        - generic [ref=e845]:
+          - generic [ref=e846]: 🖊️
+          - generic [ref=e847]: Office Supplies
+          - generic [ref=e848]: 4,200+ products
+      - generic [ref=e849] [cursor=pointer]:
+        - img "Furniture" [ref=e851]
+        - generic: Shop Now
+        - generic [ref=e852]:
+          - generic [ref=e853]: 🛋️
+          - generic [ref=e854]: Furniture
+          - generic [ref=e855]: 5,800+ products
+      - generic [ref=e856] [cursor=pointer]:
+        - generic [ref=e857]: HOT
+        - img "Home Decor" [ref=e859]
+        - generic: Shop Now
+        - generic [ref=e860]:
+          - generic [ref=e861]: 🏡
+          - generic [ref=e862]: Home Decor
+          - generic [ref=e863]: 9,300+ products
+      - generic [ref=e864] [cursor=pointer]:
+        - generic [ref=e865]: SALE
+        - img "Kitchen Gadgets" [ref=e867]
+        - generic: Shop Now
+        - generic [ref=e868]:
+          - generic [ref=e869]: 🍳
+          - generic [ref=e870]: Kitchen Gadgets
+          - generic [ref=e871]: 4,400+ products
+      - generic [ref=e872] [cursor=pointer]:
+        - generic [ref=e873]: NEW
+        - img "Garden & Outdoor" [ref=e875]
+        - generic: Shop Now
+        - generic [ref=e876]:
+          - generic [ref=e877]: 🌱
+          - generic [ref=e878]: Garden & Outdoor
+          - generic [ref=e879]: 2,600+ products
+      - generic [ref=e880] [cursor=pointer]:
+        - generic [ref=e881]: HOT
+        - img "Training & Health" [ref=e883]
+        - generic: Shop Now
+        - generic [ref=e884]:
+          - generic [ref=e885]: 💪
+          - generic [ref=e886]: Training & Health
+          - generic [ref=e887]: 7,100+ products
+      - generic [ref=e888] [cursor=pointer]:
+        - img "Hygiene & Care" [ref=e890]
+        - generic: Shop Now
+        - generic [ref=e891]:
+          - generic [ref=e892]: 🧴
+          - generic [ref=e893]: Hygiene & Care
+          - generic [ref=e894]: 5,200+ products
+      - generic [ref=e895] [cursor=pointer]:
+        - img "Food & Snacks" [ref=e897]
+        - generic: Shop Now
+        - generic [ref=e898]:
+          - generic [ref=e899]: 🍕
+          - generic [ref=e900]: Food & Snacks
+          - generic [ref=e901]: 3,800+ products
+      - generic [ref=e902] [cursor=pointer]:
+        - generic [ref=e903]: NEW
+        - img "Food Store" [ref=e905]
+        - generic: Shop Now
+        - generic [ref=e906]:
+          - generic [ref=e907]: 🛒
+          - generic [ref=e908]: Food Store
+          - generic [ref=e909]: 6,500+ products
+      - generic [ref=e910] [cursor=pointer]:
+        - img "Restaurants" [ref=e912]
+        - generic: Shop Now
+        - generic [ref=e913]:
+          - generic [ref=e914]: 🍽️
+          - generic [ref=e915]: Restaurants
+          - generic [ref=e916]: 1,200+ products
+      - generic [ref=e917] [cursor=pointer]:
+        - img "Kids' Clothes" [ref=e919]
+        - generic: Shop Now
+        - generic [ref=e920]:
+          - generic [ref=e921]: 🧒
+          - generic [ref=e922]: Kids' Clothes
+          - generic [ref=e923]: 5,400+ products
+      - generic [ref=e924] [cursor=pointer]:
+        - generic [ref=e925]: TOP
+        - img "Kids' Toys" [ref=e927]
+        - generic: Shop Now
+        - generic [ref=e928]:
+          - generic [ref=e929]: 🧸
+          - generic [ref=e930]: Kids' Toys
+          - generic [ref=e931]: 4,900+ products
+      - generic [ref=e932] [cursor=pointer]:
+        - img "Books" [ref=e934]
+        - generic: Shop Now
+        - generic [ref=e935]:
+          - generic [ref=e936]: 📚
+          - generic [ref=e937]: Books
+          - generic [ref=e938]: 22,000+ products
+      - generic [ref=e939] [cursor=pointer]:
+        - img "Art Supplies" [ref=e941]
+        - generic: Shop Now
+        - generic [ref=e942]:
+          - generic [ref=e943]: 🎨
+          - generic [ref=e944]: Art Supplies
+          - generic [ref=e945]: 2,900+ products
+      - generic [ref=e946] [cursor=pointer]:
+        - img "Car Accessories" [ref=e948]
+        - generic: Shop Now
+        - generic [ref=e949]:
+          - generic [ref=e950]: 🚗
+          - generic [ref=e951]: Car Accessories
+          - generic [ref=e952]: 4,100+ products
+      - generic [ref=e953] [cursor=pointer]:
+        - generic [ref=e954]: NEW
+        - img "Pets" [ref=e956]
+        - generic: Shop Now
+        - generic [ref=e957]:
+          - generic [ref=e958]: 🐾
+          - generic [ref=e959]: Pets
+          - generic [ref=e960]: 3,600+ products
+      - generic [ref=e961] [cursor=pointer]:
+        - img "Shopping Stores" [ref=e963]
+        - generic: Shop Now
+        - generic [ref=e964]:
+          - generic [ref=e965]: 🏪
+          - generic [ref=e966]: Shopping Stores
+          - generic [ref=e967]: 80+ products
+      - generic [ref=e968] [cursor=pointer]:
+        - generic [ref=e969]: NEW
+        - img "Car Parts" [ref=e971]
+        - generic: Shop Now
+        - generic [ref=e972]:
+          - generic [ref=e973]: 🔧
+          - generic [ref=e974]: Car Parts
+          - generic [ref=e975]: 14,000+ products
+      - generic [ref=e976] [cursor=pointer]:
+        - generic [ref=e977]: NEW
+        - img "Car Repair & Garage" [ref=e979]
+        - generic: Shop Now
+        - generic [ref=e980]:
+          - generic [ref=e981]: 🏎️
+          - generic [ref=e982]: Car Repair & Garage
+          - generic [ref=e983]: 3,200+ products
+      - generic [ref=e984] [cursor=pointer]:
+        - generic [ref=e985]: HOT
+        - img "Men's Sportswear" [ref=e987]
+        - generic: Shop Now
+        - generic [ref=e988]:
+          - generic [ref=e989]: 🏋️
+          - generic [ref=e990]: Men's Sportswear
+          - generic [ref=e991]: 11,500+ products
+      - generic [ref=e992] [cursor=pointer]:
+        - generic [ref=e993]: HOT
+        - img "Women's Sportswear" [ref=e995]
+        - generic: Shop Now
+        - generic [ref=e996]:
+          - generic [ref=e997]: 🤸
+          - generic [ref=e998]: Women's Sportswear
+          - generic [ref=e999]: 13,200+ products
+      - generic [ref=e1000] [cursor=pointer]:
+        - img "Sport Shoes" [ref=e1002]
+        - generic: Shop Now
+        - generic [ref=e1003]:
+          - generic [ref=e1004]: 👟
+          - generic [ref=e1005]: Sport Shoes
+          - generic [ref=e1006]: 9,800+ products
+  - generic [ref=e1007]:
+    - generic [ref=e1008]:
+      - generic [ref=e1009]: Our partners
+      - heading "🤝 Featured Sponsors" [level=2] [ref=e1010]
+    - generic [ref=e1011]:
+      - generic [ref=e1012] [cursor=pointer]:
+        - generic [ref=e1013]:
+          - generic [ref=e1014]: Sponsored
+          - heading "Uber Eats" [level=3] [ref=e1015]
+          - paragraph [ref=e1016]: Get food delivered in 30 minutes
+          - generic [ref=e1017]: ✓ 30 min avg delivery
+          - button "Order Now →" [ref=e1018]
+        - generic [ref=e1019]: 🍔
+      - generic [ref=e1020] [cursor=pointer]:
+        - generic [ref=e1021]:
+          - generic [ref=e1022]: Sponsored
+          - heading "Booking.com" [level=3] [ref=e1023]
+          - paragraph [ref=e1024]: Find the perfect hotel for your trip
+          - generic [ref=e1025]: ✓ 28 million listings
+          - button "Find Hotels →" [ref=e1026]
+        - generic [ref=e1027]: 🏨
+      - generic [ref=e1028] [cursor=pointer]:
+        - generic [ref=e1029]:
+          - generic [ref=e1030]: Sponsored
+          - heading "Nike" [level=3] [ref=e1031]
+          - paragraph [ref=e1032]: New Spring 2026 — just dropped
+          - generic [ref=e1033]: ✓ Free returns always
+          - button "Shop Nike →" [ref=e1034]
+        - generic [ref=e1035]: 👟
+      - generic [ref=e1036] [cursor=pointer]:
+        - generic [ref=e1037]:
+          - generic [ref=e1038]: Sponsored
+          - heading "IKEA" [level=3] [ref=e1039]
+          - paragraph [ref=e1040]: Beautiful furniture for every home
+          - generic [ref=e1041]: ✓ Flat-pack, big style
+          - button "Shop IKEA →" [ref=e1042]
+        - generic [ref=e1043]: 🛋️
+  - generic [ref=e1045]:
+    - generic [ref=e1046]:
+      - generic [ref=e1047]: Simple to use
+      - heading "How DrawNBuy Works" [level=2] [ref=e1048]
+      - paragraph [ref=e1049]: From sketch to shopping cart in seconds
+    - generic [ref=e1050]:
+      - generic [ref=e1052]:
+        - generic [ref=e1053]: "1"
+        - generic [ref=e1055]: ✏️
+        - generic [ref=e1056]: Draw Your Idea
+        - generic [ref=e1057]: Sketch what you want on the collaborative canvas. Use freehand drawing or simple shapes.
+      - generic [ref=e1058]:
+        - generic [ref=e1059]: "2"
+        - generic [ref=e1061]: 🔍
+        - generic [ref=e1062]: AI Finds Products
+        - generic [ref=e1063]: Our AI recognises your drawing and instantly surfaces matching real products from top stores.
+      - generic [ref=e1064]:
+        - generic [ref=e1065]: "3"
+        - generic [ref=e1067]: 🎨
+        - generic [ref=e1068]: Drag to Canvas
+        - generic [ref=e1069]: Drag products from the search panel onto your canvas. Arrange, compare, and share your wishlist.
+      - generic [ref=e1070]:
+        - generic [ref=e1071]: "4"
+        - generic [ref=e1073]: 🛒
+        - generic [ref=e1074]: Shop Together
+        - generic [ref=e1075]: Invite friends & family to your canvas. Chat, react, and buy — all in one place.
+    - button "🎨 Start Drawing Free — It's Free!" [ref=e1077] [cursor=pointer]
+  - contentinfo [ref=e1078]:
+    - generic [ref=e1080]:
+      - generic [ref=e1081]:
+        - generic [ref=e1083]: DrawNBuy
+        - paragraph [ref=e1084]: The world's first social shopping canvas. Draw it, find it, buy it — together.
+        - generic [ref=e1085]:
+          - link "Instagram" [ref=e1086] [cursor=pointer]:
+            - /url: https://instagram.com
+            - img [ref=e1087]
+          - link "TikTok" [ref=e1090] [cursor=pointer]:
+            - /url: https://tiktok.com
+            - img [ref=e1091]
+          - link "YouTube" [ref=e1093] [cursor=pointer]:
+            - /url: https://youtube.com
+            - img [ref=e1094]
+          - link "Pinterest" [ref=e1097] [cursor=pointer]:
+            - /url: https://pinterest.com
+            - img [ref=e1098]
+          - link "Twitter/X" [ref=e1100] [cursor=pointer]:
+            - /url: https://x.com
+            - img [ref=e1101]
+        - generic [ref=e1103]:
+          - generic [ref=e1104]: 🔒 Secure
+          - generic [ref=e1105]: ✅ Verified Partners
+          - generic [ref=e1106]: 🌍 17 Countries
+      - generic [ref=e1107]:
+        - heading "Company" [level=4] [ref=e1108]
+        - generic [ref=e1109] [cursor=pointer]: About DrawNBuy
+        - generic [ref=e1110] [cursor=pointer]: How It Works
+        - generic [ref=e1111] [cursor=pointer]: Affiliate Program
+        - generic [ref=e1112] [cursor=pointer]: Press Kit
+        - generic [ref=e1113] [cursor=pointer]: Careers
+      - generic [ref=e1114]:
+        - heading "Support" [level=4] [ref=e1115]
+        - generic [ref=e1116] [cursor=pointer]: Help Center
+        - generic [ref=e1117] [cursor=pointer]: Contact Us
+        - generic [ref=e1118] [cursor=pointer]: Privacy Policy
+        - generic [ref=e1119] [cursor=pointer]: Terms of Service
+        - generic [ref=e1120] [cursor=pointer]: Cookie Settings
+      - generic [ref=e1121]:
+        - heading "Discover" [level=4] [ref=e1122]
+        - generic [ref=e1123] [cursor=pointer]: Women's Fashion
+        - generic [ref=e1124] [cursor=pointer]: Men's Fashion
+        - generic [ref=e1125] [cursor=pointer]: Tech & Gadgets
+        - generic [ref=e1126] [cursor=pointer]: Home & Living
+        - generic [ref=e1127] [cursor=pointer]: Deals & Offers
+      - generic [ref=e1128]:
+        - heading "🎁 Get exclusive deals" [level=4] [ref=e1129]
+        - paragraph [ref=e1130]: Be first to know about new features and the best deals from our partners.
+        - generic [ref=e1131]:
+          - textbox "your@email.com" [ref=e1132]
+          - button "Subscribe Free →" [ref=e1133] [cursor=pointer]
+    - generic [ref=e1134]:
+      - generic [ref=e1135]: © 2026 DrawNBuy AB — Stockholm, Sweden 🇸🇪
+      - generic [ref=e1136]:
+        - generic [ref=e1137] [cursor=pointer]: Privacy
+        - generic [ref=e1138] [cursor=pointer]: Terms
+        - generic [ref=e1139] [cursor=pointer]: Cookies
+  - generic [ref=e1141]:
+    - generic [ref=e1142]:
+      - generic [ref=e1144]: 🛍️ Drop Zone
+      - button "▼" [ref=e1145] [cursor=pointer]
+    - generic [ref=e1146]:
+      - generic [ref=e1147]: 🛒
+      - generic [ref=e1148]: Drop a product here to add it to the shared canvas
+    - button "↗ Open Full Canvas" [ref=e1150] [cursor=pointer]
