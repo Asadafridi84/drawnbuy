@@ -458,6 +458,7 @@ export default function CollabCanvas({ onShare }) {
         .ep-em { font-size:20px; cursor:pointer; padding:5px; border-radius:8px; text-align:center; transition:.1s; display:flex; align-items:center; justify-content:center; }
         .ep-em:hover { background:#f4f0ff; transform:scale(1.2); }
         @media(max-width:900px) { .collab-grid { grid-template-columns:1fr; } }
+        @media(max-width:480px) { .cv-area { min-height:min(60vw, 300px) !important; } }
 
         /* ── Mobile canvas UX ── */
         @media(max-width:768px) {

@@ -101,7 +101,7 @@ export default function DragStrip() {
         .pc:active { cursor:grabbing; opacity:.7; }
         .deal-badge { position:absolute; top:6px; left:6px; background:#ef4444; color:#fff; font-size:.58rem; font-weight:800; padding:1px 6px; border-radius:4px; animation:dealPop 2s infinite; }
         .drag-hint { position:absolute; top:5px; right:5px; background:rgba(0,0,0,.6); border-radius:4px; padding:2px 5px; font-size:.58rem; color:#fbbf24; font-weight:700; }
-        .prow { display:flex; gap:.85rem; overflow-x:auto; padding-bottom:.4rem; scrollbar-width:none; }
+        .prow { display:flex; gap:.85rem; overflow-x:auto; padding-bottom:.4rem; scrollbar-width:none; -webkit-overflow-scrolling:touch; touch-action:pan-x; }
         .prow::-webkit-scrollbar { display:none; }
         .pc-cart { flex:1; background:#7c3aed; color:#fff; border:none; border-radius:6px; padding:4px; font-size:.65rem; font-weight:700; cursor:pointer; font-family:inherit; }
         .pc-wish { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:6px; padding:3px 6px; cursor:pointer; font-size:.7rem; color:#fff; }

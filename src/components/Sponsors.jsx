@@ -17,6 +17,8 @@ export default function Sponsors() {
         .sp-icon { font-size:48px; filter:drop-shadow(0 4px 12px rgba(0,0,0,.3)); transition:.3s; }
         .spc:hover .sp-icon { transform:scale(1.1) rotate(-5deg); }
         .spc-stat { font-size:11px; color:rgba(255,255,255,.55); margin-bottom:10px; }
+        .spc-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:2rem; }
+        @media(max-width:480px) { .spc-grid { grid-template-columns:1fr !important; } }
       `}</style>
 
       <div style={{ marginBottom: '1rem' }}>
@@ -24,7 +26,7 @@ export default function Sponsors() {
         <h2 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#1a0a3e', margin: 0 }}>🤝 Featured Sponsors</h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '2rem' }}>
+      <div className="spc-grid">
         {visible.map((s, visIdx) => {
           const originalIdx = SPONSORS.indexOf(s);
           return (

@@ -63,6 +63,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
   const [searchVal, setSearchVal] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [imgSearchOpen, setImgSearchOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const ddRef = useRef(null);
   const imgFileRef = useRef(null);
 
@@ -217,25 +218,49 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
         .share-btn:hover { background:rgba(255,255,255,.2); }
         .hamburger {
           display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px;
+          width:44px; height:44px; align-items:center; justify-content:center;
         }
         .hamburger span { display:block; width:22px; height:2px; background:#fff; border-radius:2px; }
+        .mob-search-btn {
+          display:none; align-items:center; justify-content:center;
+          background:rgba(255,255,255,.12); border:1.5px solid rgba(255,255,255,.2);
+          color:#fff; width:44px; height:44px; border-radius:9px; cursor:pointer; font-size:18px; flex-shrink:0;
+        }
+        .mobile-search-bar {
+          display:none; position:absolute; top:100%; left:0; right:0;
+          background:#5b21b6; padding:.65rem 1rem; z-index:500; border-top:1px solid rgba(255,255,255,.12);
+        }
+        .mobile-search-bar.open { display:block; }
+        .mobile-search-bar input {
+          width:100%; background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.25);
+          border-radius:10px; color:#fff; font-family:'Space Grotesk',sans-serif; font-size:16px;
+          padding:11px 14px; outline:none; box-sizing:border-box;
+        }
+        .mobile-search-bar input::placeholder { color:rgba(255,255,255,.45); }
         .mobile-nav {
           display:none; position:fixed; inset:0; background:rgba(59,7,100,.97);
-          z-index:800; flex-direction:column; padding:2rem;
+          z-index:800; flex-direction:column; padding:2rem; overflow-y:auto;
         }
         .mobile-nav.open { display:flex; }
         .mob-close {
           align-self:flex-end; background:rgba(255,255,255,.1); border:none; color:#fff;
-          width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; margin-bottom:1.5rem;
+          width:44px; height:44px; border-radius:50%; font-size:18px; cursor:pointer; margin-bottom:1.5rem;
         }
         .mob-link {
           color:rgba(255,255,255,.85); font-size:1.1rem; font-weight:700; padding:.9rem 0;
           border-bottom:1px solid rgba(255,255,255,.08); cursor:pointer; display:block; text-decoration:none;
         }
         @media(max-width:768px) {
-          .hamburger { display:flex; }
+          .hamburger { display:flex !important; }
+          .mob-search-btn { display:flex !important; }
           .cat-dd-wrap, .nav-search-wrap, .nav-links, .share-btn { display:none !important; }
           .btn-ghost { display:none !important; }
+          .btn-cta { display:none !important; }
+          .nav-root { padding: 0 .85rem; gap:8px; }
+        }
+        @media(max-width:480px) {
+          .nav-root { height:56px; }
+          .logo-tagline { display:none; }
         }
       `}</style>
 
@@ -401,9 +426,27 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
               <button className="btn-cta" onClick={() => navigate('/signup')}>Sign Up Free</button>
             </>
           )}
+          <button className="mob-search-btn" onClick={() => setMobileSearchOpen(v => !v)} aria-label="Search">🔍</button>
           <button className="hamburger" onClick={() => setMobileOpen(true)}>
             <span/><span/><span/>
           </button>
+        </div>
+        {/* Mobile Search Bar */}
+        <div className={`mobile-search-bar${mobileSearchOpen ? ' open' : ''}`}>
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchVal}
+            onChange={e => setSearchVal(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && searchVal.trim()) {
+                const match = CATS.find(c => c.name.toLowerCase().includes(searchVal.toLowerCase()));
+                if (match) navigate('/category/' + match.slug);
+                setMobileSearchOpen(false);
+              }
+            }}
+            autoFocus={mobileSearchOpen}
+          />
         </div>
       </nav>
     </>

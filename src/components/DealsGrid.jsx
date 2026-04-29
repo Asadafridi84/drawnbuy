@@ -70,6 +70,7 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
       <style>{`
         @keyframes dealSlideIn { from{transform:translateY(14px)} to{transform:none} }
         @keyframes heartPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+        @media(max-width:480px) { #dealsAnchor { padding:1rem !important; } }
         .dc {
           background:#fff; border:1.5px solid #e5e7eb; border-radius:14px;
           overflow:hidden; cursor:pointer; transition:all .22s; position:relative;

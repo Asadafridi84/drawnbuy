@@ -321,6 +321,12 @@ export default function Hero({ onShare }) {
           .hero-inner { grid-template-columns:1fr !important; }
           .hero-product-col { max-height:320px; overflow:hidden; }
         }
+        @media(max-width:480px) {
+          .hero-orb { display:none !important; }
+          .hero-btns { flex-direction:column; }
+          .btn-hp, .btn-hs { width:100%; text-align:center; box-sizing:border-box; }
+          .hero-stats { gap:.85rem; }
+        }
       `}</style>
 
       {/* Orbs */}
