@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { COUNTRIES } from '../data';
 
 // ─── UI Store ─────────────────────────────────────────────────────────────────
@@ -75,18 +76,22 @@ export const useCollabStore = create((set, get) => ({
   setMicOn: (v) => set({ isMicOn: v }),
 }));
 
-// ─── Wishlist Store ───────────────────────────────────────────────────────────
-export const useWishlistStore = create((set, get) => ({
-  items: [],
+// ─── Wishlist Store (persisted to localStorage under key 'dnb_wishlist') ──────
+export const useWishlistStore = create(persist(
+  (set, get) => ({
+    items: [],
 
-  addItem: (product) => {
-    if (get().items.find(i => i.id === product.id)) return false; // already in list
-    set(s => ({ items: [...s.items, product] }));
-    return true;
-  },
-  removeItem: (id) => set(s => ({ items: s.items.filter(i => i.id !== id) })),
-  hasItem: (id) => !!get().items.find(i => i.id === id),
-}));
+    addItem: (product) => {
+      if (get().items.find(i => i.id === product.id)) return false;
+      set(s => ({ items: [...s.items, product] }));
+      return true;
+    },
+    removeItem: (id) => set(s => ({ items: s.items.filter(i => i.id !== id) })),
+    hasItem: (id) => !!get().items.find(i => i.id === id),
+    clear: () => set({ items: [] }),
+  }),
+  { name: 'dnb_wishlist' }
+));
 
 // ─── Cart Store ───────────────────────────────────────────────────────────────
 export const useCartStore = create((set, get) => ({

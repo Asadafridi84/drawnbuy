@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useCanvasStore } from '../store/canvas';
 import { useAuthStore } from '../store/auth';
 import { useSocket } from '../hooks/useSocket';
+import { useWishlist } from '../context/WishlistContext';
 
 const safeOpen = (url) => {
   if (!url) return;
@@ -30,6 +31,8 @@ export default function ProductCard({ card, canvasId }) {
   const moveCard       = useCanvasStore(s => s.moveCard);
   const removeCardById = useCanvasStore(s => s.removeCardById);
   const { sendMoveProduct, sendRemoveProduct } = useSocket();
+  const { addItem: wishAdd, hasItem: wishHas } = useWishlist();
+  const isWishlisted = wishHas(card.product.name);
 
   const dragStart = useRef(null);
   const [pos, setPos] = useState({ x: card.x, y: card.y });
@@ -104,6 +107,13 @@ export default function ProductCard({ card, canvasId }) {
             style={{ flex: 1, background: 'linear-gradient(90deg,#7c3aed,#5b21b6)', color: '#fff', border: '1.5px solid #fbbf24', borderRadius: 6, padding: '5px 0', fontSize: btnSize, fontWeight: 700, cursor: 'pointer' }}
           >
             Add to Cart
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); wishAdd({ id: card.product.name, ...card.product }); }}
+            title={isWishlisted ? 'In wishlist' : 'Save to wishlist'}
+            style={{ background: isWishlisted ? '#fee2e2' : '#f4f0ff', color: isWishlisted ? '#ef4444' : '#7c3aed', border: `1px solid ${isWishlisted ? '#fca5a5' : '#ede9fe'}`, borderRadius: 6, padding: '5px 6px', fontSize: '.75rem', fontWeight: 700, cursor: 'pointer' }}
+          >
+            {isWishlisted ? '♥' : '♡'}
           </button>
           <button
             className="card-delete-btn"

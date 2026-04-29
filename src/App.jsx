@@ -8,6 +8,7 @@ import Navbar             from './components/Navbar';
 import ToastContainer     from './components/ToastContainer';
 import ShareModal         from './components/ShareModal';
 import { useCartStore }   from './store';
+import { WishlistProvider } from './context/WishlistContext';
 
 // Homepage sections
 import AdStrip            from './components/AdStrip';
@@ -109,7 +110,7 @@ export default function App() {
   const cartCount = useCartStore(s => s.items.reduce((sum, i) => sum + i.qty, 0));
 
   return (
-    <>
+    <WishlistProvider>
       <style>{GLOBAL_STYLES}</style>
       <HashScroller />
 
@@ -172,6 +173,6 @@ export default function App() {
         {/* ── 404 ─────────────────────────────────────────── */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </>
+    </WishlistProvider>
   );
 }

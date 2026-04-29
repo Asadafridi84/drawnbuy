@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { DRAG_PRODS } from '../data';
-import { useCartStore, useWishlistStore, useUIStore } from '../store';
+import { useCartStore, useUIStore } from '../store';
 import { useCanvasStore } from '../store/canvas';
 import { useSocket } from '../hooks/useSocket';
+import { useWishlist } from '../context/WishlistContext';
 
 // Extend drag prods to 33+ by repeating with variation
 const ALL_PRODS = [
@@ -32,11 +33,10 @@ export default function DragStrip() {
   const rowRef = useRef(null);
 
   const cartAdd      = useCartStore(s => s.addItem);
-  const wishAdd      = useWishlistStore(s => s.addItem);
-  const wishHas      = useWishlistStore(s => s.hasItem);
   const addToast     = useUIStore(s => s.addToast);
   const addCard      = useCanvasStore(s => s.addCard);
   const { sendProductDrop } = useSocket();
+  const { addItem: wishAdd, hasItem: wishHas } = useWishlist();
 
   const handleAddToCart = (e, p) => {
     e.stopPropagation();
