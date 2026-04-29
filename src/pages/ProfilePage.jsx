@@ -156,6 +156,7 @@ export default function ProfilePage() {
   const [coverImg, setCoverImg]  = useState(null);
   const [coverPicker, setCoverPicker] = useState(false);
   const [avatarPicker, setAvatarPicker] = useState(false);
+  const [droppedProducts, setDroppedProducts] = useState([]);
 
   const [chatText, setChatText] = useState('');
   const [chatMsgs, setChatMsgs] = useState([
@@ -169,6 +170,7 @@ export default function ProfilePage() {
   const wishlistHas = useWishlistStore(s => s.hasItem);
 
   const { connect, sendDraw, sendMessage, onRemoteDraw } = useSocket();
+  const profileRoomId = 'profile-' + (user?.name || 'guest').toLowerCase().replace(/\s+/g,'').slice(0,10);
 
   // Seed default wishlist items once on first load
   useEffect(() => {
@@ -181,8 +183,7 @@ export default function ProfilePage() {
   // Bug 1: Join profile socket room and sync whiteboard strokes
   useEffect(() => {
     if (tab !== 'whiteboard') return;
-    const userId = user?.id || 'guest';
-    connect('profile-' + userId, user?.name || 'Anonymous');
+    connect(profileRoomId, user?.name || 'Anonymous');
     const unsub = onRemoteDraw((d) => {
       const c = canvasRef.current;
       if (!c) return;
@@ -289,8 +290,10 @@ export default function ProfilePage() {
 
   const getPos = (e,c) => {
     const r=c.getBoundingClientRect();
+    const scaleX=c.width/r.width;
+    const scaleY=c.height/r.height;
     const s=e.touches?e.touches[0]:e;
-    return {x:s.clientX-r.left,y:s.clientY-r.top};
+    return {x:(s.clientX-r.left)*scaleX,y:(s.clientY-r.top)*scaleY};
   };
   const wbStart=(e)=>{e.preventDefault();const c=canvasRef.current;if(!c)return;const ctx=c.getContext('2d');const pos=getPos(e,c);ctx.beginPath();ctx.moveTo(pos.x,pos.y);lastPosRef.current=pos;setDrawing(true);};
   const wbMove=(e)=>{e.preventDefault();if(!drawing)return;const c=canvasRef.current;if(!c)return;const ctx=c.getContext('2d');const pos=getPos(e,c);ctx.strokeStyle=wbColor;ctx.lineWidth=wbSize;ctx.lineCap='round';ctx.lineJoin='round';ctx.lineTo(pos.x,pos.y);ctx.stroke();ctx.beginPath();ctx.moveTo(pos.x,pos.y);if(lastPosRef.current){sendDraw({x1:lastPosRef.current.x,y1:lastPosRef.current.y,x2:pos.x,y2:pos.y,color:wbColor,width:wbSize});}lastPosRef.current=pos;};
@@ -445,7 +448,7 @@ export default function ProfilePage() {
                   <div style={{display:'flex',alignItems:'center',gap:'.4rem',background:'#ef4444',color:'#fff',fontSize:'.65rem',fontWeight:800,padding:'3px 9px',borderRadius:20}}>
                     <div style={{width:7,height:7,borderRadius:'50%',background:'#fff',opacity:.85}}/>LIVE
                   </div>
-                  <span style={{fontSize:'.9rem',fontWeight:800,color:'#1a0a3e',flex:1}}>My Profile Canvas</span>
+                  <span style={{fontSize:'.9rem',fontWeight:800,color:'#1a0a3e',flex:1}}>My Profile Canvas <span style={{fontSize:'.68rem',fontWeight:600,color:'#9ca3af',fontFamily:'monospace'}}>#{profileRoomId}</span></span>
                   <div style={{display:'flex'}}>
                     {[['#7c3aed','A'],['#fbbf24','M'],['#22c55e','J']].map(([bg,l])=>(
                       <div key={l} style={{width:26,height:26,borderRadius:'50%',background:bg,color:bg==='#fbbf24'?'#3b0764':'#fff',fontSize:'.7rem',fontWeight:800,display:'flex',alignItems:'center',justifyContent:'center',border:'2px solid #fff',marginLeft:'-6px'}}>{l}</div>
@@ -459,8 +462,9 @@ export default function ProfilePage() {
                   <input type="range" min={1} max={20} value={wbSize} onChange={e=>setWbSize(+e.target.value)} style={{width:'70px',accentColor:'#7c3aed'}}/>
                   <button className="wb-btn" onClick={wbClear}>Clear</button>
                   <button className="wb-btn" onClick={wbSave}>Save PNG</button>
-                  <button className="wb-btn" onClick={()=>navigate('/canvases')}>Full Canvas</button>
+                  <button className="wb-btn" onClick={()=>navigate('/?room='+profileRoomId)}>Full Canvas</button>
                 </div>
+                <div style={{position:'relative',width:'100%'}}>
                 <canvas ref={canvasRef} className="wb-canvas" width={900} height={380}
                   onMouseDown={wbStart} onMouseMove={wbMove} onMouseUp={wbEnd} onMouseLeave={wbEnd}
                   onTouchStart={wbStart} onTouchMove={wbMove} onTouchEnd={wbEnd}
@@ -473,22 +477,23 @@ export default function ProfilePage() {
                       const pd=JSON.parse(raw);
                       const c=canvasRef.current;if(!c)return;
                       const rect=c.getBoundingClientRect();
-                      const sx=c.width/rect.width;
-                      const sy=c.height/rect.height;
-                      const x=(e.clientX-rect.left)*sx;
-                      const y=(e.clientY-rect.top)*sy;
-                      const ctx=c.getContext('2d');
-                      ctx.fillStyle='#7c3aed';
-                      ctx.fillRect(x-55,y-28,110,44);
-                      ctx.fillStyle='#fff';
-                      ctx.font='bold 11px sans-serif';
-                      ctx.textAlign='center';
-                      ctx.fillText(pd.name.slice(0,22),x,y-8);
-                      ctx.font='600 9px sans-serif';
-                      ctx.fillText(pd.price||'',x,y+10);
+                      const x=e.clientX-rect.left;
+                      const y=e.clientY-rect.top;
+                      setDroppedProducts(prev=>[...prev,{...pd,x,y,id:Date.now()}]);
                       showToast(`${pd.name} added to canvas!`);
                     }catch(_){}
                   }}/>
+                {droppedProducts.map(dp=>(
+                  <div key={dp.id} style={{position:'absolute',left:dp.x,top:dp.y,transform:'translate(-50%,-50%)',background:'#fff',border:'2px solid #fbbf24',borderRadius:10,boxShadow:'0 4px 16px rgba(124,58,237,.2)',width:120,overflow:'hidden',zIndex:10,pointerEvents:'auto'}}>
+                    <img src={dp.img} alt={dp.name} style={{width:'100%',height:70,objectFit:'cover',display:'block'}} onError={e=>{e.target.style.display='none';}}/>
+                    <div style={{padding:'5px 7px'}}>
+                      <div style={{fontSize:'.68rem',fontWeight:700,color:'#1a0a3e',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{dp.name}</div>
+                      <div style={{fontSize:'.75rem',fontWeight:800,color:'#7c3aed'}}>{dp.price}</div>
+                    </div>
+                    <button onClick={()=>setDroppedProducts(prev=>prev.filter(d=>d.id!==dp.id))} style={{position:'absolute',top:2,right:2,background:'rgba(0,0,0,.55)',color:'#fff',border:'none',borderRadius:4,width:18,height:18,fontSize:'.6rem',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',lineHeight:1}}>✕</button>
+                  </div>
+                ))}
+                </div>
               </div>
               <div style={{background:'linear-gradient(135deg,#1e1b4b,#4c1d95)',borderRadius:16,overflow:'hidden',display:'flex',flexDirection:'column',height:'100%',minHeight:500}}>
                 <div style={{padding:'1rem',display:'flex',alignItems:'center',gap:'.5rem',borderBottom:'1px solid rgba(255,255,255,.1)'}}>
