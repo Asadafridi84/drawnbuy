@@ -152,7 +152,7 @@ function MiniCanvas() {
   );
 }
 
-function HeroAdCard({ ad }) {
+function HeroAdCard({ ad, onDismiss }) {
   return (
     <div
       draggable
@@ -163,11 +163,23 @@ function HeroAdCard({ ad }) {
       style={{
         background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)',
         borderRadius: '12px', overflow: 'hidden', cursor: 'grab', transition: '.2s',
+        position: 'relative',
       }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(251,191,36,.5)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,.15)'; e.currentTarget.style.transform = 'none'; }}
       onClick={() => window.open(ad.url, '_blank', 'noopener,noreferrer')}
     >
+      <button
+        onClick={e => { e.stopPropagation(); onDismiss(); }}
+        aria-label="Dismiss"
+        style={{
+          position: 'absolute', top: '4px', right: '4px',
+          background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
+          width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+        }}
+      >×</button>
       <img src={ad.img} alt={ad.name} width="155" height="56" style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }} />
       <div style={{ padding: '.35rem .5rem' }}>
         <div style={{ fontSize: '.67rem', fontWeight: '700', color: '#fff', lineHeight: 1.3 }}>{ad.name}</div>
@@ -190,6 +202,9 @@ export default function Hero({ onShare }) {
   const [rIdx, setRIdx] = useState(4);
   const [cIdx, setCIdx] = useState(8);
   const [tick, setTick] = useState(0);
+  const [dismissed, setDismissed] = useState(new Set());
+
+  const dismiss = name => setDismissed(d => new Set([...d, name]));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -290,7 +305,9 @@ export default function Hero({ onShare }) {
         {/* Col 1: Left Ads */}
         <div className="hero-ads-left">
           <div className="hero-ads">
-            {leftAds.map((ad, i) => <HeroAdCard key={i} ad={ad} />)}
+            {leftAds.filter(ad => !dismissed.has(ad.name)).map((ad, i) => (
+              <HeroAdCard key={ad.name + i} ad={ad} onDismiss={() => dismiss(ad.name)} />
+            ))}
           </div>
           <div className="hero-timer">
             <div className="hero-timer-bar" style={{ width: `${(tick / 16) * 100}%` }} />
@@ -331,12 +348,23 @@ export default function Hero({ onShare }) {
 
         {/* Col 3: Center Ads */}
         <div className="hero-ads-center">
-          {centerAds.map((ad, i) => (
+          {centerAds.filter(ad => !dismissed.has(ad.name)).map((ad, i) => (
             <div
-              key={i}
-              style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer' }}
+              key={ad.name + i}
+              style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
               onClick={() => window.open(ad.url, '_blank', 'noopener,noreferrer')}
             >
+              <button
+                onClick={e => { e.stopPropagation(); dismiss(ad.name); }}
+                aria-label="Dismiss"
+                style={{
+                  position: 'absolute', top: '4px', right: '4px',
+                  background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
+                  width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+                }}
+              >×</button>
               <img src={ad.img} alt={ad.name} width="140" height="68" style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
               <div style={{ padding: '.35rem .5rem' }}>
                 <div style={{ fontSize: '.65rem', fontWeight: '700', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ad.name}</div>
@@ -354,7 +382,9 @@ export default function Hero({ onShare }) {
         {/* Col 5: Right Ads */}
         <div className="hero-ads-right hero-product-col">
           <div className="hero-ads">
-            {rightAds.map((ad, i) => <HeroAdCard key={i} ad={ad} />)}
+            {rightAds.filter(ad => !dismissed.has(ad.name)).map((ad, i) => (
+              <HeroAdCard key={ad.name + i} ad={ad} onDismiss={() => dismiss(ad.name)} />
+            ))}
           </div>
           <div className="hero-timer">
             <div className="hero-timer-bar" style={{ width: `${(tick / 16) * 100}%` }} />

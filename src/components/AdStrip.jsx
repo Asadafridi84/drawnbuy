@@ -2,23 +2,37 @@ import { useState, useEffect } from 'react';
 import { ADS } from '../data';
 
 export default function AdStrip() {
+  const [dismissed, setDismissed] = useState([]);
   const [idx, setIdx] = useState(0);
   const [progress, setProgress] = useState(0);
 
+  const visible = ADS.filter((_, i) => !dismissed.includes(i));
+
   useEffect(() => {
+    if (visible.length === 0) return;
     const interval = setInterval(() => {
       setProgress(p => {
         if (p >= 100) {
-          setIdx(i => (i + 1) % ADS.length);
+          setIdx(i => (i + 1) % visible.length);
           return 0;
         }
         return p + 2.5;
       });
     }, 80);
     return () => clearInterval(interval);
-  }, []);
+  }, [visible.length]);
 
-  const ad = ADS[idx];
+  if (visible.length === 0) return null;
+
+  const safeIdx = idx % visible.length;
+  const ad = visible[safeIdx];
+
+  const dismiss = () => {
+    const originalIdx = ADS.indexOf(ad);
+    setDismissed(d => [...d, originalIdx]);
+    setProgress(0);
+    setIdx(i => (i >= visible.length - 1 ? 0 : i));
+  };
 
   return (
     <div style={{
@@ -53,20 +67,33 @@ export default function AdStrip() {
         {ad.btn}
       </button>
 
-      {/* Dots */}
-      <div style={{ position: 'absolute', right: '12px', display: 'flex', gap: '4px' }}>
-        {ADS.map((_, i) => (
+      {/* Dots — shifted left to make room for × */}
+      <div style={{ position: 'absolute', right: '36px', display: 'flex', gap: '4px' }}>
+        {visible.map((_, i) => (
           <div
             key={i}
             onClick={() => { setIdx(i); setProgress(0); }}
             style={{
               width: '6px', height: '6px', borderRadius: '50%', cursor: 'pointer',
-              background: i === idx ? '#fff' : 'rgba(255,255,255,.35)',
+              background: i === safeIdx ? '#fff' : 'rgba(255,255,255,.35)',
               transition: '.2s',
             }}
           />
         ))}
       </div>
+
+      {/* Dismiss */}
+      <button
+        onClick={dismiss}
+        aria-label="Dismiss this ad"
+        style={{
+          position: 'absolute', top: '50%', right: '8px', transform: 'translateY(-50%)',
+          background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
+          width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'inherit', lineHeight: 1,
+        }}
+      >×</button>
 
       {/* Progress bar */}
       <div style={{

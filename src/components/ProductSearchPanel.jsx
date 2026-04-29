@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
 import { CATS, HERO_ADS, DRAG_PRODS } from '../data';
 
-function SideAdPanel({ ads, timerPct }) {
+function SideAdPanel({ ads, timerPct, onDismiss }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
       {ads.map((ad, i) => (
         <div
-          key={i}
+          key={ad.name + i}
           onClick={() => window.open(ad.url, '_blank')}
-          style={{ background: 'rgba(255,255,255,.7)', border: '1.5px solid #ede9fe', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: '.2s' }}
+          style={{ background: 'rgba(255,255,255,.7)', border: '1.5px solid #ede9fe', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: '.2s', position: 'relative' }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = '#ede9fe'; e.currentTarget.style.transform = 'none'; }}
         >
+          <button
+            onClick={e => { e.stopPropagation(); onDismiss(ad.name); }}
+            aria-label="Dismiss"
+            style={{
+              position: 'absolute', top: '4px', right: '4px',
+              background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
+              width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+            }}
+          >×</button>
           <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '88px', objectFit: 'cover', display: 'block' }} />
           <div style={{ padding: '.4rem .5rem', background: '#fff' }}>
             <div style={{ fontSize: '.68rem', fontWeight: '700', color: '#1a0a3e', lineHeight: 1.3 }}>{ad.name}</div>
@@ -31,9 +42,12 @@ export default function ProductSearchPanel() {
   const [activeCat, setActiveCat] = useState('all');
   const [adIdx, setAdIdx] = useState(0);
   const [timerPct, setTimerPct] = useState(0);
+  const [dismissedAds, setDismissedAds] = useState(new Set());
 
-  const leftAds  = [0,1,2].map(i => HERO_ADS[(adIdx + i) % HERO_ADS.length]);
-  const rightAds = [0,1,2].map(i => HERO_ADS[(adIdx + 3 + i) % HERO_ADS.length]);
+  const dismissAd = name => setDismissedAds(d => new Set([...d, name]));
+
+  const leftAds  = [0,1,2].map(i => HERO_ADS[(adIdx + i) % HERO_ADS.length]).filter(ad => !dismissedAds.has(ad.name));
+  const rightAds = [0,1,2].map(i => HERO_ADS[(adIdx + 3 + i) % HERO_ADS.length]).filter(ad => !dismissedAds.has(ad.name));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,7 +99,7 @@ export default function ProductSearchPanel() {
       <div className="psp-inner">
         {/* Left Ads */}
         <div className="psp-side">
-          <SideAdPanel ads={leftAds} timerPct={timerPct} />
+          <SideAdPanel ads={leftAds} timerPct={timerPct} onDismiss={dismissAd} />
         </div>
 
         {/* Main Panel */}
@@ -145,7 +159,7 @@ export default function ProductSearchPanel() {
 
         {/* Right Ads */}
         <div className="psp-side">
-          <SideAdPanel ads={rightAds} timerPct={timerPct} />
+          <SideAdPanel ads={rightAds} timerPct={timerPct} onDismiss={dismissAd} />
         </div>
       </div>
     </div>
