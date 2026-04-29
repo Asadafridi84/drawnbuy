@@ -3,6 +3,7 @@ import { HERO_ADS } from '../data';
 import { useProductDrop } from '../hooks/useProductDrop';
 import { useSocket } from '../hooks/useSocket';
 import CanvasOverlayLayer from './CanvasOverlayLayer';
+import { useWishlistStore, useUIStore } from '../store';
 
 function MiniCanvas() {
   const canvasRef = useRef(null);
@@ -153,6 +154,17 @@ function MiniCanvas() {
 }
 
 function HeroAdCard({ ad, onDismiss }) {
+  const wishAdd  = useWishlistStore(s => s.addItem);
+  const wishHas  = useWishlistStore(s => s.hasItem);
+  const addToast = useUIStore(s => s.addToast);
+  const isWished = wishHas(ad.name);
+
+  const handleWish = (e) => {
+    e.stopPropagation();
+    const added = wishAdd({ id: ad.name, name: ad.name, price: ad.price, img: ad.img, url: ad.url });
+    addToast(added ? `♡ "${ad.name}" saved to wishlist!` : 'Already in wishlist', added ? 'success' : 'info');
+  };
+
   return (
     <div
       draggable
@@ -180,6 +192,17 @@ function HeroAdCard({ ad, onDismiss }) {
           fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
         }}
       >×</button>
+      <button
+        onClick={handleWish}
+        aria-label={isWished ? 'Remove from wishlist' : 'Add to wishlist'}
+        style={{
+          position: 'absolute', top: '4px', left: '4px',
+          background: 'rgba(0,0,0,0.4)', color: isWished ? '#ef4444' : '#fff', border: 'none', borderRadius: '50%',
+          width: '20px', height: '20px', cursor: 'pointer', fontSize: '11px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+        }}
+      >{isWished ? '♥' : '♡'}</button>
       <img src={ad.img} alt={ad.name} width="155" height="56" style={{ width: '100%', height: '56px', objectFit: 'cover', display: 'block' }} />
       <div style={{ padding: '.35rem .5rem' }}>
         <div style={{ fontSize: '.67rem', fontWeight: '700', color: '#fff', lineHeight: 1.3 }}>{ad.name}</div>
@@ -205,6 +228,10 @@ export default function Hero({ onShare }) {
   const [dismissed, setDismissed] = useState(new Set());
 
   const dismiss = name => setDismissed(d => new Set([...d, name]));
+
+  const wishAdd  = useWishlistStore(s => s.addItem);
+  const wishHas  = useWishlistStore(s => s.hasItem);
+  const addToast = useUIStore(s => s.addToast);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -348,30 +375,44 @@ export default function Hero({ onShare }) {
 
         {/* Col 3: Center Ads */}
         <div className="hero-ads-center">
-          {centerAds.filter(ad => !dismissed.has(ad.name)).map((ad, i) => (
-            <div
-              key={ad.name + i}
-              style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
-              onClick={() => window.open(ad.url, '_blank', 'noopener,noreferrer')}
-            >
-              <button
-                onClick={e => { e.stopPropagation(); dismiss(ad.name); }}
-                aria-label="Dismiss"
-                style={{
-                  position: 'absolute', top: '4px', right: '4px',
-                  background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
-                  width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
-                }}
-              >×</button>
-              <img src={ad.img} alt={ad.name} width="140" height="68" style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
-              <div style={{ padding: '.35rem .5rem' }}>
-                <div style={{ fontSize: '.65rem', fontWeight: '700', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ad.name}</div>
-                <div style={{ fontSize: '.75rem', fontWeight: '800', color: '#fbbf24' }}>{ad.price}</div>
+          {centerAds.filter(ad => !dismissed.has(ad.name)).map((ad, i) => {
+            const isWished = wishHas(ad.name);
+            return (
+              <div
+                key={ad.name + i}
+                style={{ background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.15)', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', position: 'relative' }}
+                onClick={() => window.open(ad.url, '_blank', 'noopener,noreferrer')}
+              >
+                <button
+                  onClick={e => { e.stopPropagation(); dismiss(ad.name); }}
+                  aria-label="Dismiss"
+                  style={{
+                    position: 'absolute', top: '4px', right: '4px',
+                    background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
+                    width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+                  }}
+                >×</button>
+                <button
+                  onClick={e => { e.stopPropagation(); const added = wishAdd({ id: ad.name, name: ad.name, price: ad.price, img: ad.img, url: ad.url }); addToast(added ? `♡ "${ad.name}" saved to wishlist!` : 'Already in wishlist', added ? 'success' : 'info'); }}
+                  aria-label={isWished ? 'Remove from wishlist' : 'Add to wishlist'}
+                  style={{
+                    position: 'absolute', top: '4px', left: '4px',
+                    background: 'rgba(0,0,0,0.4)', color: isWished ? '#ef4444' : '#fff', border: 'none', borderRadius: '50%',
+                    width: '20px', height: '20px', cursor: 'pointer', fontSize: '11px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+                  }}
+                >{isWished ? '♥' : '♡'}</button>
+                <img src={ad.img} alt={ad.name} width="140" height="68" style={{ width: '100%', height: '68px', objectFit: 'cover', display: 'block' }} />
+                <div style={{ padding: '.35rem .5rem' }}>
+                  <div style={{ fontSize: '.65rem', fontWeight: '700', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{ad.name}</div>
+                  <div style={{ fontSize: '.75rem', fontWeight: '800', color: '#fbbf24' }}>{ad.price}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Col 4: Mini Canvas */}

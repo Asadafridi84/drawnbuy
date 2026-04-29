@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { DEALS } from '../data';
 import { useCanvasStore } from '../store/canvas';
 import { useSocket } from '../hooks/useSocket';
-import { useUIStore } from '../store';
+import { useUIStore, useWishlistStore } from '../store';
 
 function CountdownTimer() {
   const [secs, setSecs] = useState(3600 * 4 + 23 * 60 + 47);
@@ -30,7 +30,6 @@ function Stars({ count }) {
 }
 
 export default function DealsGrid({ selectedCategory = 'all' }) {
-  const [wishlist, setWishlist] = useState({});
   const [viewing] = useState(() => {
     const map = {};
     DEALS.forEach((_, i) => { map[i] = Math.floor(Math.random() * 18) + 3; });
@@ -40,8 +39,8 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
   const addCard = useCanvasStore(s => s.addCard);
   const { sendProductDrop } = useSocket();
   const addToast = useUIStore(s => s.addToast);
-
-  const toggleWish = i => setWishlist(w => ({ ...w, [i]: !w[i] }));
+  const wishAdd  = useWishlistStore(s => s.addItem);
+  const wishHas  = useWishlistStore(s => s.hasItem);
 
   const addToCanvas = (d, e) => {
     e.stopPropagation();
@@ -137,8 +136,8 @@ export default function DealsGrid({ selectedCategory = 'all' }) {
             }}
           >
             <div className="dc-badge" style={badgeStyle(d.badgeType)}>{d.badge}</div>
-            <button className="wbtn" onClick={e => { e.stopPropagation(); toggleWish(i); }}>
-              {wishlist[i] ? '❤️' : '♡'}
+            <button className="wbtn" onClick={e => { e.stopPropagation(); wishAdd({ id: d.name, name: d.name, price: d.price, img: d.img, url: d.url || '', store: d.store || '' }); }}>
+              {wishHas(d.name) ? '❤️' : '♡'}
             </button>
             <div className="dc-img">
               <img src={d.img} alt={d.name} loading="lazy" />

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
 import { useWishlistStore } from '../store';
+import { useSocket } from '../hooks/useSocket';
 
 const CSS = `.pw{max-width:960px;margin:0 auto;padding-bottom:2rem}.cover{position:relative;height:240px;background:linear-gradient(135deg,#7c3aed 0%,#4c1d95 50%,#1e1b4b 100%);border-radius:16px 16px 0 0;overflow:hidden}.cover-edit{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}.profile-card{background:#fff;border-radius:0 0 16px 16px;padding:0 2rem 1.5rem;box-shadow:0 4px 24px rgba(124,58,237,.1);margin-bottom:1.25rem}.avatar-wrap{position:relative;display:inline-block;margin-top:-52px;margin-bottom:.6rem}.av{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:2.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:4px solid #fff;box-shadow:0 2px 16px rgba(124,58,237,.35);overflow:hidden}.av img{width:100%;height:100%;object-fit:cover}.av-cam{position:absolute;bottom:4px;right:4px;width:30px;height:30px;border-radius:50%;background:#7c3aed;color:#fff;border:2px solid #fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800}.live-ring{position:absolute;inset:-4px;border-radius:50%;border:3px solid #ef4444;animation:lp 1.5s infinite}@keyframes lp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.06)}}.profile-top{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-top:.5rem}.profile-info{flex:1;min-width:200px}.profile-name{font-size:1.45rem;font-weight:800;color:#1a0a3e;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}.verified{color:#7c3aed;font-size:1.1rem}.live-badge{background:#ef4444;color:#fff;font-size:.62rem;font-weight:800;padding:2px 9px;border-radius:20px;letter-spacing:.06em;animation:lp 1.5s infinite}.handle{font-size:.82rem;color:#6b7280;margin:.2rem 0 .75rem}.pstats{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.85rem}.pstat{text-align:center;cursor:pointer}.pstat:hover .pstat-num{color:#7c3aed}.pstat-num{font-size:1.15rem;font-weight:800;color:#1a0a3e;transition:.15s}.pstat-lbl{font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.04em}.pactions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.btn-pri{background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:10px;padding:.55rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:.15s;border:1.5px solid #fbbf24}.btn-pri:hover{opacity:.9}.btn-sec{background:#f4f0ff;color:#7c3aed;border:1.5px solid #ede9fe;border-radius:10px;padding:.5rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:.15s;border:1.5px solid #fbbf24}.btn-sec:hover{background:#ede9fe}.btn-live{background:linear-gradient(90deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:10px;padding:.55rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid #fbbf24}.btn-end{background:#f4f0ff;color:#ef4444;border:1.5px solid #fca5a5;border-radius:10px;padding:.55rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid #fbbf24}.tab-wrap{position:relative;margin-bottom:1.25rem}.tab-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:32px;height:32px;border-radius:50%;background:#fff;border:1.5px solid #ede9fe;color:#7c3aed;font-size:.85rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(124,58,237,.15);transition:.15s}.tab-arrow:hover{background:#f4f0ff}.tab-arrow-l{left:0}.tab-arrow-r{right:0}.ptabs{display:flex;gap:0;background:#fff;border-radius:12px;padding:.4rem;box-shadow:0 2px 12px rgba(124,58,237,.08);overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;margin:0 40px}.ptabs::-webkit-scrollbar{display:none}.ptab{display:flex;align-items:center;gap:.35rem;padding:.55rem .85rem;border-radius:8px;border:none;background:transparent;color:#6b7280;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.15s;flex-shrink:0;border:1px solid transparent}.ptab:hover{background:#f4f0ff;color:#7c3aed;border:1px solid #fbbf24}.ptab.on{background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;border:1.5px solid #fbbf24}.pc{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 2px 12px rgba(124,58,237,.08);margin-bottom:1rem}.st{font-size:1rem;font-weight:800;color:#1a0a3e;margin-bottom:.25rem}.ss{font-size:.8rem;color:#6b7280;margin-bottom:1.25rem}.fl{font-size:.8rem;font-weight:700;color:#374151;margin-bottom:.4rem;display:block}.fi{width:100%;border:1.5px solid #e5e7eb;border-radius:10px;padding:.65rem .9rem;font-family:inherit;font-size:.88rem;color:#1a0a3e;outline:none;transition:.15s;box-sizing:border-box}.fi:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.12)}.fi:disabled{background:#f9fafb;color:#9ca3af}.bp{background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:10px;padding:.65rem 1.4rem;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:.15s;border:1.5px solid #fbbf24}.bd{background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5;border-radius:10px;padding:.55rem 1.1rem;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid #fbbf24}.bg2{background:#f4f0ff;color:#7c3aed;border:1.5px solid #ede9fe;border-radius:10px;padding:.55rem 1.1rem;font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid #fbbf24}.dv{border:none;border-top:1px solid #f3f4f6;margin:1.25rem 0}.ok{background:#d1fae5;color:#065f46;border-radius:8px;padding:.5rem .9rem;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:.4rem}.fc{display:flex;align-items:center;gap:.9rem;padding:.85rem;border-radius:12px;border:1.5px solid #f3f4f6;background:#fafafa;margin-bottom:.6rem;transition:.15s}.fc:hover{border-color:#ede9fe;background:#f4f0ff}.fa{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:.88rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.fn{font-size:.9rem;font-weight:700;color:#1a0a3e}.fe{font-size:.75rem;color:#9ca3af}.ftag{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px}.tfam{background:#dbeafe;color:#1d4ed8}.tfri{background:#d1fae5;color:#065f46}.tinv{background:#fef3c7;color:#92400e}.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}.son{background:#22c55e}.sof{background:#d1d5db}.sin{background:#fbbf24}.nr{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;border-bottom:1px solid #f3f4f6}.nl{font-size:.88rem;font-weight:600;color:#1a0a3e}.ns{font-size:.75rem;color:#9ca3af}.tog{position:relative;width:44px;height:24px;cursor:pointer;display:inline-block}.tog input{opacity:0;width:0;height:0}.tsl{position:absolute;inset:0;border-radius:24px;background:#e5e7eb;transition:.2s}.tog input:checked + .tsl{background:#7c3aed}.tsl::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}.tog input:checked + .tsl::before{transform:translateX(20px)}.feed-item{display:flex;gap:.75rem;padding:.85rem 0;border-bottom:1px solid #f3f4f6}.feed-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;color:#fff;background:linear-gradient(135deg,#7c3aed,#5b21b6)}.feed-text{font-size:.85rem;color:#374151;line-height:1.5}.feed-time{font-size:.72rem;color:#9ca3af;margin-top:.2rem}.wb-canvas{width:100%;height:340px;background:#fff;border-radius:12px;border:1.5px solid #ede9fe;cursor:crosshair;display:block}.wb-tools{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem}.wb-color{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.15s}.wb-color.active,.wb-color:hover{border-color:#7c3aed;transform:scale(1.15)}.wb-btn{background:#f4f0ff;color:#7c3aed;border:1.5px solid #ede9fe;border-radius:8px;padding:5px 12px;font-size:.78rem;font-weight:700;cursor:pointer;border:1.5px solid #fbbf24}.msg-list{height:300px;overflow-y:auto;padding:.5rem 0;margin-bottom:.75rem;border-bottom:1px solid #f3f4f6}.msg-row{display:flex;gap:.6rem;margin-bottom:.75rem;align-items:flex-end}.msg-row.me{flex-direction:row-reverse}.msg-bubble{max-width:70%;padding:.6rem .9rem;border-radius:14px;font-size:.85rem;line-height:1.5}.msg-row:not(.me) .msg-bubble{background:#f4f0ff;color:#1a0a3e;border-bottom-left-radius:4px}.msg-row.me .msg-bubble{background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;border-bottom-right-radius:4px}.msg-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}.msg-input-row{display:flex;gap:.6rem}.live-card{background:linear-gradient(135deg,#1e1b4b,#4c1d95);border-radius:14px;padding:1.5rem;color:#fff;text-align:center;margin-bottom:1rem}.live-viewers{font-size:2rem;font-weight:800;color:#fbbf24}.past-session{display:flex;align-items:center;justify-content:space-between;padding:.85rem;border-radius:12px;border:1.5px solid #f3f4f6;margin-bottom:.6rem}.ps-name{font-size:.88rem;font-weight:700;color:#1a0a3e}.ps-meta{font-size:.75rem;color:#9ca3af}.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.75rem}.badge-card{background:#f4f0ff;border-radius:12px;padding:.85rem;text-align:center;border:1.5px solid #ede9fe;transition:.15s}.badge-card:hover{border-color:#7c3aed}.badge-img{width:48px;height:48px;margin:0 auto .35rem;border-radius:50%;object-fit:cover;background:#ede9fe}.badge-name{font-size:.72rem;font-weight:700;color:#7c3aed}.badge-desc{font-size:.65rem;color:#9ca3af;margin-top:.15rem}.stat-bar{display:flex;align-items:center;gap:.75rem;margin-bottom:.65rem}.stat-bar-label{font-size:.78rem;color:#374151;width:80px;flex-shrink:0}.stat-bar-track{flex:1;height:8px;background:#f3f4f6;border-radius:20px;overflow:hidden}.stat-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#7c3aed,#5b21b6)}.stat-bar-val{font-size:.75rem;font-weight:700;color:#7c3aed;width:30px;text-align:right;flex-shrink:0}.ref-box{background:linear-gradient(135deg,#f4f0ff,#ede9fe);border-radius:12px;padding:1.25rem;border:1.5px solid #ddd6fe;text-align:center}.ref-link{font-size:.82rem;font-family:monospace;background:#fff;border:1.5px solid #ede9fe;border-radius:8px;padding:.5rem .9rem;color:#7c3aed;font-weight:700;display:inline-block;margin:.5rem 0}.room-card{display:flex;align-items:center;justify-content:space-between;padding:.85rem;border-radius:12px;border:1.5px solid #f3f4f6;background:#fafafa;margin-bottom:.6rem}.room-name{font-size:.9rem;font-weight:700;color:#1a0a3e}.room-meta{font-size:.75rem;color:#9ca3af}.rb{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px}.rb-live{background:#fee2e2;color:#b91c1c}.rb-member{background:#d1fae5;color:#065f46}.rb-guest{background:#fef3c7;color:#92400e}.order-card{display:flex;align-items:center;gap:.9rem;padding:.85rem;border-radius:12px;border:1.5px solid #f3f4f6;margin-bottom:.6rem}.order-img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#f4f0ff}.order-name{font-size:.88rem;font-weight:700;color:#1a0a3e}.order-meta{font-size:.75rem;color:#9ca3af}.order-price{font-size:.95rem;font-weight:800;color:#7c3aed;white-space:nowrap}.prod-card{background:#fff;border-radius:12px;border:1.5px solid #ede9fe;overflow:hidden;transition:.15s;cursor:pointer}.prod-card:hover{border-color:#7c3aed;box-shadow:0 4px 16px rgba(124,58,237,.12)}.prod-img{width:100%;height:130px;object-fit:cover}.prod-info{padding:.7rem}.prod-name{font-size:.8rem;font-weight:700;color:#1a0a3e;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.prod-price{font-size:.88rem;font-weight:800;color:#7c3aed}.prod-store{font-size:.68rem;color:#9ca3af}.prod-btn{width:100%;background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:0 0 10px 10px;padding:.5rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:.15s;border:1.5px solid #fbbf24}.prod-btn:hover{opacity:.9}.sponsored-label{font-size:.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a0a3e;color:#fff;padding:.6rem 1.4rem;border-radius:20px;font-size:.82rem;font-weight:700;z-index:2000;animation:fadeIn .2s ease}@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}@media(max-width:768px){.pstats{gap:1rem}.pactions{gap:.4rem}.ptabs{margin:0 36px}}`;
 
@@ -165,6 +166,9 @@ export default function ProfilePage() {
   const wishlist    = useWishlistStore(s => s.items);
   const wishlistAdd = useWishlistStore(s => s.addItem);
   const wishlistRm  = useWishlistStore(s => s.removeItem);
+  const wishlistHas = useWishlistStore(s => s.hasItem);
+
+  const { connect, sendDraw, sendMessage, onRemoteDraw } = useSocket();
 
   // Seed default wishlist items once on first load
   useEffect(() => {
@@ -174,12 +178,34 @@ export default function ProfilePage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Bug 1: Join profile socket room and sync whiteboard strokes
+  useEffect(() => {
+    if (tab !== 'whiteboard') return;
+    const userId = user?.id || 'guest';
+    connect('profile-' + userId, user?.name || 'Anonymous');
+    const unsub = onRemoteDraw((d) => {
+      const c = canvasRef.current;
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      ctx.beginPath();
+      ctx.moveTo(d.x1, d.y1);
+      ctx.lineTo(d.x2, d.y2);
+      ctx.strokeStyle = d.color || '#7c3aed';
+      ctx.lineWidth = d.width || 3;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+    return unsub;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
+
   const [pwForm,   setPwForm]   = useState(false);
   const [pwOld,    setPwOld]    = useState('');
   const [pwNew,    setPwNew]    = useState('');
 
-  const tabsRef   = useRef(null);
-  const canvasRef = useRef(null);
+  const tabsRef    = useRef(null);
+  const canvasRef  = useRef(null);
+  const lastPosRef = useRef(null);
   const fileRef    = useRef(null);
   const coverFileRef    = useRef(null);
   const coverCamRef     = useRef(null);
@@ -216,6 +242,7 @@ export default function ProfilePage() {
     const now = new Date();
     const t = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
     setChatMsgs(p=>[...p,{av:'A',bg:'#7c3aed',name:'You',text:chatText,time:t,me:true}]);
+    sendMessage(chatText);
     setChatText('');
   };
   const doAvatarCamChange = (e) => {
@@ -265,35 +292,44 @@ export default function ProfilePage() {
     const s=e.touches?e.touches[0]:e;
     return {x:s.clientX-r.left,y:s.clientY-r.top};
   };
-  const wbStart=(e)=>{e.preventDefault();const c=canvasRef.current;if(!c)return;const ctx=c.getContext('2d');const pos=getPos(e,c);ctx.beginPath();ctx.moveTo(pos.x,pos.y);setDrawing(true);};
-  const wbMove=(e)=>{e.preventDefault();if(!drawing)return;const c=canvasRef.current;if(!c)return;const ctx=c.getContext('2d');const pos=getPos(e,c);ctx.strokeStyle=wbColor;ctx.lineWidth=wbSize;ctx.lineCap='round';ctx.lineJoin='round';ctx.lineTo(pos.x,pos.y);ctx.stroke();ctx.beginPath();ctx.moveTo(pos.x,pos.y);};
-  const wbEnd=()=>setDrawing(false);
+  const wbStart=(e)=>{e.preventDefault();const c=canvasRef.current;if(!c)return;const ctx=c.getContext('2d');const pos=getPos(e,c);ctx.beginPath();ctx.moveTo(pos.x,pos.y);lastPosRef.current=pos;setDrawing(true);};
+  const wbMove=(e)=>{e.preventDefault();if(!drawing)return;const c=canvasRef.current;if(!c)return;const ctx=c.getContext('2d');const pos=getPos(e,c);ctx.strokeStyle=wbColor;ctx.lineWidth=wbSize;ctx.lineCap='round';ctx.lineJoin='round';ctx.lineTo(pos.x,pos.y);ctx.stroke();ctx.beginPath();ctx.moveTo(pos.x,pos.y);if(lastPosRef.current){sendDraw({x1:lastPosRef.current.x,y1:lastPosRef.current.y,x2:pos.x,y2:pos.y,color:wbColor,width:wbSize});}lastPosRef.current=pos;};
+  const wbEnd=()=>{setDrawing(false);lastPosRef.current=null;};
   const wbClear=()=>{const c=canvasRef.current;if(!c)return;c.getContext('2d').clearRect(0,0,c.width,c.height);showToast('Canvas cleared');};
   const wbSave=()=>{const c=canvasRef.current;if(!c)return;const a=document.createElement('a');a.download='drawnbuy-canvas.png';a.href=c.toDataURL();a.click();showToast('Canvas saved!');};
 
-  const ProdCard = ({p}) => (
-    <div className="prod-card" onClick={()=>safeOpen(p.url)}
-      draggable
-      onDragStart={e => {
-        e.stopPropagation();
-        e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({
-          name: p.name, price: p.price, img: p.img,
-          url: p.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(p.name)}&tag=drawnbuy-21`
-        }));
-        e.dataTransfer.effectAllowed = 'copy';
-      }}
-    >
-      <img className="prod-img" src={p.img} alt={p.name} onError={e=>{e.target.style.background='#f4f0ff';e.target.style.display='none';}}/>
-      <div className="prod-info">
-        <div className="prod-name">{p.name}</div>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <div className="prod-price">{p.price}</div>
-          <div className="prod-store">{p.store}</div>
+  const ProdCard = ({p}) => {
+    const isWishlisted = wishlistHas(p.id);
+    return (
+      <div className="prod-card" onClick={()=>safeOpen(p.url)}
+        draggable
+        onDragStart={e => {
+          e.stopPropagation();
+          e.dataTransfer.setData('application/drawnbuy-product', JSON.stringify({
+            name: p.name, price: p.price, img: p.img,
+            url: p.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(p.name)}&tag=drawnbuy-21`
+          }));
+          e.dataTransfer.effectAllowed = 'copy';
+        }}
+      >
+        <img className="prod-img" src={p.img} alt={p.name} onError={e=>{e.target.style.background='#f4f0ff';e.target.style.display='none';}}/>
+        <div className="prod-info">
+          <div className="prod-name">{p.name}</div>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div className="prod-price">{p.price}</div>
+            <div className="prod-store">{p.store}</div>
+          </div>
         </div>
+        <button className="prod-btn" onClick={e => {
+          e.stopPropagation();
+          if (isWishlisted) { wishlistRm(p.id); showToast('♡ Removed from wishlist'); }
+          else { addToWishlist(p); }
+        }}>
+          {isWishlisted ? '♥ Remove' : '♡ + Wishlist'}
+        </button>
       </div>
-      <button className="prod-btn" onClick={e=>{e.stopPropagation();addToWishlist(p);}}>+ Wishlist</button>
-    </div>
-  );
+    );
+  };
 
   return (
     <div style={{minHeight:'100vh',background:'#f4f0ff',padding:'1.5rem 1rem'}}>
@@ -427,7 +463,32 @@ export default function ProfilePage() {
                 </div>
                 <canvas ref={canvasRef} className="wb-canvas" width={900} height={380}
                   onMouseDown={wbStart} onMouseMove={wbMove} onMouseUp={wbEnd} onMouseLeave={wbEnd}
-                  onTouchStart={wbStart} onTouchMove={wbMove} onTouchEnd={wbEnd}/>
+                  onTouchStart={wbStart} onTouchMove={wbMove} onTouchEnd={wbEnd}
+                  onDragOver={e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';}}
+                  onDrop={e=>{
+                    e.preventDefault();
+                    const raw=e.dataTransfer.getData('application/drawnbuy-product');
+                    if(!raw)return;
+                    try{
+                      const pd=JSON.parse(raw);
+                      const c=canvasRef.current;if(!c)return;
+                      const rect=c.getBoundingClientRect();
+                      const sx=c.width/rect.width;
+                      const sy=c.height/rect.height;
+                      const x=(e.clientX-rect.left)*sx;
+                      const y=(e.clientY-rect.top)*sy;
+                      const ctx=c.getContext('2d');
+                      ctx.fillStyle='#7c3aed';
+                      ctx.fillRect(x-55,y-28,110,44);
+                      ctx.fillStyle='#fff';
+                      ctx.font='bold 11px sans-serif';
+                      ctx.textAlign='center';
+                      ctx.fillText(pd.name.slice(0,22),x,y-8);
+                      ctx.font='600 9px sans-serif';
+                      ctx.fillText(pd.price||'',x,y+10);
+                      showToast(`${pd.name} added to canvas!`);
+                    }catch(_){}
+                  }}/>
               </div>
               <div style={{background:'linear-gradient(135deg,#1e1b4b,#4c1d95)',borderRadius:16,overflow:'hidden',display:'flex',flexDirection:'column',height:'100%',minHeight:500}}>
                 <div style={{padding:'1rem',display:'flex',alignItems:'center',gap:'.5rem',borderBottom:'1px solid rgba(255,255,255,.1)'}}>
@@ -542,7 +603,7 @@ export default function ProfilePage() {
                 </div>
                 <div style={{display:'flex',alignItems:'center',gap:'.6rem'}}>
                   <div className={'sd '+(f.status==='online'?'son':f.status==='invited'?'sin':'sof')} title={f.status}/>
-                  {f.status!=='invited'&&<button className="bg2" style={{padding:'4px 10px',fontSize:'.72rem'}} onClick={()=>navigate('/canvas')}>Draw Together</button>}
+                  {f.status!=='invited'&&<button className="bg2" style={{padding:'4px 10px',fontSize:'.72rem'}} onClick={()=>navigate('/?room=friend-'+f.id)}>Draw Together</button>}
                   <button onClick={()=>setFriends(p=>p.filter(x=>x.id!==f.id))} style={{background:'none',border:'none',cursor:'pointer',color:'#d1d5db',padding:'4px'}}>&#x2715;</button>
                 </div>
               </div>
@@ -680,10 +741,10 @@ export default function ProfilePage() {
                   </div>
                   <div className="room-meta">{r.members} {r.members===1?'member':'members'} · {r.privacy} · {r.last}</div>
                 </div>
-                <button className="btn-pri" style={{fontSize:'.75rem',padding:'6px 12px'}} onClick={()=>navigate('/canvas')}>Open</button>
+                <button className="btn-pri" style={{fontSize:'.75rem',padding:'6px 12px'}} onClick={()=>navigate('/?room=ROOM' + r.id)}>Open</button>
               </div>
             ))}
-            <div style={{marginTop:'.75rem'}}><button className="bp" onClick={()=>navigate('/canvas')}>Create New Room</button></div>
+            <div style={{marginTop:'.75rem'}}><button className="bp" onClick={()=>{ const code=Math.random().toString(36).slice(2,8).toUpperCase(); navigate('/?room='+code); }}>Create New Room</button></div>
           </div>
         )}
 

@@ -1,35 +1,60 @@
 import { useState, useEffect } from 'react';
 import { CATS, HERO_ADS, DRAG_PRODS } from '../data';
+import { useWishlistStore, useUIStore } from '../store';
 
 function SideAdPanel({ ads, timerPct, onDismiss }) {
+  const wishAdd  = useWishlistStore(s => s.addItem);
+  const wishHas  = useWishlistStore(s => s.hasItem);
+  const addToast = useUIStore(s => s.addToast);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-      {ads.map((ad, i) => (
-        <div
-          key={ad.name + i}
-          onClick={() => window.open(ad.url, '_blank')}
-          style={{ background: 'rgba(255,255,255,.7)', border: '1.5px solid #ede9fe', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: '.2s', position: 'relative' }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = '#ede9fe'; e.currentTarget.style.transform = 'none'; }}
-        >
-          <button
-            onClick={e => { e.stopPropagation(); onDismiss(ad.name); }}
-            aria-label="Dismiss"
-            style={{
-              position: 'absolute', top: '4px', right: '4px',
-              background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
-              width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
-            }}
-          >×</button>
-          <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '88px', objectFit: 'cover', display: 'block' }} />
-          <div style={{ padding: '.4rem .5rem', background: '#fff' }}>
-            <div style={{ fontSize: '.68rem', fontWeight: '700', color: '#1a0a3e', lineHeight: 1.3 }}>{ad.name}</div>
-            <div style={{ fontSize: '.78rem', fontWeight: '800', color: '#7c3aed' }}>{ad.price}</div>
+      {ads.map((ad, i) => {
+        const isWished = wishHas(ad.name);
+        return (
+          <div
+            key={ad.name + i}
+            onClick={() => window.open(ad.url, '_blank')}
+            style={{ background: 'rgba(255,255,255,.7)', border: '1.5px solid #ede9fe', borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: '.2s', position: 'relative' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#7c3aed'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = '#ede9fe'; e.currentTarget.style.transform = 'none'; }}
+          >
+            <button
+              onClick={e => { e.stopPropagation(); onDismiss(ad.name); }}
+              aria-label="Dismiss"
+              style={{
+                position: 'absolute', top: '4px', right: '4px',
+                background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', borderRadius: '50%',
+                width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+              }}
+            >×</button>
+            <button
+              onClick={e => { e.stopPropagation(); const added = wishAdd({ id: ad.name, name: ad.name, price: ad.price, img: ad.img, url: ad.url }); addToast(added ? `♡ "${ad.name}" saved!` : 'Already in wishlist', added ? 'success' : 'info'); }}
+              aria-label={isWished ? 'Remove from wishlist' : 'Add to wishlist'}
+              style={{
+                position: 'absolute', top: '4px', left: '4px',
+                background: 'rgba(0,0,0,0.4)', color: isWished ? '#ef4444' : '#fff', border: 'none', borderRadius: '50%',
+                width: '20px', height: '20px', cursor: 'pointer', fontSize: '11px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'inherit', lineHeight: 1, zIndex: 2,
+              }}
+            >{isWished ? '♥' : '♡'}</button>
+            <img src={ad.img} alt={ad.name} style={{ width: '100%', height: '88px', objectFit: 'cover', display: 'block' }} />
+            <div style={{ padding: '.4rem .5rem', background: '#fff' }}>
+              <div style={{ fontSize: '.68rem', fontWeight: '700', color: '#1a0a3e', lineHeight: 1.3 }}>{ad.name}</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: '.78rem', fontWeight: '800', color: '#7c3aed' }}>{ad.price}</div>
+                <button
+                  onClick={e => { e.stopPropagation(); window.open(ad.url, '_blank'); }}
+                  style={{ background: '#7c3aed', color: '#fff', border: 'none', borderRadius: '6px', padding: '2px 7px', fontSize: '.6rem', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' }}
+                >Shop →</button>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       <div style={{ height: '2px', background: '#ede9fe', borderRadius: '2px', overflow: 'hidden' }}>
         <div style={{ height: '100%', background: '#7c3aed', width: `${timerPct}%`, transition: 'width .3s linear' }} />
       </div>

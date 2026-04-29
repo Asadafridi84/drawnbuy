@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { DRAG_PRODS } from '../data';
 import { useCartStore, useWishlistStore, useUIStore } from '../store';
+import { useCanvasStore } from '../store/canvas';
+import { useSocket } from '../hooks/useSocket';
 
 // Extend drag prods to 33+ by repeating with variation
 const ALL_PRODS = [
@@ -33,6 +35,8 @@ export default function DragStrip() {
   const wishAdd      = useWishlistStore(s => s.addItem);
   const wishHas      = useWishlistStore(s => s.hasItem);
   const addToast     = useUIStore(s => s.addToast);
+  const addCard      = useCanvasStore(s => s.addCard);
+  const { sendProductDrop } = useSocket();
 
   const handleAddToCart = (e, p) => {
     e.stopPropagation();
@@ -45,6 +49,18 @@ export default function DragStrip() {
     const id = p.name; // use name as stable id since DRAG_PRODS have no numeric id
     const added = wishAdd({ id, name: p.name, price: p.price, img: p.img, url: p.url, store: '' });
     addToast(added ? `♡ "${p.name}" saved to wishlist!` : `Already in your wishlist`, added ? 'success' : 'info');
+  };
+
+  const handleAddToCanvas = (e, p) => {
+    e.stopPropagation();
+    const id = Date.now().toString();
+    const product = { name: p.name, price: p.price, img: p.img, url: p.url || '' };
+    const x = 80 + Math.random() * 400;
+    const y = 60 + Math.random() * 200;
+    addCard('main-collab', { id, product, x, y, ownerId: 'guest' });
+    sendProductDrop({ ...product, id, canvasId: 'main-collab', emoji: '🛍️', droppedBy: 'You' }, x, y);
+    addToast(`${p.name} added to canvas 🎨`, 'success');
+    document.getElementById('collabSection')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const sorted = [...ALL_PRODS].sort((a, b) => {
@@ -143,7 +159,8 @@ export default function DragStrip() {
                   {p.old && <span style={{ fontSize: '.65rem', color: 'rgba(255,255,255,.35)', textDecoration: 'line-through', marginLeft: '.25rem' }}>{p.old}</span>}
                 </div>
                 <div style={{ display: 'flex', gap: '.35rem', marginTop: '.4rem' }}>
-                  <button className="pc-cart" onClick={e => handleAddToCart(e, p)}>🛒 Add</button>
+                  <button className="pc-cart" onClick={e => handleAddToCart(e, p)}>🛒</button>
+                  <button className="pc-cart" style={{ background: 'linear-gradient(135deg,#7c3aed,#06b6d4)' }} onClick={e => handleAddToCanvas(e, p)}>🎨</button>
                   <button
                     className="pc-wish"
                     onClick={e => handleWish(e, p)}
