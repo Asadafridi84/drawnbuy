@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATS, DRAG_PRODS } from '../data';
+import { useCanvasStore } from '../store/canvas';
+import { useSocket } from '../hooks/useSocket';
+import { useUIStore } from '../store';
 
 // Generate 16 products per category from DRAG_PRODS pool
 function getCatProducts(cat) {
@@ -21,8 +24,31 @@ export default function CategoryPage({ cat, onClose }) {
   const navigate = useNavigate();
   const [wishlist, setWishlist] = useState({});
   const products = getCatProducts(cat);
-
   const isModal = Boolean(onClose);
+
+  const addCard      = useCanvasStore(s => s.addCard);
+  const { sendProductDrop } = useSocket();
+  const addToast     = useUIStore(s => s.addToast);
+
+  const handleAddToCanvas = (e, p) => {
+    e.stopPropagation();
+    const id = Date.now().toString();
+    const product = {
+      name: p.name, price: p.price, img: p.img,
+      url: p.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(p.name)}&tag=drawnbuy-21`,
+    };
+    const x = 80 + Math.random() * 400;
+    const y = 60 + Math.random() * 200;
+    addCard('main-collab', { id, product, x, y, ownerId: 'guest' });
+    sendProductDrop({ ...product, id, canvasId: 'main-collab', emoji: '🛍️', droppedBy: 'You' }, x, y);
+    addToast(`🎨 ${p.name} added to canvas!`, 'success');
+  };
+
+  const handleBuy = (e, p) => {
+    e.stopPropagation();
+    const url = p.url || `https://www.amazon.co.uk/s?k=${encodeURIComponent(p.name)}&tag=drawnbuy-21`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div style={{
@@ -39,9 +65,10 @@ export default function CategoryPage({ cat, onClose }) {
         .cp-dc-img { height:140px; background:#f9f7ff; border-bottom:1px solid #e5e7eb; overflow:hidden; }
         .cp-dc-img img { width:100%; height:100%; object-fit:cover; transition:transform .3s; display:block; }
         .cp-dc:hover .cp-dc-img img { transform:scale(1.06); }
-        .cp-buybtn { width:100%; background:#7c3aed; color:#fff; border:none; border-radius:8px; padding:9px; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:.15s; }
+        .cp-buybtn { width:100%; background:#7c3aed; color:#fff; border:none; border-radius:8px; padding:9px; min-height:44px; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:.15s; }
         .cp-buybtn:hover { background:#5b21b6; }
-        .cp-addbtn { width:100%; background:linear-gradient(135deg,#7c3aed,#06b6d4); color:#fff; border:none; border-radius:8px; padding:7px; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700; cursor:pointer; margin-top:5px; }
+        .cp-addbtn { width:100%; background:linear-gradient(135deg,#7c3aed,#06b6d4); color:#fff; border:none; border-radius:8px; padding:7px; min-height:44px; font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700; cursor:pointer; margin-top:5px; }
+        .cp-addbtn:hover { opacity:.88; }
       `}</style>
 
       {/* Sticky top nav */}
@@ -98,8 +125,8 @@ export default function CategoryPage({ cat, onClose }) {
                   <span style={{ fontSize: '16px', fontWeight: '800', color: '#7c3aed' }}>{p.price}</span>
                   {p.old && <span style={{ fontSize: '12px', color: '#9ca3af', textDecoration: 'line-through' }}>{p.old}</span>}
                 </div>
-                <button className="cp-buybtn">Buy Now →</button>
-                <button className="cp-addbtn">🎨 Add to Canvas</button>
+                <button className="cp-buybtn" onClick={e => handleBuy(e, p)}>Buy Now →</button>
+                <button className="cp-addbtn" onClick={e => handleAddToCanvas(e, p)}>🎨 Add to Canvas</button>
               </div>
             </div>
           ))}

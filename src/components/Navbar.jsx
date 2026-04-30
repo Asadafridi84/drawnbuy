@@ -199,7 +199,7 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
         }
         .btn-ghost {
           background:transparent; border:1.5px solid rgba(255,255,255,.35); color:#fff;
-          padding:8px 14px; border-radius:9px; cursor:pointer; font-family:'Space Grotesk',sans-serif;
+          padding:8px 14px; min-height:44px; border-radius:9px; cursor:pointer; font-family:'Space Grotesk',sans-serif;
           font-size:13px; font-weight:600; transition:.15s; white-space:nowrap;
         }
         .btn-ghost:hover { border-color:#fff; }
@@ -248,7 +248,8 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
         }
         .mob-link {
           color:rgba(255,255,255,.85); font-size:1.1rem; font-weight:700; padding:.9rem 0;
-          border-bottom:1px solid rgba(255,255,255,.08); cursor:pointer; display:block; text-decoration:none;
+          border-bottom:1px solid rgba(255,255,255,.08); cursor:pointer; display:flex; align-items:center;
+          text-decoration:none; min-height:44px;
         }
         @media(max-width:768px) {
           .hamburger { display:flex !important; }
@@ -267,22 +268,82 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
       {/* Mobile Nav */}
       <div className={`mobile-nav ${mobileOpen ? 'open' : ''}`}>
         <button className="mob-close" onClick={() => setMobileOpen(false)}>✕</button>
-        <a className="mob-link" onClick={() => { goHome('collabSection'); setMobileOpen(false); }}>Canvas</a>
-        <a className="mob-link" onClick={() => { goHome('pspSection'); setMobileOpen(false); }}>Products</a>
-        <a className="mob-link" onClick={() => { goHome('dealsAnchor'); setMobileOpen(false); }}>Deals</a>
-        <a className="mob-link" onClick={() => { goHome('catsSection'); setMobileOpen(false); }}>Categories</a>
-        <a className="mob-link" onClick={() => { goHome('inspiration'); setMobileOpen(false); }}>Inspiration</a>
-        <a className="mob-link" onClick={() => { goHome('hiwSection'); setMobileOpen(false); }}>How It Works</a>
-        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+
+        {/* User card — Bug 2 fix B */}
+        {user && (
+          <a href="/profile" onClick={() => setMobileOpen(false)} style={{
+            display:'flex', alignItems:'center', gap:'12px',
+            padding:'1rem 0 1.25rem', borderBottom:'1px solid rgba(255,255,255,.15)',
+            marginBottom:'1rem', textDecoration:'none', color:'#fff',
+          }}>
+            <div style={{
+              width:44, height:44, borderRadius:'50%', background:'#7c3aed',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              fontSize:'1.2rem', fontWeight:800, border:'2px solid #fbbf24', flexShrink:0,
+            }}>
+              {user.name?.[0]?.toUpperCase() || 'A'}
+            </div>
+            <div>
+              <div style={{fontWeight:700, fontSize:'1rem'}}>{user.name || 'My Account'}</div>
+              <div style={{fontSize:'0.8rem', color:'#a78bfa'}}>View my profile →</div>
+            </div>
+          </a>
+        )}
+
+        {/* Main nav links */}
+        <a className="mob-link" onClick={() => { goHome('collabSection'); setMobileOpen(false); }}>🎨 Canvas</a>
+        <a className="mob-link" onClick={() => { goHome('pspSection'); setMobileOpen(false); }}>🔍 Products</a>
+        <a className="mob-link" onClick={() => { goHome('dealsAnchor'); setMobileOpen(false); }}>🔥 Deals</a>
+        <a className="mob-link" onClick={() => { goHome('catsSection'); setMobileOpen(false); }}>📦 Categories</a>
+        <a className="mob-link" onClick={() => { goHome('inspiration'); setMobileOpen(false); }}>✨ Inspiration</a>
+        <a className="mob-link" onClick={() => { goHome('hiwSection'); setMobileOpen(false); }}>❓ How It Works</a>
+
+        {/* Category shortcuts — Bug 3 */}
+        <div style={{borderTop:'1px solid rgba(255,255,255,.1)', paddingTop:'1rem', marginTop:'.5rem'}}>
+          <div style={{fontSize:'.7rem', color:'#a78bfa', fontWeight:700, letterSpacing:'.1em', marginBottom:'.65rem', textTransform:'uppercase'}}>
+            Shop by Category
+          </div>
+          {[
+            { emoji:'👗', label:'Fashion',  path:'/category/womens-fashion' },
+            { emoji:'📱', label:'Tech',     path:'/category/smartphones'    },
+            { emoji:'🏠', label:'Home',     path:'/category/home-decor'     },
+            { emoji:'🎮', label:'Gaming',   path:'/category/gaming'         },
+            { emoji:'🏋️', label:'Fitness', path:'/category/training-health'},
+            { emoji:'🍳', label:'Kitchen',  path:'/category/kitchen-gadgets'},
+          ].map(cat => (
+            <a key={cat.path} href={cat.path} onClick={() => setMobileOpen(false)}
+              style={{display:'flex', alignItems:'center', gap:'12px', minHeight:'44px',
+                      padding:'8px 0', color:'#fff', textDecoration:'none', fontSize:'.95rem', fontWeight:600}}>
+              <span style={{fontSize:'1.2rem', width:28, textAlign:'center', flexShrink:0}}>{cat.emoji}</span>
+              <span>{cat.label}</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Bottom actions */}
+        <div style={{borderTop:'1px solid rgba(255,255,255,.1)', paddingTop:'1rem', marginTop:'1rem', display:'flex', gap:'.75rem'}}>
+          <a href="/?room=main" onClick={() => setMobileOpen(false)}
+            style={{flex:1, height:44, background:'#7c3aed', color:'#fff', borderRadius:8,
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    textDecoration:'none', fontWeight:700, fontSize:'.9rem', border:'1.5px solid #fbbf24'}}>
+            🎨 Open Canvas
+          </a>
+          <a href="/profile?tab=wishlist" onClick={() => setMobileOpen(false)}
+            style={{flex:1, height:44, background:'rgba(255,255,255,.1)', color:'#fff', borderRadius:8,
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    textDecoration:'none', fontWeight:700, fontSize:'.9rem'}}>
+            ♡ Wishlist
+          </a>
+        </div>
+
+        {/* Auth actions */}
+        <div style={{marginTop:'1.25rem', display:'flex', flexDirection:'column', gap:'.75rem'}}>
           {user ? (
-            <>
-              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { navigate('/profile'); setMobileOpen(false); }}>Profile</button>
-              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { logout(); setMobileOpen(false); }}>Log Out</button>
-            </>
+            <button className="btn-ghost" style={{width:'100%', textAlign:'center'}} onClick={() => { logout(); setMobileOpen(false); }}>Log Out</button>
           ) : (
             <>
-              <button className="btn-ghost" style={{ width: '100%', textAlign: 'center' }} onClick={() => { navigate('/login'); setMobileOpen(false); }}>Log In</button>
-              <button className="btn-cta" style={{ width: '100%', textAlign: 'center', padding: '12px' }} onClick={() => { navigate('/signup'); setMobileOpen(false); }}>Sign Up Free</button>
+              <a href="/login" onClick={() => setMobileOpen(false)} className="btn-ghost" style={{width:'100%', textAlign:'center', display:'flex', alignItems:'center', justifyContent:'center'}}>Log In</a>
+              <a href="/signup" onClick={() => setMobileOpen(false)} className="btn-cta" style={{width:'100%', textAlign:'center', padding:'12px', display:'flex', alignItems:'center', justifyContent:'center', textDecoration:'none'}}>Sign Up Free</a>
             </>
           )}
         </div>
