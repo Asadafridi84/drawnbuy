@@ -7,8 +7,8 @@ export default function CanvasOverlayLayer({ canvasId }) {
   const stickers = useCanvasStore(s => s.stickers[canvasId]) || [];
 
   return (
-    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5 }}>
-      <div style={{ position: 'relative', width: '100%', height: '100%', pointerEvents: 'none' }}>
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5, overflow: 'hidden' }}>
+      <div style={{ position: 'relative', width: '100%', height: '100%', pointerEvents: 'none', overflow: 'hidden' }}>
         {cards.map(card => (
           <ProductCard key={card.id} card={card} canvasId={canvasId} />
         ))}

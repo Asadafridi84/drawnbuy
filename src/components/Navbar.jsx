@@ -259,6 +259,9 @@ export default function Navbar({ onShare, cartCount = 0, onCatClick }) {
           .btn-cta { display:none !important; }
           .nav-root { padding: 0 .85rem; gap:8px; }
         }
+        /* Override: buttons inside the mobile drawer must always be visible */
+        .mobile-nav .btn-ghost { display:flex !important; width:100%; align-items:center; justify-content:center; }
+        .mobile-nav .btn-cta   { display:flex !important; width:100%; align-items:center; justify-content:center; text-decoration:none; padding:12px; }
         @media(max-width:480px) {
           .nav-root { height:56px; }
           .logo-tagline { display:none; }

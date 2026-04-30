@@ -413,7 +413,7 @@ export default function CollabCanvas({ onShare }) {
           display:inline-flex; align-items:center; gap:4px;
         }
         .live-dot { width:6px; height:6px; border-radius:50%; background:#22c55e; animation:pulseLive2 1.5s infinite; display:inline-block; }
-        .collab-grid { display:grid; grid-template-columns:1fr 305px; gap:14px; }
+        .collab-grid { display:grid; grid-template-columns:1fr 305px; gap:14px; overflow:hidden; }
         .cv-panel { border:2px solid rgba(251,191,36,.4); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
         .cv-top { background:rgba(0,0,0,.3); padding:8px 12px; display:flex; align-items:center; gap:8px; }
         .cv-tools { background:rgba(0,0,0,.25); padding:7px 10px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
@@ -597,7 +597,7 @@ export default function CollabCanvas({ onShare }) {
 
             <div className="cv-area"
               ref={canvasContainerRef}
-              style={{ cursor: tool==='erase'?'cell':'crosshair' }}
+              style={{ cursor: tool==='erase'?'cell':'crosshair', overflow: 'hidden' }}
               onDragOver={onDragOver}
               onDrop={onDrop}
             >
